@@ -1,0 +1,17 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using api.core.models;
+
+namespace api.core.services.BuildService
+{
+    public interface IBuildRepository
+    {
+        List<Build> GetAllBuilds();
+        Build GetBuildByID(int id);
+        void CreateBuild(Build build);
+        void UpdateBuild(Build build);
+        void DeleteBuild(int id);
+    }
+}
