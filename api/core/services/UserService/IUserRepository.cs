@@ -11,7 +11,7 @@ namespace api.core.services.UserService
         List<User> GetAllUsers();
         User GetUserByID(int id);
         void CreateUser(User user);
-        void UpdateUser(User user);
+        void UpdateUser(User user, int id);
         void DeleteUser(int id);
     }
 }

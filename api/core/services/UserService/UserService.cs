@@ -35,9 +35,9 @@ namespace api.core.services.UserService
             return user;
         }
 
-        public void UpdateUser(User user)
+        public void UpdateUser(User user, int id)
         {
-            userRepository.UpdateUser(user);
+            userRepository.UpdateUser(user, id);
         }
     }
 }

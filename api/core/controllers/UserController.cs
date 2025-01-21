@@ -22,7 +22,7 @@ namespace api.core.controllers
             this.logger = logger;
         }
 
-        [HttpGet("GetAllUsers")] //FIXME resolve DI issue
+        [HttpGet("GetAllUsers")]
         public IActionResult GetAllUsers()
         {
             try{
@@ -63,37 +63,76 @@ namespace api.core.controllers
         }
 
         [HttpPost("CreateUser")]
-        public void CreateUser([FromBody] UserRequest request)
+        public IActionResult CreateUser([FromBody] UserRequest request)
         {
-            User user = new User{
-                FName = request.FName,
-                LName = request.LName,
-                Email = request.Email,
-                Password = request.Password,
-                Deleted = request.Deleted
-            };
+            if(request == null){
+                logger.LogError("The request was null");
+                return BadRequest("Request body cannot be null.");
+            }
+            else{
+                User user;
+                try{
 
-            userService.CreateUser(user);
+                    user = new User{
+                        FName = request.FName,
+                        LName = request.LName,
+                        Email = request.Email,
+                        Password = request.Password,
+                        Deleted = request.Deleted
+                    };
+
+                    userService.CreateUser(user);
+
+                    return Ok();
+                }
+                catch(Exception ex){
+                    logger.LogError(ex, "An error occurred while updating user.");
+                    throw;
+                }
+            }
         }
 
         [HttpPut("UpdateUser/{id}")]
-        public void UpdateUser(int id, [FromBody] UserRequest request)
+        public IActionResult UpdateUser(int id, [FromBody] UserRequest request)
         {
-            User user = new User{
-                FName = request.FName,
-                LName = request.LName,
-                Email = request.Email,
-                Password = request.Password,
-                Deleted = request.Deleted
-            };
-            
-            userService.UpdateUser(user);
+            if(request == null){
+                logger.LogError("The request was null");
+                return BadRequest("Request body cannot be null.");
+            }
+            else{
+                User user;
+                try{
+
+                    user = new User{
+                        FName = request.FName,
+                        LName = request.LName,
+                        Email = request.Email,
+                        Password = request.Password,
+                        Deleted = request.Deleted
+                    };
+
+                    userService.UpdateUser(user, id);
+
+                    return Ok();
+                }
+                catch(Exception ex){
+                    logger.LogError(ex, "An error occurred while updating user.");
+                    throw;
+                }
+            }
         }
 
         [HttpDelete("DeleteUser/{id}")]
-        public void DeleteUser(int id)
+        public IActionResult DeleteUser(int id)
         {
-            userService.DeleteUser(id);
+            try{
+                userService.DeleteUser(id);
+                return Ok();
+            }
+            catch(Exception ex){
+                logger.LogError(ex, "An error occurred while deleting user.");
+                throw;
+            }
         }
     }
 }

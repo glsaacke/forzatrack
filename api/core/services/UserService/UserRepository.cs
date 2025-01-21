@@ -97,7 +97,7 @@ namespace api.core.services.UserService
             cmd.ExecuteNonQuery();
          }
 
-        public void UpdateUser(User user){
+        public void UpdateUser(User user, int id){
             string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
@@ -109,7 +109,7 @@ namespace api.core.services.UserService
             cmd.Parameters.AddWithValue("@lname", user.LName);
             cmd.Parameters.AddWithValue("@email", user.Email);
             cmd.Parameters.AddWithValue("@password", user.Password);
-            cmd.Parameters.AddWithValue("@id", user.UserId);
+            cmd.Parameters.AddWithValue("@id", id);
 
             cmd.ExecuteNonQuery();
          }
