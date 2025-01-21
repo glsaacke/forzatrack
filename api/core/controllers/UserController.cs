@@ -17,7 +17,7 @@ namespace api.core.controllers
     {
         private IUserService userService;
         private ILogger<UserController> logger;
-        public UserController(IUserService userService, Logger<UserController> logger){
+        public UserController(IUserService userService, ILogger<UserController> logger){
             this.userService = userService;
             this.logger = logger;
         }
