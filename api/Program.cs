@@ -1,4 +1,5 @@
 using api.core.services.UserService;
+using api.core.services.CarService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,8 @@ builder.Services.AddControllers(); // <-- Add this line to register controllers.
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ICarService, CarService>();
+builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddLogging();
 
 

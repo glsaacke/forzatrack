@@ -92,18 +92,18 @@ namespace api.core.services.CarService
             cmd.ExecuteNonQuery();
          }
 
-         public void UpdateCar(Car car){
+         public void UpdateCar(Car car, int id){
             string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
 
-            string stm = $"UPDATE Cars SET make = @make, model = @model, year = @year, WHERE car_id = @id";
+            string stm = $"UPDATE Cars SET make = @make, model = @model, year = @year WHERE car_id = @id";
 
             using var cmd = new MySqlCommand(stm, con);
             cmd.Parameters.AddWithValue("@make", car.Make);
             cmd.Parameters.AddWithValue("@model", car.Model);
             cmd.Parameters.AddWithValue("@year", car.Year);
-            cmd.Parameters.AddWithValue("@id", car.CarId);
+            cmd.Parameters.AddWithValue("@id", id);
 
             cmd.ExecuteNonQuery();
          }
@@ -113,7 +113,7 @@ namespace api.core.services.CarService
             using var con = new MySqlConnection(cs);
             con.Open();
 
-            string stm = "UPDATE Cars SET deleted = 1 WHERE car_id = @id";
+            string stm = "DELETE FROM Cars WHERE car_id = @id";
 
             using var cmd = new MySqlCommand(stm, con);
             cmd.Parameters.AddWithValue("@id", id);

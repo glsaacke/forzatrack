@@ -119,7 +119,7 @@ namespace api.core.services.UserService
             using var con = new MySqlConnection(cs);
             con.Open();
 
-            string stm = "UPDATE Users SET deleted = 1 WHERE user_id = @id";
+            string stm = "DELETE FROM Users WHERE user_id = @id";
 
             using var cmd = new MySqlCommand(stm, con);
             cmd.Parameters.AddWithValue("@id", id);

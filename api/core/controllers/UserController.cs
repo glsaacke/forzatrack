@@ -42,7 +42,7 @@ namespace api.core.controllers
             }   
         }
 
-        [HttpGet("GetUserById/{id}")] //TODO finish endpoints
+        [HttpGet("GetUserById/{id}")]
         public IActionResult GetUserById(int id)
         {
             User user;

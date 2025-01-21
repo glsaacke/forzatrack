@@ -6,7 +6,7 @@ using api.core.models;
 
 namespace api.core.services.CarService
 {
-    public interface ICarRepository
+    public interface ICarService
     {
         List<Car> GetAllCars();
         Car GetCarByID(int id);
