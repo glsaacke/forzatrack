@@ -36,9 +36,9 @@ namespace api.core.services.BuildService
             return build;
         }
 
-        public void UpdateBuild(Build build)
+        public void UpdateBuild(Build build, int id)
         {
-            buildRepository.UpdateBuild(build);
+            buildRepository.UpdateBuild(build, id);
         }
     }
 }

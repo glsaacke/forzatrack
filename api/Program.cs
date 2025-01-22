@@ -1,5 +1,7 @@
 using api.core.services.UserService;
 using api.core.services.CarService;
+using api.core.services.RecordService;
+using api.core.services.BuildService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,10 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<ICarRepository, CarRepository>();
+builder.Services.AddScoped<IRecordService, RecordService>();
+builder.Services.AddScoped<IRecordRepository, RecordRepository>();
+builder.Services.AddScoped<IBuildService, BuildService>();
+builder.Services.AddScoped<IBuildRepository, BuildRepository>();
 builder.Services.AddLogging();
 
 

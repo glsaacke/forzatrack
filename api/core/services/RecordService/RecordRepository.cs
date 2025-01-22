@@ -10,7 +10,7 @@ using api.core.data;
 
 namespace api.core.services.RecordService
 {
-    public class RecordRepository
+    public class RecordRepository : IRecordRepository
     {
         public List<Record> GetAllRecords(){
             List<Record> records = new List<Record>();
@@ -46,7 +46,7 @@ namespace api.core.services.RecordService
             }
             return records;
          }
-        public Record GetCarByID(int id){
+        public Record GetRecordByID(int id){
             string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
@@ -107,7 +107,7 @@ namespace api.core.services.RecordService
             cmd.ExecuteNonQuery();
          }
 
-         public void Update(Record record){
+         public void UpdateRecord(Record record, int id){
             string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
@@ -123,12 +123,12 @@ namespace api.core.services.RecordService
             cmd.Parameters.AddWithValue("@time_sec", record.TimeSec);
             cmd.Parameters.AddWithValue("@time_ms", record.TimeMs);
             cmd.Parameters.AddWithValue("@cpu_diff", record.CpuDiff);
-            cmd.Parameters.AddWithValue("@id", record.RecordId);
+            cmd.Parameters.AddWithValue("@id", id);
 
             cmd.ExecuteNonQuery();
          }
 
-         public void Delete(int id){
+         public void DeleteRecord(int id){
             string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();

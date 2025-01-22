@@ -57,7 +57,7 @@ namespace api.core.controllers
                 }
             }
             catch(Exception ex){
-                logger.LogError(ex, "An error occurred while fetching all users.");
+                logger.LogError(ex, "An error occurred while fetching car.");
                 throw;
             }
         }
@@ -85,7 +85,7 @@ namespace api.core.controllers
                     return Ok();
                 }
                 catch(Exception ex){
-                    logger.LogError(ex, "An error occurred while updating car.");
+                    logger.LogError(ex, "An error occurred while creating car.");
                     throw;
                 }
             }
@@ -128,7 +128,7 @@ namespace api.core.controllers
                 return Ok();
             }
             catch(Exception ex){
-                logger.LogError(ex, "An error occurred while deleting user.");
+                logger.LogError(ex, "An error occurred while deleting car.");
                 throw;
             }
         }

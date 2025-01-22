@@ -57,7 +57,7 @@ namespace api.core.controllers
                 }
             }
             catch(Exception ex){
-                logger.LogError(ex, "An error occurred while fetching all users.");
+                logger.LogError(ex, "An error occurred while fetching user.");
                 throw;
             }
         }
@@ -86,7 +86,7 @@ namespace api.core.controllers
                     return Ok();
                 }
                 catch(Exception ex){
-                    logger.LogError(ex, "An error occurred while updating user.");
+                    logger.LogError(ex, "An error occurred while creating user.");
                     throw;
                 }
             }

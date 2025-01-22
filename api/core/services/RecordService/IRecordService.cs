@@ -6,7 +6,7 @@ using api.core.models;
 
 namespace api.core.services.RecordService
 {
-    public interface IRecordRepository
+    public interface IRecordService
     {
         List<Record> GetAllRecords();
         Record GetRecordByID(int id);
