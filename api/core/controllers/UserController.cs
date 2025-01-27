@@ -111,14 +111,34 @@ namespace api.core.controllers
                         Deleted = request.Deleted
                     };
 
-                    userService.UpdateUser(user, id);
-
-                    return Ok();
+                    bool rowsAffected = userService.UpdateUser(user, id);
+                    if(rowsAffected){
+                        return Ok();
+                    } else {
+                        return NotFound("No Users found matching the id.");
+                    }
                 }
                 catch(Exception ex){
                     logger.LogError(ex, "An error occurred while updating user.");
                     throw;
                 }
+            }
+        }
+
+        [HttpPut("SetUserDeleted/{id}")]
+        public IActionResult SetBuildDeleted(int id)
+        {
+            try{
+                bool rowsAffected = userService.SetUserDeleted(id);
+                if(rowsAffected){
+                    return Ok();
+                } else {
+                    return NotFound("No Users found matching the id.");
+                }
+            }
+            catch(Exception ex){
+                logger.LogError(ex, "An error occured while setting User Deleted");
+                throw;
             }
         }
 

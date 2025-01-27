@@ -35,9 +35,16 @@ namespace api.core.services.CarService
             return car;
         }
 
-        public void UpdateCar(Car car, int id)
+        public bool SetCarDeleted(int id)
         {
-            carRepository.UpdateCar(car, id);
+            bool rowsAffected = carRepository.SetCarDeleted(id);
+            return rowsAffected;
+        }
+
+        public bool UpdateCar(Car car, int id)
+        {
+            bool rowsAffected = carRepository.UpdateCar(car, id);
+            return rowsAffected;
         }
     }
 }

@@ -11,7 +11,8 @@ namespace api.core.services.BuildService
         List<Build> GetAllBuilds();
         Build GetBuildByID(int id);
         void CreateBuild(Build build);
-        void UpdateBuild(Build build, int id);
+        bool UpdateBuild(Build build, int id);
+        bool SetBuildDeleted(int id);
         void DeleteBuild(int id);
     }
 }

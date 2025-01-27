@@ -35,9 +35,16 @@ namespace api.core.services.RecordService
             return record;
         }
 
-        public void UpdateRecord(Record record, int id)
+        public bool SetRecordDeleted(int id)
         {
-            recordRepository.UpdateRecord(record, id);
+            bool rowsAffected = recordRepository.SetRecordDeleted(id);
+            return rowsAffected;
+        }
+
+        public bool UpdateRecord(Record record, int id)
+        {
+            bool rowsAffected = recordRepository.UpdateRecord(record, id);
+            return rowsAffected;
         }
     }
 }

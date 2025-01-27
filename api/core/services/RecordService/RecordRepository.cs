@@ -107,7 +107,7 @@ namespace api.core.services.RecordService
             cmd.ExecuteNonQuery();
          }
 
-         public void UpdateRecord(Record record, int id){
+         public bool UpdateRecord(Record record, int id){
             string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
@@ -125,10 +125,25 @@ namespace api.core.services.RecordService
             cmd.Parameters.AddWithValue("@cpu_diff", record.CpuDiff);
             cmd.Parameters.AddWithValue("@id", id);
 
-            cmd.ExecuteNonQuery();
+            int rowsAffected = cmd.ExecuteNonQuery();
+
+            return rowsAffected > 0;
          }
 
          public void DeleteRecord(int id){
+            string cs = Connection.conString;
+            using var con = new MySqlConnection(cs);
+            con.Open();
+
+            string stm = "DELETE FROM Records WHERE record_id = @id";
+
+            using var cmd = new MySqlCommand(stm, con);
+            cmd.Parameters.AddWithValue("@id", id);
+
+            cmd.ExecuteNonQuery();
+         }
+
+         public bool SetRecordDeleted(int id){
             string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
@@ -138,7 +153,9 @@ namespace api.core.services.RecordService
             using var cmd = new MySqlCommand(stm, con);
             cmd.Parameters.AddWithValue("@id", id);
 
-            cmd.ExecuteNonQuery();
+            int rowsAffected = cmd.ExecuteNonQuery();
+
+            return rowsAffected > 0;
          }
     }
 }

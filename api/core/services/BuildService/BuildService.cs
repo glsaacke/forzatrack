@@ -36,9 +36,16 @@ namespace api.core.services.BuildService
             return build;
         }
 
-        public void UpdateBuild(Build build, int id)
+        public bool SetBuildDeleted(int id)
         {
-            buildRepository.UpdateBuild(build, id);
+            bool rowsAffected = buildRepository.SetBuildDeleted(id);
+            return rowsAffected;
+        }
+
+        public bool UpdateBuild(Build build, int id)
+        {
+            bool rowsAffected = buildRepository.UpdateBuild(build, id);
+            return rowsAffected;
         }
     }
 }

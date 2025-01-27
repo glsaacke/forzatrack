@@ -121,14 +121,34 @@ namespace api.core.controllers
                         Deleted = request.Deleted
                     };
 
-                    recordService.UpdateRecord(record, id);
-
-                    return Ok();
+                    bool rowsAffected = recordService.UpdateRecord(record, id);
+                    if(rowsAffected){
+                        return Ok();
+                    } else {
+                        return NotFound("No Records found matching the id.");
+                    }
                 }
                 catch(Exception ex){
                     logger.LogError(ex, "An error occurred while updating record.");
                     throw;
                 }
+            }
+        }
+
+        [HttpPut("SetRecordDeleted/{id}")]
+        public IActionResult SetRecordDeleted(int id)
+        {
+            try{
+                bool rowsAffected = recordService.SetRecordDeleted(id);
+                if(rowsAffected){
+                    return Ok();
+                } else {
+                    return NotFound("No Records found matching the id.");
+                }
+            }
+            catch(Exception ex){
+                logger.LogError(ex, "An error occured while setting Record Deleted");
+                throw;
             }
         }
 

@@ -11,7 +11,8 @@ namespace api.core.services.CarService
         List<Car> GetAllCars();
         Car GetCarByID(int id);
         void CreateCar(Car car);
-        void UpdateCar(Car car, int id);
+        bool UpdateCar(Car car, int id);
         void DeleteCar(int id);
+        bool SetCarDeleted(int id);
     }
 }

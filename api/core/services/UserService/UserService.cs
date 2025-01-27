@@ -35,9 +35,16 @@ namespace api.core.services.UserService
             return user;
         }
 
-        public void UpdateUser(User user, int id)
+        public bool SetUserDeleted(int id)
         {
-            userRepository.UpdateUser(user, id);
+            bool rowsAffected = userRepository.SetUserDeleted(id);
+            return rowsAffected;
+        }
+
+        public bool UpdateUser(User user, int id)
+        {
+            bool rowsAffected = userRepository.UpdateUser(user, id);
+            return rowsAffected;
         }
     }
 }

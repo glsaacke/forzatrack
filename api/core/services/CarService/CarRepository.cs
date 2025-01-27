@@ -92,7 +92,7 @@ namespace api.core.services.CarService
             cmd.ExecuteNonQuery();
          }
 
-         public void UpdateCar(Car car, int id){
+         public bool UpdateCar(Car car, int id){
             string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
@@ -105,7 +105,9 @@ namespace api.core.services.CarService
             cmd.Parameters.AddWithValue("@year", car.Year);
             cmd.Parameters.AddWithValue("@id", id);
 
-            cmd.ExecuteNonQuery();
+            int rowsAffected = cmd.ExecuteNonQuery();
+
+            return rowsAffected > 0;
          }
 
          public void DeleteCar(int id){
@@ -120,5 +122,21 @@ namespace api.core.services.CarService
 
             cmd.ExecuteNonQuery();
          }
+
+        public bool SetCarDeleted(int id)
+        {
+            string cs = Connection.conString;
+            using var con = new MySqlConnection(cs);
+            con.Open();
+
+            string stm = "UPDATE Cars SET deleted = 1 WHERE car_id = @id";
+
+            using var cmd = new MySqlCommand(stm, con);
+            cmd.Parameters.AddWithValue("@id", id);
+
+            int rowsAffected = cmd.ExecuteNonQuery();
+
+            return rowsAffected > 0;
+        }
     }
 }

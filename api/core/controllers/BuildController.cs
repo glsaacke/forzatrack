@@ -9,7 +9,7 @@ using api.core.controllers.models;
 using api.core.models;
 using Microsoft.Extensions.Logging;
 
-namespace api.core.controllers //TODO test build endpoints
+namespace api.core.controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -125,14 +125,34 @@ namespace api.core.controllers //TODO test build endpoints
                         Deleted = request.Deleted
                     };
 
-                    buildService.UpdateBuild(build, id);
-
-                    return Ok();
+                    bool rowsAffected = buildService.UpdateBuild(build, id);
+                    if(rowsAffected){
+                        return Ok();
+                    } else {
+                        return NotFound("No Builds found matching the id.");
+                    }
                 }
                 catch(Exception ex){
                     logger.LogError(ex, "An error occurred while updating build.");
                     throw;
                 }
+            }
+        }
+
+        [HttpPut("SetBuildDeleted/{id}")]
+        public IActionResult SetBuildDeleted(int id)
+        {
+            try{
+                bool rowsAffected = buildService.SetBuildDeleted(id);
+                if(rowsAffected){
+                    return Ok();
+                } else {
+                    return NotFound("No Builds found matching the id.");
+                }
+            }
+            catch(Exception ex){
+                logger.LogError(ex, "An error occured while setting Build Deleted");
+                throw;
             }
         }
 

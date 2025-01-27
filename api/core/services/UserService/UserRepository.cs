@@ -97,7 +97,7 @@ namespace api.core.services.UserService
             cmd.ExecuteNonQuery();
          }
 
-        public void UpdateUser(User user, int id){
+        public bool UpdateUser(User user, int id){
             string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
@@ -111,7 +111,9 @@ namespace api.core.services.UserService
             cmd.Parameters.AddWithValue("@password", user.Password);
             cmd.Parameters.AddWithValue("@id", id);
 
-            cmd.ExecuteNonQuery();
+            int rowsAffected = cmd.ExecuteNonQuery();
+
+            return rowsAffected > 0;
          }
 
         public void DeleteUser(int id){
@@ -125,6 +127,21 @@ namespace api.core.services.UserService
             cmd.Parameters.AddWithValue("@id", id);
 
             cmd.ExecuteNonQuery();
+         }
+
+         public bool SetUserDeleted(int id){
+            string cs = Connection.conString;
+            using var con = new MySqlConnection(cs);
+            con.Open();
+
+            string stm = "UPDATE Users SET deleted = 1 WHERE user_id = @id";
+
+            using var cmd = new MySqlCommand(stm, con);
+            cmd.Parameters.AddWithValue("@id", id);
+
+            int rowsAffected = cmd.ExecuteNonQuery();
+
+            return rowsAffected > 0;
          }
     }
 }

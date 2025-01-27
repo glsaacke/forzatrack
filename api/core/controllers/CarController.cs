@@ -109,14 +109,34 @@ namespace api.core.controllers
                         Deleted = request.Deleted
                     };
 
-                    carService.UpdateCar(car, id);
-
-                    return Ok();
+                    bool rowsAffected = carService.UpdateCar(car, id);
+                    if(rowsAffected){
+                        return Ok();
+                    } else {
+                        return NotFound("No Cars found matching the id.");
+                    }
                 }
                 catch(Exception ex){
                     logger.LogError(ex, "An error occurred while updating car.");
                     throw;
                 }
+            }
+        }
+
+        [HttpPut("SetCarDeleted/{id}")]
+        public IActionResult SetCarDeleted(int id)
+        {
+            try{
+                bool rowsAffected = carService.SetCarDeleted(id);
+                if(rowsAffected){
+                    return Ok();
+                } else {
+                    return NotFound("No Cars found matching the id.");
+                }
+            }
+            catch(Exception ex){
+                logger.LogError(ex, "An error occured while setting Car Deleted");
+                throw;
             }
         }
 

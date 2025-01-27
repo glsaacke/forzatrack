@@ -118,7 +118,7 @@ namespace api.core.services.BuildService
             cmd.ExecuteNonQuery();
          }
 
-         public void UpdateBuild(Build build, int id){
+         public bool UpdateBuild(Build build, int id){
             string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
@@ -139,7 +139,9 @@ namespace api.core.services.BuildService
             cmd.Parameters.AddWithValue("@zero_to_sixty", build.ZeroToSixty);
             cmd.Parameters.AddWithValue("@id", id);
 
-            cmd.ExecuteNonQuery();
+            int rowsAffected = cmd.ExecuteNonQuery();
+
+            return rowsAffected > 0;
          }
 
          public void DeleteBuild(int id){
@@ -154,5 +156,21 @@ namespace api.core.services.BuildService
 
             cmd.ExecuteNonQuery();
          }
+
+        public bool SetBuildDeleted(int id)
+        {
+            string cs = Connection.conString;
+            using var con = new MySqlConnection(cs);
+            con.Open();
+
+            string stm = "UPDATE Builds SET deleted = 1 WHERE build_id = @id";
+
+            using var cmd = new MySqlCommand(stm, con);
+            cmd.Parameters.AddWithValue("@id", id);
+
+            int rowsAffected = cmd.ExecuteNonQuery();
+
+            return rowsAffected > 0;
+        }
     }
 }
