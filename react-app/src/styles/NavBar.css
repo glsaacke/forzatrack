@@ -24,7 +24,7 @@
   
   .nav-link {
     padding: 0.5rem 1rem;
-    border-radius: 4px;
+    border-radius: 8px;
     transition: background-color 0.2s;
     color: #FFF;
     text-decoration: none;
@@ -42,16 +42,27 @@
   }
 
   .login-link {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: background-color 0.2s;
     color: #FFF;
     text-decoration: none;
+  }
+
+  .login-link:hover{
+    background-color: rgba(255, 255, 255, 0.1);
   }
 
   .signup-link {
     color: #F0AC2D;
     text-decoration: none;
     background-color: #FFF;
-    padding: 10px;
+    padding: 0.5rem 1rem;
     border-radius: 8px;
+  }
+
+  .signup-link:hover{
+    background-color: #f5f5f5;
   }
   
   @media (max-width: 768px) {
