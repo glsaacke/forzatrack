@@ -46,6 +46,14 @@ body {
   flex-direction: column;
 }
 
+h1 {
+  font-size: 3rem;
+}
+
+h2 {
+  font-family: primary-bold;
+}
+
 /* @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

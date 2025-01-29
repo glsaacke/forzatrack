@@ -1,0 +1,21 @@
+.login-container {
+    font-family: primary-bold;
+    color: #FFF;
+    background-color: #4b4b4b;
+    width: 100%;
+    height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-content {
+    background-color: #FFF;
+    color:black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 80vh;
+    width: 65vh;
+    border-radius: 15px;
+}
