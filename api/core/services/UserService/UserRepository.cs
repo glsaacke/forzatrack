@@ -76,16 +76,15 @@ namespace api.core.services.UserService
             return null;
          }
 
-        public void CreateUser(User user){
+        public void CreateUser(CreateUser user){
             string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
 
-            string stm = @"INSERT INTO Users(user_id, fname, lname, email, password, deleted) VALUES(@user_id, @fname, @lname, @email, @password, @deleted)";
+            string stm = @"INSERT INTO Users(fname, lname, email, password, deleted) VALUES(@fname, @lname, @email, @password, @deleted)";
 
             using var cmd = new MySqlCommand(stm,con);
 
-            cmd.Parameters.AddWithValue("@user_id", user.UserId);
             cmd.Parameters.AddWithValue("@fname", user.FName);
             cmd.Parameters.AddWithValue("@lname", user.LName);
             cmd.Parameters.AddWithValue("@email", user.Email);
@@ -143,5 +142,38 @@ namespace api.core.services.UserService
 
             return rowsAffected > 0;
          }
+
+        public User GetUserByEmail(string email)
+        {
+            string cs = Connection.conString;
+            using var con = new MySqlConnection(cs);
+            con.Open();
+
+            string stm = "SELECT user_id, fname, lname, email, password, deleted FROM Users WHERE email = @email";
+
+            using var cmd = new MySqlCommand(stm, con);
+
+            cmd.Parameters.AddWithValue("@email", email);
+
+            using var reader = cmd.ExecuteReader();
+            DataTable dataTable = new DataTable();
+            dataTable.Load(reader);
+
+            if (dataTable.Rows.Count > 0)
+            {
+                DataRow row = dataTable.Rows[0];
+                return new User
+                {
+                    UserId = Convert.ToInt32(row["user_id"]),
+                    FName = row["fname"].ToString(),
+                    LName = row["lname"].ToString(),
+                    Email = row["email"].ToString(),
+                    Password = row["password"].ToString(),
+                    Deleted = Convert.ToInt32(row["deleted"]),
+                };
+            }
+
+            return null;
+        }
     }
 }

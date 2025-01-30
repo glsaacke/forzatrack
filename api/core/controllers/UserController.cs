@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using api.core.controllers.models;
 using api.core.models;
+using api.core.models.responses;
 using api.core.services.UserService;
 using Microsoft.Extensions.Logging;
 
@@ -70,10 +71,10 @@ namespace api.core.controllers
                 return BadRequest("Request body cannot be null.");
             }
             else{
-                User user;
+                CreateUser user;
                 try{
 
-                    user = new User{
+                    user = new CreateUser{
                         FName = request.FName,
                         LName = request.LName,
                         Email = request.Email,
@@ -151,6 +152,20 @@ namespace api.core.controllers
             }
             catch(Exception ex){
                 logger.LogError(ex, "An error occurred while deleting user.");
+                throw;
+            }
+        }
+
+        [HttpGet("AuthenticateUser")]
+        public IActionResult AuthenticateUser(string email, string password)
+        {
+            AuthResponse response;
+            try{
+                response = userService.AuthenticateUser(email, password);
+                return Ok(response);
+            }
+            catch(Exception ex){
+                logger.LogError(ex, "An error occurred while authenticating user.");
                 throw;
             }
         }

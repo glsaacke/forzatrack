@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.core.models;
+using api.core.models.responses;
 
 namespace api.core.services.UserService
 {
@@ -13,7 +14,29 @@ namespace api.core.services.UserService
             this.userRepository = userRepository;
         }
 
-        public void CreateUser(User user)
+        public AuthResponse AuthenticateUser(string email, string password)
+        {
+            User user = userRepository.GetUserByEmail(email);
+
+            if(user == null){
+                return new AuthResponse{ Success = false, Message=$"No accounts matching '{email}'"};
+            }
+            else{
+                if(user.Password == password && user.Deleted == 0){
+                    return new AuthResponse{ Success = true, Message="Login Successful", User = new UserDto{
+                        UserId = user.UserId,
+                        FName = user.FName,
+                        LName = user.LName,
+                        Email = email
+                    }};
+                }
+                else{
+                    return new AuthResponse{ Success = false, Message="Incorrect Password"};
+                }
+            }
+        }
+
+        public void CreateUser(CreateUser user)
         {
             userRepository.CreateUser(user);
         }

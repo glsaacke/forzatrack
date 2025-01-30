@@ -10,9 +10,10 @@ namespace api.core.services.UserService
     {
         List<User> GetAllUsers();
         User GetUserByID(int id);
-        void CreateUser(User user);
+        void CreateUser(CreateUser user);
         bool UpdateUser(User user, int id);
         void DeleteUser(int id);
         bool SetUserDeleted(int id);
+        User GetUserByEmail(string username);
     }
 }
