@@ -30,28 +30,57 @@
     width: 65vh;
     border-radius: 15px;
     z-index: 2;
+    border: red 2px dashed;
+    justify-content: space-around;
+}
+
+.login-content form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.login-content form label {
+    margin: 8px 0;
+    margin-left: 20%;
+}
+
+.login-content form input {
+    height: 5vh;
+    width: 60%;
+    margin: 8px 0;
+    border-radius: 8px;
+    border: none;
+    background-color: #e1e1e1;
+    font-size: 1.5rem;
+    align-self: center;
 }
 
 .login-login {
     background: linear-gradient(to right, #FA5D88, #F86C76);
     font-family: primary-bold;
+    font-size: 1.5rem;
     box-shadow: none;
     border: none;
-    width: 60%;
-    height: 5%;
+    width: 35%;
+    height: 8vh;
     border-radius: 8px;
     color: #FFF;
     text-decoration: none;
+    margin-top: 8vh;
+    align-self: center;
 }
 
 .login-create {
     background: #FFF;
     font-family: primary-bold;
+    font-size: 1.5rem;
     box-shadow: none;
     border: 2px solid #F86C76; /* Ensures a single solid color */
     width: 60%;
-    height: 5%;
+    height: auto;
     border-radius: 8px;
+    padding: 2% 0;
     color: #F86C76;
     text-decoration: none;
 }
