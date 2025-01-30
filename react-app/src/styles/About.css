@@ -1,0 +1,57 @@
+.about-container {
+    font-family: primary-bold;
+    color: black;
+    background-color: #4b4b4b;
+    width: 100%;
+    height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url('../assets/img/Forza2.PNG');
+    background-size: cover;
+    background-position: center;
+}
+
+.about-overlay {
+    width: 100%;
+    height: 90vh;
+    position: absolute;
+    background-color: #4b4b4bdf;
+    z-index: 1;
+}
+
+.about-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    height: 85vh;
+    width: 60vw;
+    border-radius: 15px;
+    background-color: #FFF;
+    z-index: 2;
+    
+}
+
+.about-content p {
+    font-family:Arial, Helvetica, sans-serif;
+    font-size: small;
+    margin: 0 5vw;
+}
+
+.about-content h2 {
+    margin: 0 5vw;
+    text-align: center;
+}
+
+@media (max-width: 1000px) {
+    .about-content {
+        width: 70vw;
+    }
+}
+
+@media (max-width: 768px) {
+    .about-content {
+        width: 90vw;
+    }
+}

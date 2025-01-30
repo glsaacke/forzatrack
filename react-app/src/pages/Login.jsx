@@ -4,6 +4,7 @@ import '../styles/Login.css'
 const Login = () => {
     return ( 
         <div className="login-container">
+            <div className="home-overlay"></div>
             <div className="login-content">
 
                 <h1>LOGIN</h1>
@@ -15,8 +16,8 @@ const Login = () => {
                     <p>PASSWORD</p>
 
                 </div>
-                <button>LOGIN</button>
-                <button>CREATE ACCOUNT</button>
+                <button className='login-login'>LOGIN</button>
+                <button className='login-create'>CREATE ACCOUNT</button>
 
             </div>
         </div>
