@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from "react";
 import { authenticateUser } from '../services/api';
 import '../styles/Login.css'
@@ -8,6 +8,7 @@ const Login = () => {
     const [password, setPassword] = useState('')
     const [loginError, setLoginError] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
+    const navigate = useNavigate()
 
     async function handleSubmit(e){
         e.preventDefault()
@@ -16,6 +17,7 @@ const Login = () => {
 
         if(user.success){
             console.log(`hooray! ${email} is a valid login`)
+            navigate('/dashboard')
         }
         else{
             setErrorMessage(user.message)
@@ -29,7 +31,7 @@ const Login = () => {
             <div className="login-content">
                 <h1>LOGIN</h1>
                 <form onSubmit={handleSubmit}>
-                    <label>USERNAME</label>
+                    <label>EMAIL</label>
                     <input type="text" required value={email} onChange={(e) => setEmail(e.target.value)}/>
                     <label>PASSWORD</label>
                     <input type="text" required value={password} onChange={(e) => setPassword(e.target.value)}/>
@@ -38,7 +40,7 @@ const Login = () => {
                 </form>
                 
     
-                <button className='login-create'>CREATE ACCOUNT</button>
+                <button className='login-create' onClick={() => navigate('/signup')}>CREATE ACCOUNT</button>
 
             </div>
         </div>
