@@ -11,7 +11,7 @@ namespace api.core.services.UserService
     {
         List<User> GetAllUsers();
         User GetUserByID(int id);
-        void CreateUser(CreateUser user);
+        AuthResponse CreateUser(CreateUser user);
         bool UpdateUser(User user, int id);
         void DeleteUser(int id);
         bool SetUserDeleted(int id);

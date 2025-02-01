@@ -9,6 +9,7 @@ using api.core.models;
 using api.core.models.responses;
 using api.core.services.UserService;
 using Microsoft.Extensions.Logging;
+using K4os.Compression.LZ4.Internal;
 
 namespace api.core.controllers
 {
@@ -75,16 +76,15 @@ namespace api.core.controllers
                 try{
 
                     user = new CreateUser{
-                        FName = request.FName,
-                        LName = request.LName,
+                        Username = request.Username,
                         Email = request.Email,
                         Password = request.Password,
-                        Deleted = request.Deleted
+                        Deleted = request.Deleted,
                     };
 
-                    userService.CreateUser(user);
+                    AuthResponse response = userService.CreateUser(user);
 
-                    return Ok();
+                    return Ok(response);
                 }
                 catch(Exception ex){
                     logger.LogError(ex, "An error occurred while creating user.");
@@ -105,8 +105,7 @@ namespace api.core.controllers
                 try{
 
                     user = new User{
-                        FName = request.FName,
-                        LName = request.LName,
+                        Username = request.Username,
                         Email = request.Email,
                         Password = request.Password,
                         Deleted = request.Deleted

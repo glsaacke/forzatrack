@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from "react";
 import '../styles/Login.css';
+import {createUser} from '../services/api';
 
 const Signup = () => {
     const [username, setUsername] = useState('')
@@ -9,8 +10,22 @@ const Signup = () => {
     const [signupError, setSignupError] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
 
-    function handleSubmit(){
+    async function handleSubmit(e){
+        e.preventDefault()
 
+        const response = await createUser(username, email, password)
+
+        if(response.success == true){
+            console.log(`hooray! ${email} and ${username} are untaken`)
+            sessionStorage.setItem("userId", response.userId)
+
+            navigate('/dashboard')
+        }
+        else{
+            alert(response.message)
+            // setErrorMessage(user.message)
+            // setLoginError(true)
+        }
     }
 
     return ( 

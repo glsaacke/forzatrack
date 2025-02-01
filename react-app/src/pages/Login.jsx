@@ -13,14 +13,15 @@ const Login = () => {
     async function handleSubmit(e){
         e.preventDefault()
 
-        const user = await authenticateUser(email, password)
+        const response = await authenticateUser(email, password)
 
-        if(user.success){
-            console.log(`hooray! ${email} is a valid login`)
+        if(response.success){
+            console.log(response)
+            sessionStorage.setItem("userId", response.user.userId)
             navigate('/dashboard')
         }
         else{
-            setErrorMessage(user.message)
+            setErrorMessage(response.message)
             setLoginError(true)
         }
     }

@@ -14,6 +14,7 @@ namespace api.core.services.UserService
         bool UpdateUser(User user, int id);
         void DeleteUser(int id);
         bool SetUserDeleted(int id);
-        User GetUserByEmail(string username);
+        User GetUserByEmail(string email);
+        User GetUserByUsername(string username);
     }
 }

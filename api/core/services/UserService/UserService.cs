@@ -25,8 +25,7 @@ namespace api.core.services.UserService
                 if(user.Password == password && user.Deleted == 0){
                     return new AuthResponse{ Success = true, Message="Login Successful", User = new UserDto{
                         UserId = user.UserId,
-                        FName = user.FName,
-                        LName = user.LName,
+                        Username = user.Username,
                         Email = email
                     }};
                 }
@@ -36,9 +35,26 @@ namespace api.core.services.UserService
             }
         }
 
-        public void CreateUser(CreateUser user)
+        public AuthResponse CreateUser(CreateUser user)
         {
-            userRepository.CreateUser(user);
+            User emailUser = userRepository.GetUserByEmail(user.Email);
+            User usernameUser = userRepository.GetUserByUsername(user.Username);
+
+            if (emailUser != null){
+                return new AuthResponse{ Success = false, Message = "An account with this email already exists"};
+            }
+            else if (usernameUser != null){
+                return new AuthResponse{Success = false, Message="Username taken"};
+            }
+            else{
+                userRepository.CreateUser(user);
+                User newUser = userRepository.GetUserByEmail(user.Email);
+                return new AuthResponse{ Success = true, Message="", User = new UserDto{
+                    UserId = newUser.UserId,
+                    Username = user.Username,
+                    Email = newUser.Email
+                }};
+            }
         }
 
         public void DeleteUser(int id)
