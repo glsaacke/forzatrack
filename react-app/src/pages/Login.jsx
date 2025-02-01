@@ -18,7 +18,7 @@ const Login = () => {
         if(response.success){
             console.log(response)
             sessionStorage.setItem("userId", response.user.userId)
-            navigate('/dashboard')
+            navigate('/dashboard/records')
         }
         else{
             setErrorMessage(response.message)

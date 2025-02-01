@@ -19,7 +19,7 @@ const Signup = () => {
             console.log(`hooray! ${email} and ${username} are untaken`)
             sessionStorage.setItem("userId", response.userId)
 
-            navigate('/dashboard')
+            navigate('/dashboard/records')
         }
         else{
             alert(response.message)
