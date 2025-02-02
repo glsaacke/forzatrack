@@ -1,11 +1,13 @@
 import { Outlet, Link } from "react-router-dom";
+import '../styles/Dashboard.css';
 
 const DashLayout = () => {
   return (
-    <div>
-      <h1>Dashboard</h1>
+    <div className="dash-container">
+      <h1>DASHBOARD</h1>
       <nav>
-        <Link to="records">Records</Link> | <Link to="builds">Builds</Link>
+        <Link to="records" className="dash-nav-link-records">Records</Link>
+        <Link to="builds" className="dash-nav-link-builds">Builds</Link>
       </nav>
       <Outlet /> {/* This is where Records or Builds will be rendered */}
     </div>
