@@ -17,5 +17,22 @@ export async function createUser(username, email, password){
   
   const createResponse = await response.json()
   return createResponse
+}
 
+export async function getRecordsByUserId(id){
+  const response = await fetch(`${BASE_URL}/Record/GetRecordsByUserId?id=${id}`)
+  const records = await response.json()
+  return records
+}
+
+export async function getBuildById(id){
+  const response = await fetch(`${BASE_URL}/Build/GetBuildById/${id}`)
+  const build = await response.json()
+  return build
+}
+
+export async function getCarById(id){
+  const response = await fetch(`${BASE_URL}/Car/GetCarById/${id}`)
+  const car = await response.json()
+  return car
 }

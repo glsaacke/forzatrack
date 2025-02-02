@@ -157,5 +157,43 @@ namespace api.core.services.RecordService
 
             return rowsAffected > 0;
          }
+
+        public List<Record> GetRecordsByUserId(int id)
+        {
+            List<Record> records = new List<Record>();
+
+            string cs = Connection.conString;
+            using var con = new MySqlConnection(cs);
+            con.Open();
+
+            string stm = "SELECT record_id, user_id, build_id, event, class_rank, time_min, time_sec, time_ms, cpu_diff, deleted FROM Records WHERE user_id = @id";
+
+            using var cmd = new MySqlCommand(stm, con);
+
+            cmd.Parameters.AddWithValue("@id", id);
+
+            using var reader = cmd.ExecuteReader();
+            DataTable dataTable = new DataTable();
+            dataTable.Load(reader);
+
+            foreach (DataRow row in dataTable.Rows)
+            {
+                Record record = new Record
+                {
+                    RecordId = Convert.ToInt32(row["record_id"]),
+                    UserId = Convert.ToInt32(row["user_id"]),
+                    BuildId = Convert.ToInt32(row["build_id"]),
+                    Event = row["event"].ToString(),
+                    ClassRank = row["class_rank"].ToString(),
+                    TimeMin = Convert.ToInt32(row["time_min"]),
+                    TimeSec = Convert.ToInt32(row["time_sec"]),
+                    TimeMs = Convert.ToInt32(row["time_ms"]),
+                    CpuDiff = row["cpu_diff"].ToString(),
+                    Deleted = Convert.ToInt32(row["deleted"]),
+                };
+                records.Add(record);
+            }
+            return records;
+        }
     }
 }

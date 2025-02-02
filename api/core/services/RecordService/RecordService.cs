@@ -35,6 +35,12 @@ namespace api.core.services.RecordService
             return record;
         }
 
+        public List<Record> GetRecordsByUserId(int id)
+        {
+            var records = recordRepository.GetRecordsByUserId(id);
+            return records.OrderBy(record => (record.TimeMin * 60 * 1000) + (record.TimeSec * 1000) + record.TimeMs).ToList();
+        }
+
         public bool SetRecordDeleted(int id)
         {
             bool rowsAffected = recordRepository.SetRecordDeleted(id);

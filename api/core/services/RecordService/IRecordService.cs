@@ -14,5 +14,6 @@ namespace api.core.services.RecordService
         bool UpdateRecord(Record record, int id);
         void DeleteRecord(int id);
         bool SetRecordDeleted(int id);
+        List<Record> GetRecordsByUserId(int id);
     }
 }

@@ -164,5 +164,19 @@ namespace api.core.controllers
                 throw;
             }
         }
+
+        [HttpGet("GetRecordsByUserId")]
+        public IActionResult GetRecordsByUserId(int id)
+        {
+            try{
+                var records = recordService.GetRecordsByUserId(id);
+
+                return Ok(records);
+            }
+            catch(Exception ex){
+                logger.LogError(ex, "An error occurred while fetching records.");
+                throw;
+            }
+        }
     }
 }
