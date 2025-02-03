@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Org.BouncyCastle.Asn1;
 
 namespace api.core.models
 {
@@ -16,6 +17,7 @@ namespace api.core.models
         public int TimeSec { get; set; }
         public int TimeMs { get; set; }
         public string CpuDiff { get; set; }
+        public DateTime Date { get; set; } = DateTime.Today;
         public int Deleted { get; set; }
     }
 }

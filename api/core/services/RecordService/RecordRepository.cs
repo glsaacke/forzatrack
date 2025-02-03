@@ -87,7 +87,7 @@ namespace api.core.services.RecordService
             using var con = new MySqlConnection(cs);
             con.Open();
 
-            string stm = @"INSERT INTO Records(record_id, user_id, build_id, event, class_rank, time_min, time_sec, time_ms, cpu_diff, deleted) VALUES(@record_id, @user_id, @build_id, @event, @class_rank, @time_min, @time_sec, @time_ms, @cpu_diff, @deleted)";
+            string stm = @"INSERT INTO Records(record_id, user_id, build_id, event, class_rank, time_min, time_sec, time_ms, cpu_diff, deleted, date) VALUES(@record_id, @user_id, @build_id, @event, @class_rank, @time_min, @time_sec, @time_ms, @cpu_diff, @deleted, @date)";
 
             using var cmd = new MySqlCommand(stm,con);
 
@@ -100,7 +100,8 @@ namespace api.core.services.RecordService
             cmd.Parameters.AddWithValue("@time_sec", record.TimeSec);
             cmd.Parameters.AddWithValue("@time_ms", record.TimeMs);
             cmd.Parameters.AddWithValue("@cpu_diff", record.CpuDiff);
-            cmd.Parameters.AddWithValue("deleted", record.Deleted);
+            cmd.Parameters.AddWithValue("@deleted", record.Deleted);
+            cmd.Parameters.AddWithValue("@date", record.Date);
 
             cmd.Prepare();
 
