@@ -1,3 +1,7 @@
+.dash-container h1 {
+    padding: 3vh 0;
+}
+
 .dash-nav-link-records{
     background: linear-gradient(to right, #FA5D88, #F86C76);
     display: flex;
@@ -38,6 +42,12 @@
     text-align: center;
     margin: 2vh 0;
     font-size: clamp(2rem, 5vw, 3rem);
+}
+
+.record-table {
+    margin: 0 5vw;
+    width: 90vw;
+    border: 2px solid black;
 }
 
 @media (max-width: 768px) {

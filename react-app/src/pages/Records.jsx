@@ -45,7 +45,7 @@ const Records = () => {
 
     return (
         <div>
-            <table className="table">
+            <table className="table record-table">
                 <thead className="thead-dark">
                     <tr>
                         <th scope="col">Ranking</th>

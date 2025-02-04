@@ -105,3 +105,6 @@ C:\Users\gavin\Documents\GitHub\forzatrack\api\obj\Debug\net8.0\ref\api.dll
 C:\Users\gavin\Documents\GitHub\forzatrack\api\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
 C:\Users\gavin\Documents\GitHub\forzatrack\api\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
 C:\Users\gavin\Documents\GitHub\forzatrack\api\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+C:\Users\Gavin S\Documents\GitHub\forzatrack\api\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\Gavin S\Documents\GitHub\forzatrack\api\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\Gavin S\Documents\GitHub\forzatrack\api\bin\Debug\net8.0\Microsoft.Extensions.Options.dll

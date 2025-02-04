@@ -6,8 +6,8 @@ const DashLayout = () => {
     <div className="dash-container">
       <h1>DASHBOARD</h1>
       <nav>
-        <Link to="records" className="dash-nav-link-records">Records</Link>
-        <Link to="builds" className="dash-nav-link-builds">Builds</Link>
+        {/* <Link to="records" className="dash-nav-link-records">Records</Link>
+        <Link to="builds" className="dash-nav-link-builds">Builds</Link> */}
       </nav>
       <Outlet /> {/* This is where Records or Builds will be rendered */}
     </div>
