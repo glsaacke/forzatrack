@@ -43,8 +43,45 @@ const Records = () => {
         return `${month}/${day}/${year}`
     };
 
+    function showCreateScreen (){
+        let overlay = document.querySelector(".create-overlay");
+        let content = document.querySelector(".create-content");
+
+        // Toggle display property
+        let isVisible = overlay.style.display === "block";
+
+        overlay.style.display = isVisible ? "none" : "block";
+        content.style.display = isVisible ? "none" : "flex";
+    }
+
     return (
-        <div>
+        <div className="record-content">
+            <div className="record-functions">
+                <div className="record-selects">
+                    <select className="form-select" aria-label="Default select example">
+                        <option value="" selected>All Classes</option>
+                        <option value="1">S2</option>
+                        <option value="2">S1</option>
+                        <option value="3">A</option>
+                        <option value="3">B</option>
+                        <option value="3">C</option>
+                        <option value="3">D</option>
+                        <option value="3">E</option>
+                    </select>
+                    <select>
+                        <option value="" selected>Goliath</option>
+                        <option value="1">Colossus</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                    </select>
+                </div>
+                <button className="create-record" onClick={showCreateScreen}>ADD RECORD</button>
+            </div>
+            <div className="create-overlay"></div>
+            <div className="create-content">
+                <h1>ADD RECCORD</h1>
+                <form action=""></form>
+            </div>
             <table className="table record-table">
                 <thead className="thead-dark">
                     <tr>
