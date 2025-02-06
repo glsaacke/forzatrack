@@ -1,9 +1,15 @@
 import { getBuildById, getRecordsByUserId, getCarById } from "../services/api";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 const Records = () => {
     const [records, setRecords] = useState([])
     const [carDetails, setCarDetails] = useState({})
+    const [newRecord, setNewRecord] = useState({})
+    const timeMin = useRef('')
+    const timeSec = useRef('')
+    const timeMs = useRef('')
+    const selectedCar = useRef('')
+    const selectedClass = useRef('')
 
     useEffect(() => {
         async function GetRecords() {
@@ -54,6 +60,18 @@ const Records = () => {
         content.style.display = isVisible ? "none" : "flex";
     }
 
+    function hideCreateScreen(){
+        let overlay = document.querySelector(".create-overlay");
+        let content = document.querySelector(".create-content");
+
+        overlay.style.display = "none";
+        content.style.display = "none";
+    }
+
+    function handleCreateSubmit(){
+
+    }
+
     return (
         <div className="record-content">
             <div className="record-functions">
@@ -80,7 +98,21 @@ const Records = () => {
             <div className="create-overlay"></div>
             <div className="create-content">
                 <h1>ADD RECCORD</h1>
-                <form action=""></form>
+                <form onSubmit={handleCreateSubmit}>
+                    <label>TIME</label>
+                    <input type="text" required ref={timeMin} />
+                    <input type="text" required ref={timeSec} />
+                    <input type="text" required ref={timeMs} />
+
+                    <label>CAR</label>
+                    <input type="text" required ref={selectedCar} />
+
+                    <label>CLASS</label>
+                    <input type="text" required ref={selectedClass} />
+
+                    <button type="submit">GO</button>
+                </form>
+                <button onClick={hideCreateScreen}>BACK</button>
             </div>
             <table className="table record-table">
                 <thead className="thead-dark">
