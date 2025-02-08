@@ -10,7 +10,7 @@ namespace api.core.models
     {
         public int? RecordId { get; set; }
         public int UserId { get; set; }
-        public int BuildId { get; set; }
+        public int CarId { get; set; }
         public string Event { get; set; }
         public string ClassRank { get; set; }
         public int TimeMin { get; set; }

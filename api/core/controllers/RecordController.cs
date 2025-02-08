@@ -76,7 +76,7 @@ namespace api.core.controllers
 
                     record = new Record{
                         UserId = request.UserId,
-                        BuildId = request.BuildId,
+                        CarId = request.CarId,
                         Event = request.Event,
                         ClassRank = request.ClassRank,
                         TimeMin = request.TimeMin,
@@ -111,7 +111,7 @@ namespace api.core.controllers
 
                     record = new Record{
                         UserId = request.UserId,
-                        BuildId = request.BuildId,
+                        CarId = request.CarId,
                         Event = request.Event,
                         ClassRank = request.ClassRank,
                         TimeMin = request.TimeMin,

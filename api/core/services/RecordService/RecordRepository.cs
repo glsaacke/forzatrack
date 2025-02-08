@@ -19,7 +19,7 @@ namespace api.core.services.RecordService
             using var con = new MySqlConnection(cs);
             con.Open();
 
-            string stm = "SELECT record_id, user_id, build_id, event, class_rank, time_min, time_sec, time_ms, cpu_diff, deleted FROM Records";
+            string stm = "SELECT record_id, user_id, car_id, event, class_rank, time_min, time_sec, time_ms, cpu_diff, deleted FROM Records";
 
             using var cmd = new MySqlCommand(stm, con);
 
@@ -33,7 +33,7 @@ namespace api.core.services.RecordService
                 {
                     RecordId = Convert.ToInt32(row["record_id"]),
                     UserId = Convert.ToInt32(row["user_id"]),
-                    BuildId = Convert.ToInt32(row["build_id"]),
+                    CarId = Convert.ToInt32(row["car_id"]),
                     Event = row["event"].ToString(),
                     ClassRank = row["class_rank"].ToString(),
                     TimeMin = Convert.ToInt32(row["time_min"]),
@@ -51,7 +51,7 @@ namespace api.core.services.RecordService
             using var con = new MySqlConnection(cs);
             con.Open();
 
-            string stm = "SELECT record_id, user_id, build_id, event, class_rank, time_min, time_sec, time_ms, cpu_diff, deleted FROM Records WHERE record_id = @id";
+            string stm = "SELECT record_id, user_id, car_id, event, class_rank, time_min, time_sec, time_ms, cpu_diff, deleted FROM Records WHERE record_id = @id";
 
             using var cmd = new MySqlCommand(stm, con);
 
@@ -68,7 +68,7 @@ namespace api.core.services.RecordService
                 {
                     RecordId = Convert.ToInt32(row["record_id"]),
                     UserId = Convert.ToInt32(row["user_id"]),
-                    BuildId = Convert.ToInt32(row["build_id"]),
+                    CarId = Convert.ToInt32(row["car_id"]),
                     Event = row["event"].ToString(),
                     ClassRank = row["class_rank"].ToString(),
                     TimeMin = Convert.ToInt32(row["time_min"]),
@@ -87,13 +87,13 @@ namespace api.core.services.RecordService
             using var con = new MySqlConnection(cs);
             con.Open();
 
-            string stm = @"INSERT INTO Records(record_id, user_id, build_id, event, class_rank, time_min, time_sec, time_ms, cpu_diff, deleted, date) VALUES(@record_id, @user_id, @build_id, @event, @class_rank, @time_min, @time_sec, @time_ms, @cpu_diff, @deleted, @date)";
+            string stm = @"INSERT INTO Records(record_id, user_id, car_id, event, class_rank, time_min, time_sec, time_ms, cpu_diff, deleted, date) VALUES(@record_id, @user_id, @car_id, @event, @class_rank, @time_min, @time_sec, @time_ms, @cpu_diff, @deleted, @date)";
 
             using var cmd = new MySqlCommand(stm,con);
 
             cmd.Parameters.AddWithValue("@record_id", record.RecordId);
             cmd.Parameters.AddWithValue("@user_id", record.UserId);
-            cmd.Parameters.AddWithValue("@build_id", record.BuildId);
+            cmd.Parameters.AddWithValue("@car_id", record.CarId);
             cmd.Parameters.AddWithValue("@event", record.Event);
             cmd.Parameters.AddWithValue("@class_rank", record.ClassRank);
             cmd.Parameters.AddWithValue("@time_min", record.TimeMin);
@@ -113,11 +113,11 @@ namespace api.core.services.RecordService
             using var con = new MySqlConnection(cs);
             con.Open();
 
-            string stm = $"UPDATE Records SET user_id = @user_id, build_id = @build_id, event = @event, class_rank = @class_rank, time_min = @time_min, time_sec = @time_sec, time_ms = @time_ms, cpu_diff = @cpu_diff WHERE record_id = @id";
+            string stm = $"UPDATE Records SET user_id = @user_id, car_id = @car_id, event = @event, class_rank = @class_rank, time_min = @time_min, time_sec = @time_sec, time_ms = @time_ms, cpu_diff = @cpu_diff WHERE record_id = @id";
 
             using var cmd = new MySqlCommand(stm, con);
             cmd.Parameters.AddWithValue("@user_id", record.UserId);
-            cmd.Parameters.AddWithValue("@build_id", record.BuildId);
+            cmd.Parameters.AddWithValue("@car_id", record.CarId);
             cmd.Parameters.AddWithValue("@event", record.Event);
             cmd.Parameters.AddWithValue("@class_rank", record.ClassRank);
             cmd.Parameters.AddWithValue("@time_min", record.TimeMin);
@@ -167,7 +167,7 @@ namespace api.core.services.RecordService
             using var con = new MySqlConnection(cs);
             con.Open();
 
-            string stm = "SELECT record_id, user_id, build_id, event, class_rank, time_min, time_sec, time_ms, cpu_diff, deleted FROM Records WHERE user_id = @id";
+            string stm = "SELECT record_id, user_id, car_id, event, class_rank, time_min, time_sec, time_ms, cpu_diff, deleted FROM Records WHERE user_id = @id";
 
             using var cmd = new MySqlCommand(stm, con);
 
@@ -183,7 +183,7 @@ namespace api.core.services.RecordService
                 {
                     RecordId = Convert.ToInt32(row["record_id"]),
                     UserId = Convert.ToInt32(row["user_id"]),
-                    BuildId = Convert.ToInt32(row["build_id"]),
+                    CarId = Convert.ToInt32(row["car_id"]),
                     Event = row["event"].ToString(),
                     ClassRank = row["class_rank"].ToString(),
                     TimeMin = Convert.ToInt32(row["time_min"]),

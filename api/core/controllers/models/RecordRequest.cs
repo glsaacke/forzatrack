@@ -8,7 +8,7 @@ namespace api.core.controllers.models
     public class RecordRequest
     {
         public int UserId { get; set; }
-        public int BuildId { get; set; }
+        public int CarId { get; set; }
         public string Event { get; set; }
         public string ClassRank { get; set; }
         public int TimeMin { get; set; }

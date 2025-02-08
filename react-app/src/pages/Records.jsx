@@ -24,8 +24,8 @@ const Records = () => {
     async function fetchCarDetails(records) {
         const newCar = {}
         for (const record of records) {
-            const car = await getCar(record.buildId)
-            newCar[record.buildId] = {
+            const car = await getCar(record.carId)
+            newCar[record.carId] = {
                 make: car.make,
                 model: car.model,
                 year: car.year
@@ -132,7 +132,7 @@ const Records = () => {
                             <td>{record.classRank}</td>
                             <td>
                                 {carDetails[record.buildId] 
-                                    ? `${carDetails[record.buildId].year} ${carDetails[record.buildId].make} ${carDetails[record.buildId].model}`
+                                    ? `${carDetails[record.carId].year} ${carDetails[record.carId].make} ${carDetails[record.carId].model}`
                                     : "Loading..."}
                             </td>
                             <td>{formatDate(record.date)}</td>
