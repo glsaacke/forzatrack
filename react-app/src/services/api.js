@@ -36,3 +36,21 @@ export async function getCarById(id){
   const car = await response.json()
   return car
 }
+
+export async function getAllCars(){
+  const response = await fetch(`${BASE_URL}/Car/GetAllCars`)
+  const cars = await response.json()
+  return cars
+}
+
+export async function createRecord(record){
+
+  let response = await fetch(`${BASE_URL}/Record/CreateRecord`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(record)
+  })
+  
+  // const createResponse = await response.json()
+  // return createResponse
+}

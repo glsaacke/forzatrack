@@ -121,6 +121,94 @@
     top: 15vh;
 }
 
+.create-content form {
+    display: flex;
+    flex-direction: column;
+    height: 70%;
+    width: 80%;
+    align-items: center;
+    justify-content: space-between;
+    margin: 8vh 0;
+}
+
+.create-car-select {
+    width: 100%; /* Adjust as needed */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+    border-radius: 8px;
+    border: 2px black solid;
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 3px 0;
+}
+
+.create-time-div {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.create-time-div label {
+    margin-right: 5px;
+}
+
+.create-time-div input {
+    width: 10%;
+    border-radius: 8px;
+    border: 2px black solid;
+    padding: 0 5px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.create-time-div p {
+    font-size: 1.5rem;
+    margin: 0 5px;
+}
+
+.create-select-div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.create-select-div select {
+    border-radius: 8px;
+    border: 2px black solid;
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 3px 0;
+}
+
+.create-form-submit {
+    background: linear-gradient(to right, #FA5D88, #F86C76);
+    font-family: primary-bold;
+    font-size: 1.5rem;
+    box-shadow: none;
+    border: none;
+    width: 20vw;
+    height: 5vh;
+    border-radius: 8px;
+    color: #FFF;
+    text-decoration: none;
+    align-self: center;
+    margin-top: 2vh;
+}
+
+.create-form-back {
+    background: #FFF;
+    font-family: primary-bold;
+    font-size: 1.5rem;
+    box-shadow: none;
+    border: 2px solid #F86C76; /* Ensures a single solid color */
+    width: 20vw;
+    height: 5vh;
+    border-radius: 8px;
+    color: #F86C76;
+    text-decoration: none;
+    margin-bottom: 5vh;
+}
 
 @media (max-width: 1000px) {
     .create-content{
