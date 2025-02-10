@@ -4,6 +4,9 @@ import { useEffect, useState, useRef } from "react";
 const Records = () => {
     const [records, setRecords] = useState([])
     const [cars, setCars] = useState([])
+    const [filteredRecords, setFilteredRecords] = useState([])
+    const [classFilter, setClassFilter] = useState('')
+    const [eventFilter, setEventFilter] = useState('')
     const inputTimeMin = useRef('')
     const inputTimeSec = useRef('')
     const inputTimeMs = useRef('')
@@ -25,7 +28,18 @@ const Records = () => {
 
         GetRecords()
         GetCars()
+        setFilteredRecords(records)
+        console.log(records)
+        
     }, [])
+
+    useEffect(() => {
+        if (classFilter === '') {
+            setFilteredRecords(records);
+        } else {
+            setFilteredRecords(records.filter(record => record.classRank === classFilter));
+        }
+    }, [classFilter, records]);
 
     function formatDate(date){
         const d = new Date(date);
@@ -79,11 +93,30 @@ const Records = () => {
         createRecord(newRecord)
     }
 
+    function handleClassFilter(){
+        let recordsPlaceholder = []
+        if(classFilter === ''){
+            setFilteredRecords(records)
+        }
+        else{
+            records.forEach(function(record){
+                if (record.classRank === classFilter){
+                    recordsPlaceholder.push(record)
+                }
+            })
+        }
+        setFilteredRecords(recordsPlaceholder)
+        console.log(filteredRecords)
+    }
+
     return (
         <div className="record-content">
             <div className="record-functions">
                 <div className="record-selects">
-                    <select className="form-select" aria-label="Default select example">
+                    <select className="form-select"onChange={(e) => {
+                        setClassFilter(e.target.value);
+                        handleClassFilter();
+                    }}>
                         <option value="" selected>All Classes</option>
                         <option value="S2">S2</option>
                         <option value="S1">S1</option>
@@ -172,7 +205,7 @@ const Records = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {records.map((record) => (
+                    {filteredRecords.map((record) => (
                         <tr key={record.recordId}>
                             <td>{record.recordId}</td>
                             <td>{record.timeMin}:{record.timeSec}:{record.timeMs}</td>
