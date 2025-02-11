@@ -109,13 +109,29 @@ const Records = () => {
         console.log(filteredRecords)
     }
 
+    function handleEventFilter(){
+        let recordsPlaceholder = []
+        if(eventFilter === ''){
+            setFilteredRecords(records)
+        }
+        else{
+            records.forEach(function(record){
+                if(record.event === eventFilter){
+                    records.Placeholder.push(record)
+                }
+            })
+        }
+        setFilteredRecords(recordsPlaceholder)
+        console.log(filteredRecords)
+    }
+
     return (
         <div className="record-content">
             <div className="record-functions">
                 <div className="record-selects">
                     <select className="form-select"onChange={(e) => {
-                        setClassFilter(e.target.value);
-                        handleClassFilter();
+                        setClassFilter(e.target.value)
+                        handleClassFilter()
                     }}>
                         <option value="" selected>All Classes</option>
                         <option value="S2">S2</option>
@@ -126,7 +142,10 @@ const Records = () => {
                         <option value="D">D</option>
                         <option value="E">E</option>
                     </select>
-                    <select>
+                    <select className="form-select" onChange={(e) => {
+                        setEventFilter(e.target.value)
+                        handleEventFilter()
+                    }}>
                         <option value="" selected>Goliath</option>
                         <option value="1">Colossus</option>
                         <option value="2">Two</option>
@@ -170,10 +189,10 @@ const Records = () => {
 
                         <select required ref={selectedEvent}>
                             <option selected>SELECT EVENT</option>
-                            <option value="">Goliath</option>
-                            <option value="1">Colossus</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                            <option value="Goliath">Goliath</option>
+                            <option value="Colossus">Colossus</option>
+                            <option value="Two">Two</option>
+                            <option value="Three">Three</option>
                         </select>
 
                         <select required ref={selectedCpuDiff}>
