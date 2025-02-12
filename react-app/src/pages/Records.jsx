@@ -6,7 +6,7 @@ const Records = () => {
     const [cars, setCars] = useState([])
     const [filteredRecords, setFilteredRecords] = useState([])
     const [classFilter, setClassFilter] = useState('')
-    const [eventFilter, setEventFilter] = useState('')
+    const [eventFilter, setEventFilter] = useState('Goliath')
     const inputTimeMin = useRef('')
     const inputTimeSec = useRef('')
     const inputTimeMs = useRef('')
@@ -29,7 +29,6 @@ const Records = () => {
         GetRecords()
         GetCars()
         setFilteredRecords(records)
-        console.log(records)
         
     }, [])
 
@@ -89,49 +88,36 @@ const Records = () => {
             cpuDiff: selectedCpuDiff.current.value,
             deleted: 0
         }
-        console.log(newRecord)
+        console.log(`New record created: ${newRecord}`)
         createRecord(newRecord)
     }
 
-    function handleClassFilter(){
-        let recordsPlaceholder = []
-        if(classFilter === ''){
-            setFilteredRecords(records)
-        }
-        else{
-            records.forEach(function(record){
-                if (record.classRank === classFilter){
-                    recordsPlaceholder.push(record)
-                }
-            })
-        }
-        setFilteredRecords(recordsPlaceholder)
-        console.log(filteredRecords)
-    }
+    
 
-    function handleEventFilter(){
-        let recordsPlaceholder = []
-        if(eventFilter === ''){
-            setFilteredRecords(records)
+    
+
+    function handleFilterChange(newClassFilter, newEventFilter) {
+        let recordsPlaceholder = records;
+    
+        if (newClassFilter !== '') {
+            recordsPlaceholder = recordsPlaceholder.filter(record => record.classRank === newClassFilter);
         }
-        else{
-            records.forEach(function(record){
-                if(record.event === eventFilter){
-                    records.Placeholder.push(record)
-                }
-            })
+    
+        if (newEventFilter !== '') {
+            recordsPlaceholder = recordsPlaceholder.filter(record => record.event === newEventFilter);
         }
-        setFilteredRecords(recordsPlaceholder)
-        console.log(filteredRecords)
+    
+        setFilteredRecords(recordsPlaceholder);
     }
 
     return (
         <div className="record-content">
             <div className="record-functions">
                 <div className="record-selects">
-                    <select className="form-select"onChange={(e) => {
-                        setClassFilter(e.target.value)
-                        handleClassFilter()
+                    <select className="form-select" onChange={(e) => {
+                        const newClassFilter = e.target.value;
+                        setClassFilter(newClassFilter);
+                        handleFilterChange(newClassFilter, eventFilter); // Use latest class filter
                     }}>
                         <option value="" selected>All Classes</option>
                         <option value="S2">S2</option>
@@ -143,13 +129,14 @@ const Records = () => {
                         <option value="E">E</option>
                     </select>
                     <select className="form-select" onChange={(e) => {
-                        setEventFilter(e.target.value)
-                        handleEventFilter()
+                        const newEventFilter = e.target.value;
+                        setEventFilter(newEventFilter);
+                        handleFilterChange(classFilter, newEventFilter); // Use latest event filter
                     }}>
-                        <option value="" selected>Goliath</option>
-                        <option value="1">Colossus</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+                        <option value="Goliath" selected>Goliath</option>
+                        <option value="Colossus">Colossus</option>
+                        <option value="Two">Two</option>
+                        <option value="Three">Three</option>
                     </select>
                 </div>
                 <button className="create-record" onClick={showCreateScreen}>ADD RECORD</button>
