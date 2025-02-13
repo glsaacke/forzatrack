@@ -28,17 +28,11 @@ const Records = () => {
 
         GetRecords()
         GetCars()
-        setFilteredRecords(records)
-        
     }, [])
 
     useEffect(() => {
-        if (classFilter === '') {
-            setFilteredRecords(records);
-        } else {
-            setFilteredRecords(records.filter(record => record.classRank === classFilter));
-        }
-    }, [classFilter, records]);
+        handleFilterRecords()
+    }, [classFilter, records, eventFilter])
 
     function formatDate(date){
         const d = new Date(date);
@@ -60,17 +54,17 @@ const Records = () => {
     }
 
     function showCreateScreen (){
-        let overlay = document.querySelector(".create-overlay");
-        let content = document.querySelector(".create-content");
+        let overlay = document.querySelector(".create-overlay")
+        let content = document.querySelector(".create-content")
         let isVisible = overlay.style.display === "block";
 
-        overlay.style.display = isVisible ? "none" : "block";
-        content.style.display = isVisible ? "none" : "flex";
+        overlay.style.display = isVisible ? "none" : "block"
+        content.style.display = isVisible ? "none" : "flex"
     }
 
     function hideCreateScreen(){
-        let overlay = document.querySelector(".create-overlay");
-        let content = document.querySelector(".create-content");
+        let overlay = document.querySelector(".create-overlay")
+        let content = document.querySelector(".create-content")
 
         overlay.style.display = "none";
         content.style.display = "none";
@@ -92,22 +86,16 @@ const Records = () => {
         createRecord(newRecord)
     }
 
+    function handleFilterRecords() {
+        let recordsPlaceholder = records
     
-
-    
-
-    function handleFilterChange(newClassFilter, newEventFilter) {
-        let recordsPlaceholder = records;
-    
-        if (newClassFilter !== '') {
-            recordsPlaceholder = recordsPlaceholder.filter(record => record.classRank === newClassFilter);
+        if (classFilter !== '') {
+            recordsPlaceholder = recordsPlaceholder.filter(record => record.classRank === classFilter)
         }
+        
+        recordsPlaceholder = recordsPlaceholder.filter(record => record.event === eventFilter)
     
-        if (newEventFilter !== '') {
-            recordsPlaceholder = recordsPlaceholder.filter(record => record.event === newEventFilter);
-        }
-    
-        setFilteredRecords(recordsPlaceholder);
+        setFilteredRecords(recordsPlaceholder)
     }
 
     return (
@@ -115,11 +103,11 @@ const Records = () => {
             <div className="record-functions">
                 <div className="record-selects">
                     <select className="form-select" onChange={(e) => {
-                        const newClassFilter = e.target.value;
-                        setClassFilter(newClassFilter);
-                        handleFilterChange(newClassFilter, eventFilter); // Use latest class filter
+                        setClassFilter(e.target.value)
+                        handleFilterRecords()
                     }}>
                         <option value="" selected>All Classes</option>
+                        <option value="X">X</option>
                         <option value="S2">S2</option>
                         <option value="S1">S1</option>
                         <option value="A">A</option>
@@ -129,9 +117,8 @@ const Records = () => {
                         <option value="E">E</option>
                     </select>
                     <select className="form-select" onChange={(e) => {
-                        const newEventFilter = e.target.value;
-                        setEventFilter(newEventFilter);
-                        handleFilterChange(classFilter, newEventFilter); // Use latest event filter
+                        setEventFilter(e.target.value)
+                        handleFilterRecords()
                     }}>
                         <option value="Goliath" selected>Goliath</option>
                         <option value="Colossus">Colossus</option>
@@ -143,7 +130,7 @@ const Records = () => {
             </div>
             <div className="create-overlay"></div>
             <div className="create-content">
-                <h1>ADD RECCORD</h1>
+                <h1>ADD RECORD</h1>
                 <form onSubmit={handleCreateSubmit}>
                     <div className="create-time-div">
                         <label>TIME (mm:ss.mmm)</label>
@@ -154,7 +141,6 @@ const Records = () => {
                         <input type="text" required ref={inputTimeMs} />
                     </div>
                     
-
                     <select className="create-car-select" required ref={selectedCar}>
                         <option value='' selected>SELECT CAR</option>
                         {cars.map((car) => (
@@ -165,6 +151,7 @@ const Records = () => {
                     <div className="create-select-div">
                         <select required ref={selectedClass}>
                             <option selected>SELECT CLASS</option>
+                            <option value="X">X</option>
                             <option value="S2">S2</option>
                             <option value="S1">S1</option>
                             <option value="A">A</option>
@@ -184,15 +171,16 @@ const Records = () => {
 
                         <select required ref={selectedCpuDiff}>
                             <option selected>SELECT CPU LEVEL</option>
-                            <option value="">Unbeatable</option>
-                            <option value="">Pro</option>
-                            <option value="1">Expert</option>
-                            <option value="1">Highly Skilled</option>
-                            <option value="1">Above Average</option>
-                            <option value="2">Average</option>
-                            <option value="2">Novice</option>
-                            <option value="2">New Racer</option>
-                            <option value="3">Tourist</option>
+                            <option value="Unbeatable">Unbeatable</option>
+                            <option value="Pro">Pro</option>
+                            <option value="Expert">Expert</option>
+                            <option value="Highly Skilled">Highly Skilled</option>
+                            <option value="Above Average">Above Average</option>
+                            <option value="Average">Average</option>
+                            <option value="Novice">Novice</option>
+                            <option value="New Racer">New Racer</option>
+                            <option value="Tourist">Tourist</option>
+                            <option value="None">None</option>
                         </select>
                     </div>
                     
@@ -207,6 +195,8 @@ const Records = () => {
                         <th scope="col">Time</th>
                         <th scope="col">Class</th>
                         <th scope="col">Car</th>
+                        <th scope="col">Event</th>
+                        <th scope="col">CPU</th>
                         <th scope="col">Date</th>
                     </tr>
                 </thead>
@@ -217,6 +207,8 @@ const Records = () => {
                             <td>{record.timeMin}:{record.timeSec}:{record.timeMs}</td>
                             <td>{record.classRank}</td>
                             <td>{displayCar(record.carId)}</td>
+                            <td>{record.event}</td>
+                            <td>{record.cpuDiff}</td>
                             <td>{formatDate(record.date)}</td>
                         </tr>
                     ))}

@@ -196,6 +196,10 @@
     margin-top: 2vh;
 }
 
+.create-form-submit:hover {
+    background: linear-gradient(to right, #F4914D, #F0AC2D);
+}
+
 .create-form-back {
     background: #FFF;
     font-family: primary-bold;
@@ -210,7 +214,12 @@
     margin-bottom: 5vh;
 }
 
-@media (max-width: 1000px) {
+.create-form-back:hover {
+    background: linear-gradient(to right, #FA5D88, #F86C76);
+    color: #FFF;
+}
+
+@media (max-width: 1180px) {
     .create-content{
         width: 65vw;
     }
@@ -226,8 +235,15 @@
     }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 900px) {
     .create-content{
         width: 90vw;
+    }
+}
+
+@media (max-width: 650px) {
+    .create-select-div {
+        flex-direction: column;
+        gap: 10px;
     }
 }
