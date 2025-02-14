@@ -201,9 +201,9 @@ const Records = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredRecords.map((record) => (
+                    {filteredRecords.map((record, index) => (
                         <tr key={record.recordId}>
-                            <td>{record.recordId}</td>
+                            <td>{index + 1}</td>
                             <td>{record.timeMin}:{record.timeSec}:{record.timeMs}</td>
                             <td>{record.classRank}</td>
                             <td>{displayCar(record.carId)}</td>
