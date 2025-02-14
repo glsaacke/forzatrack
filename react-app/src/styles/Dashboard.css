@@ -219,6 +219,32 @@
     color: #FFF;
 }
 
+.record-delete {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.confirm-delete-content {
+    z-index: 3;
+    position: absolute;
+    background-color: #FFF;
+    color:black;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+    width: auto;
+    padding: 20px;
+    border-radius: 15px;
+    justify-content: space-around;
+    top: 45vh;
+}
+
+.confirm-delete-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 60%;
+}
+
 @media (max-width: 1180px) {
     .create-content{
         width: 65vw;

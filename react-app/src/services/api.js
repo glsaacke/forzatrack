@@ -50,7 +50,16 @@ export async function createRecord(record){
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(record)
   })
-  
-  // const createResponse = await response.json()
-  // return createResponse
+
+}
+
+export async function setRecordDeleted(recordId) {
+  let response = await fetch(`${BASE_URL}/Record/SetRecordDeleted/${recordId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  })
+
+  return response
 }

@@ -83,6 +83,7 @@ namespace api.core.controllers
                         TimeSec = request.TimeSec,
                         TimeMs = request.TimeMs,
                         CpuDiff = request.CpuDiff,
+                        Date = DateTime.Today,
                         Deleted = request.Deleted
                     };
 

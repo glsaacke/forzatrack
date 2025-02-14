@@ -1,4 +1,4 @@
-import { getBuildById, getRecordsByUserId, getCarById, getAllCars, createRecord } from "../services/api";
+import { getBuildById, getRecordsByUserId, getCarById, getAllCars, createRecord, setRecordDeleted } from "../services/api";
 import { useEffect, useState, useRef } from "react";
 
 const Records = () => {
@@ -7,6 +7,8 @@ const Records = () => {
     const [filteredRecords, setFilteredRecords] = useState([])
     const [classFilter, setClassFilter] = useState('')
     const [eventFilter, setEventFilter] = useState('Goliath')
+    const [deleteRecordId, setDeleteRecordId] = useState(null)
+    const [selectedRecordId, setSelectedRecordId] = useState(null)
     const inputTimeMin = useRef('')
     const inputTimeSec = useRef('')
     const inputTimeMs = useRef('')
@@ -33,6 +35,17 @@ const Records = () => {
     useEffect(() => {
         handleFilterRecords()
     }, [classFilter, records, eventFilter])
+
+
+    useEffect(() => {
+        let response = null
+
+        if (deleteRecordId !== null) {
+            response = setRecordDeleted(deleteRecordId)
+            setDeleteRecordId(null)
+        }
+
+    }, [deleteRecordId])
 
     function formatDate(date){
         const d = new Date(date);
@@ -96,6 +109,23 @@ const Records = () => {
         recordsPlaceholder = recordsPlaceholder.filter(record => record.event === eventFilter)
     
         setFilteredRecords(recordsPlaceholder)
+    }
+
+    function showConfirmDeleteScreen(){
+        let overlay = document.querySelector(".create-overlay")
+        let content = document.querySelector(".confirm-delete-content")
+        let isVisible = overlay.style.display === "block";
+
+        overlay.style.display = isVisible ? "none" : "block"
+        content.style.display = isVisible ? "none" : "flex"
+    }
+
+    function hideConfirmDeleteScreen(){
+        let overlay = document.querySelector(".create-overlay")
+        let content = document.querySelector(".confirm-delete-content")
+
+        overlay.style.display = "none";
+        content.style.display = "none";
     }
 
     return (
@@ -188,6 +218,18 @@ const Records = () => {
                 </form>
                 <button className='create-form-back' onClick={hideCreateScreen}>BACK</button>
             </div>
+
+            <div className="confirm-delete-content">
+                <p>Are you sure you want to delete this record?</p>
+                <div className="confirm-delete-buttons">
+                    <button className="record-delete btn btn-danger" onClick={() => {
+                        setDeleteRecordId(selectedRecordId)
+                        hideConfirmDeleteScreen()
+                        }}>Delete</button>
+                    <button className="record-delete btn btn-secondary" onClick={hideConfirmDeleteScreen}>Cancel</button>
+                </div>
+            </div>
+
             <table className="table record-table">
                 <thead className="thead-dark">
                     <tr>
@@ -198,6 +240,7 @@ const Records = () => {
                         <th scope="col">Event</th>
                         <th scope="col">CPU</th>
                         <th scope="col">Date</th>
+                        <th scope="col">Delete</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -210,6 +253,12 @@ const Records = () => {
                             <td>{record.event}</td>
                             <td>{record.cpuDiff}</td>
                             <td>{formatDate(record.date)}</td>
+                            <td>
+                                <button className='record-delete btn btn-danger' onClick={() => {
+                                    setSelectedRecordId(record.recordId)
+                                    showConfirmDeleteScreen()
+                                    }}>Delete</button>
+                            </td>
                         </tr>
                     ))}
                 </tbody>
