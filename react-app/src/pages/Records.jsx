@@ -128,6 +128,10 @@ const Records = () => {
         content.style.display = "none";
     }
 
+    function removeDeletedRecord(recordId){
+        setRecords(records.filter(record => record.recordId !== recordId))
+    }
+
     return (
         <div className="record-content">
             <div className="record-functions">
@@ -224,6 +228,7 @@ const Records = () => {
                 <div className="confirm-delete-buttons">
                     <button className="record-delete btn btn-danger" onClick={() => {
                         setDeleteRecordId(selectedRecordId)
+                        removeDeletedRecord(selectedRecordId)
                         hideConfirmDeleteScreen()
                         }}>Delete</button>
                     <button className="record-delete btn btn-secondary" onClick={hideConfirmDeleteScreen}>Cancel</button>
@@ -244,23 +249,23 @@ const Records = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredRecords.map((record, index) => (
-                        <tr key={record.recordId}>
-                            <td>{index + 1}</td>
-                            <td>{record.timeMin}:{record.timeSec}:{record.timeMs}</td>
-                            <td>{record.classRank}</td>
-                            <td>{displayCar(record.carId)}</td>
-                            <td>{record.event}</td>
-                            <td>{record.cpuDiff}</td>
-                            <td>{formatDate(record.date)}</td>
-                            <td>
-                                <button className='record-delete btn btn-danger' onClick={() => {
-                                    setSelectedRecordId(record.recordId)
-                                    showConfirmDeleteScreen()
-                                    }}>Delete</button>
-                            </td>
-                        </tr>
-                    ))}
+                {filteredRecords.filter(record => record.deleted === 0).map((record, index) => (
+                    <tr key={record.recordId}>
+                        <td>{index + 1}</td>
+                        <td>{record.timeMin}:{record.timeSec}:{record.timeMs}</td>
+                        <td>{record.classRank}</td>
+                        <td>{displayCar(record.carId)}</td>
+                        <td>{record.event}</td>
+                        <td>{record.cpuDiff}</td>
+                        <td>{formatDate(record.addDate)}</td>
+                        <td>
+                            <button className='record-delete btn btn-danger' onClick={() => {
+                                setSelectedRecordId(record.recordId)
+                                showConfirmDeleteScreen()
+                            }}>Delete</button>
+                        </td>
+                    </tr>
+                ))}
                 </tbody>
             </table>
         </div>

@@ -17,7 +17,7 @@ namespace api.core.models
         public int TimeSec { get; set; }
         public int TimeMs { get; set; }
         public string CpuDiff { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime AddDate { get; set; }
         public int Deleted { get; set; }
     }
 }

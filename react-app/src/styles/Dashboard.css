@@ -55,6 +55,17 @@
     margin: 0 5vw;
     width: 90vw;
     border: 2px solid black;
+    border-collapse: collapse;
+}
+
+.record-table td, .record-table th {
+    padding: 10px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.record-table tr {
+    height: 50px;
 }
 
 .record-functions {
@@ -221,6 +232,7 @@
 
 .record-delete {
     font-family: Arial, Helvetica, sans-serif;
+
 }
 
 .confirm-delete-content {

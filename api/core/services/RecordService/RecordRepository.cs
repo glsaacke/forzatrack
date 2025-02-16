@@ -101,7 +101,7 @@ namespace api.core.services.RecordService
             cmd.Parameters.AddWithValue("@time_ms", record.TimeMs);
             cmd.Parameters.AddWithValue("@cpu_diff", record.CpuDiff);
             cmd.Parameters.AddWithValue("@deleted", record.Deleted);
-            cmd.Parameters.AddWithValue("@date", record.Date);
+            cmd.Parameters.AddWithValue("@date", record.AddDate);
 
             cmd.Prepare();
 
@@ -167,7 +167,7 @@ namespace api.core.services.RecordService
             using var con = new MySqlConnection(cs);
             con.Open();
 
-            string stm = "SELECT record_id, user_id, car_id, event, class_rank, time_min, time_sec, time_ms, cpu_diff, deleted FROM Records WHERE user_id = @id";
+            string stm = "SELECT record_id, user_id, car_id, event, class_rank, time_min, time_sec, time_ms, cpu_diff, deleted, date FROM Records WHERE user_id = @id";
 
             using var cmd = new MySqlCommand(stm, con);
 
@@ -190,7 +190,9 @@ namespace api.core.services.RecordService
                     TimeSec = Convert.ToInt32(row["time_sec"]),
                     TimeMs = Convert.ToInt32(row["time_ms"]),
                     CpuDiff = row["cpu_diff"].ToString(),
+                    AddDate = Convert.ToDateTime(row["date"]),
                     Deleted = Convert.ToInt32(row["deleted"]),
+                    
                 };
                 records.Add(record);
             }

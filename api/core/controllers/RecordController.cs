@@ -83,11 +83,12 @@ namespace api.core.controllers
                         TimeSec = request.TimeSec,
                         TimeMs = request.TimeMs,
                         CpuDiff = request.CpuDiff,
-                        Date = DateTime.Today,
+                        AddDate = DateTime.Today,
                         Deleted = request.Deleted
                     };
 
                     recordService.CreateRecord(record);
+                    logger.LogInformation("date time :  " + DateTime.Today);
 
                     return Ok();
                 }
