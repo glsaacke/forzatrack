@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Gavin S\\Documents\\GitHub\\forzatrack\\api\\api.csproj": {}
+    "/app/api.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Gavin S\\Documents\\GitHub\\forzatrack\\api\\api.csproj": {
+    "/app/api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Gavin S\\Documents\\GitHub\\forzatrack\\api\\api.csproj",
+        "projectUniqueName": "/app/api.csproj",
         "projectName": "api",
-        "projectPath": "C:\\Users\\Gavin S\\Documents\\GitHub\\forzatrack\\api\\api.csproj",
-        "packagesPath": "C:\\Users\\Gavin S\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Gavin S\\Documents\\GitHub\\forzatrack\\api\\obj\\",
+        "projectPath": "/app/api.csproj",
+        "packagesPath": "/root/.nuget/packages/",
+        "outputPath": "/app/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Gavin S\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/root/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -51,6 +51,20 @@
               "target": "Package",
               "version": "[8.0.4, )"
             },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.2, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.2, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[9.0.2, )"
+            },
             "MySql.Data": {
               "target": "Package",
               "version": "[9.1.0, )"
@@ -79,7 +93,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.406/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

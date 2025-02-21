@@ -1,0 +1,22 @@
+version: '3.8'  # Version of docker-compose file syntax
+
+services:
+
+  frontend:
+    build:
+      context: ./react-app # Path to the React app directory
+    volumes:
+      - ./react-app:/app  # Match the WORKDIR in your Dockerfile
+      - /app/node_modules  
+    ports:
+      - "5173:5173"  # Exposes port 5173 for React app
+    command: npm run dev  -- --host 0.0.0.0 # Run the React app in dev mode (hot reload)
+
+  backend:
+    build:
+      context: ./api  # Path to the .NET backend directory
+    volumes:
+      - ./api:/app  # Mounts the local backend folder to the container's app directory
+    ports:
+      - "8080:8080"  # Exposes port 8080 for .NET app
+    command: dotnet watch run --urls "http://0.0.0.0:8080"  # Run the .NET app in watch mode for hot reload
