@@ -156,7 +156,7 @@ const Records = () => {
                     }}>
                         <option value="Goliath" selected>Goliath</option>
                         <option value="Colossus">Colossus</option>
-                        <option value="Two">Two</option>
+                        <option value="Marathon">Marathon</option>
                         <option value="Three">Three</option>
                     </select>
                 </div>
@@ -199,7 +199,7 @@ const Records = () => {
                             <option selected>SELECT EVENT</option>
                             <option value="Goliath">Goliath</option>
                             <option value="Colossus">Colossus</option>
-                            <option value="Two">Two</option>
+                            <option value="Marathon">Marathon</option>
                             <option value="Three">Three</option>
                         </select>
 
