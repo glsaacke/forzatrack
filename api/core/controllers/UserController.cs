@@ -9,7 +9,6 @@ using api.core.models;
 using api.core.models.responses;
 using api.core.services.UserService;
 using Microsoft.Extensions.Logging;
-using K4os.Compression.LZ4.Internal;
 
 namespace api.core.controllers
 {

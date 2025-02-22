@@ -9,6 +9,8 @@ const Records = () => {
     const [eventFilter, setEventFilter] = useState('Goliath')
     const [deleteRecordId, setDeleteRecordId] = useState(null)
     const [selectedRecordId, setSelectedRecordId] = useState(null)
+    const [createRecordError, setCreateRecordError] = useState(false)
+    const [createRecordErrorMessage, setCreateRecordErrorMessage] = useState('')
     const inputTimeMin = useRef('')
     const inputTimeSec = useRef('')
     const inputTimeMs = useRef('')
@@ -83,7 +85,8 @@ const Records = () => {
         content.style.display = "none";
     }
 
-    async function handleCreateSubmit(){
+    async function handleCreateSubmit(e){
+        e.preventDefault()
         let newRecord = {
             userId: sessionStorage.getItem("userId"),
             carId: selectedCar.current.value,
@@ -95,8 +98,30 @@ const Records = () => {
             cpuDiff: selectedCpuDiff.current.value,
             deleted: 0
         }
-        console.log(`New record created: ${newRecord}`)
-        createRecord(newRecord)
+        // console.log(`New record created: ${newRecord}`)
+        let response = await createRecord(newRecord)
+        console.log(response.message)
+
+        if(response.success){
+            hideCreateScreen()
+            console.log('record created successfully')
+
+            inputTimeMin.current.value = '';
+            inputTimeSec.current.value = '';
+            inputTimeMs.current.value = '';
+            selectedCar.current.value = '';
+            selectedClass.current.value = '';
+            selectedEvent.current.value = '';
+            selectedCpuDiff.current.value = '';
+
+            setCreateRecordError(false)
+
+            setRecords(await getRecordsByUserId(sessionStorage.getItem("userId")));
+        }
+        else{
+            setCreateRecordErrorMessage(response.message)
+            setCreateRecordError(true)
+        }
     }
 
     function handleFilterRecords() {
@@ -156,8 +181,9 @@ const Records = () => {
                     }}>
                         <option value="Goliath" selected>Goliath</option>
                         <option value="Colossus">Colossus</option>
+                        <option value="Gauntlet">Gauntlet</option>
+                        <option value="Titan">Titan</option>
                         <option value="Marathon">Marathon</option>
-                        <option value="Three">Three</option>
                     </select>
                 </div>
                 <button className="create-record" onClick={showCreateScreen}>ADD RECORD</button>
@@ -184,7 +210,7 @@ const Records = () => {
 
                     <div className="create-select-div">
                         <select required ref={selectedClass}>
-                            <option selected>SELECT CLASS</option>
+                            <option selected value=''>SELECT CLASS</option>
                             <option value="X">X</option>
                             <option value="S2">S2</option>
                             <option value="S1">S1</option>
@@ -196,15 +222,16 @@ const Records = () => {
                         </select>
 
                         <select required ref={selectedEvent}>
-                            <option selected>SELECT EVENT</option>
+                            <option selected value=''>SELECT EVENT</option>
                             <option value="Goliath">Goliath</option>
                             <option value="Colossus">Colossus</option>
+                            <option value="Gauntlet">Gauntlet</option>
+                            <option value="Titan">Titan</option>
                             <option value="Marathon">Marathon</option>
-                            <option value="Three">Three</option>
                         </select>
 
                         <select required ref={selectedCpuDiff}>
-                            <option selected>SELECT CPU LEVEL</option>
+                            <option selected value=''>SELECT CPU LEVEL</option>
                             <option value="Unbeatable">Unbeatable</option>
                             <option value="Pro">Pro</option>
                             <option value="Expert">Expert</option>
@@ -217,7 +244,7 @@ const Records = () => {
                             <option value="None">None</option>
                         </select>
                     </div>
-                    
+                    {createRecordError && <p className='login-error-message'>{createRecordErrorMessage}</p>}
                     <button className='create-form-submit' type="submit">GO</button>
                 </form>
                 <button className='create-form-back' onClick={hideCreateScreen}>BACK</button>

@@ -51,6 +51,10 @@ export async function createRecord(record){
     body: JSON.stringify(record)
   })
 
+  const jsonResponse = await response.json()
+
+  return jsonResponse
+
 }
 
 export async function setRecordDeleted(recordId) {

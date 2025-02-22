@@ -1,5 +1,3 @@
-version: '3.8'  # Version of docker-compose file syntax
-
 services:
 
   frontend:

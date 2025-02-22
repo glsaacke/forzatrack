@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.core.models;
+using api.core.models.responses;
 
 namespace api.core.services.RecordService
 {

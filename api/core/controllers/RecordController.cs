@@ -7,6 +7,7 @@ using api.core.services.RecordService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using api.core.controllers.models;
+using api.core.models;
 using Microsoft.Extensions.Logging;
 
 namespace api.core.controllers
@@ -69,6 +70,11 @@ namespace api.core.controllers
                 logger.LogError("The request was null");
                 return BadRequest("Request body cannot be null.");
             }
+
+            if(request.TimeMin.ToString().Length > 2 || request.TimeSec.ToString().Length > 2 || request.TimeMs.ToString().Length > 3){
+                return Ok(new DefaultResponse{Success = false, Message = "Error: please enter a valid time"});
+            }
+
             else{
                 Record record;
 
@@ -90,7 +96,7 @@ namespace api.core.controllers
                     recordService.CreateRecord(record);
                     logger.LogInformation("date time :  " + DateTime.Today);
 
-                    return Ok();
+                    return Ok(new DefaultResponse{Success = true, Message = ""});
                 }
                 catch(Exception ex){
                     logger.LogError(ex, "An error occurred while creating record.");
