@@ -60,15 +60,6 @@
           }
         }
       },
-      "dotenv.net/3.2.1": {
-        "type": "package",
-        "compile": {
-          "lib/netstandard2.1/dotenv.net.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard2.1/dotenv.net.dll": {}
-        }
-      },
       "Google.Protobuf/3.26.1": {
         "type": "package",
         "compile": {
@@ -2038,21 +2029,6 @@
         "lib/netstandard2.0/BouncyCastle.Cryptography.dll",
         "lib/netstandard2.0/BouncyCastle.Cryptography.xml",
         "packageIcon.png"
-      ]
-    },
-    "dotenv.net/3.2.1": {
-      "sha512": "2fc2s5PH6wAoWQ8bpyVgz28y9qMs/t8ToiCKqSM6mWpjgg4QQSPtZ0nia0x/OebGLSDbxyOelVH+fULZH7N4mA==",
-      "type": "package",
-      "path": "dotenv.net/3.2.1",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "README.md",
-        "dotenv.net.3.2.1.nupkg.sha512",
-        "dotenv.net.nuspec",
-        "lib/netstandard1.6/dotenv.net.dll",
-        "lib/netstandard2.0/dotenv.net.dll",
-        "lib/netstandard2.1/dotenv.net.dll"
       ]
     },
     "Google.Protobuf/3.26.1": {
@@ -5985,8 +5961,7 @@
       "Microsoft.EntityFrameworkCore.Design >= 9.0.2",
       "Microsoft.EntityFrameworkCore.SqlServer >= 9.0.2",
       "MySql.Data >= 9.1.0",
-      "Swashbuckle.AspNetCore >= 7.2.0",
-      "dotenv.net >= 3.2.1"
+      "Swashbuckle.AspNetCore >= 7.2.0"
     ]
   },
   "packageFolders": {
@@ -6060,10 +6035,6 @@
           "Swashbuckle.AspNetCore": {
             "target": "Package",
             "version": "[7.2.0, )"
-          },
-          "dotenv.net": {
-            "target": "Package",
-            "version": "[3.2.1, )"
           }
         },
         "imports": [

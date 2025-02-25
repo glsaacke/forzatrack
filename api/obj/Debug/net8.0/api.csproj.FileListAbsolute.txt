@@ -183,7 +183,6 @@ C:\Users\Gavin S\Documents\GitHub\forzatrack\api\bin\Debug\net8.0\api.pdb
 C:\Users\Gavin S\Documents\GitHub\forzatrack\api\bin\Debug\net8.0\Azure.Core.dll
 C:\Users\Gavin S\Documents\GitHub\forzatrack\api\bin\Debug\net8.0\Azure.Identity.dll
 C:\Users\Gavin S\Documents\GitHub\forzatrack\api\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
-C:\Users\Gavin S\Documents\GitHub\forzatrack\api\bin\Debug\net8.0\dotenv.net.dll
 C:\Users\Gavin S\Documents\GitHub\forzatrack\api\bin\Debug\net8.0\Google.Protobuf.dll
 C:\Users\Gavin S\Documents\GitHub\forzatrack\api\bin\Debug\net8.0\Humanizer.dll
 C:\Users\Gavin S\Documents\GitHub\forzatrack\api\bin\Debug\net8.0\K4os.Compression.LZ4.dll
