@@ -26,7 +26,7 @@ namespace api.core.services.CarService
         public List<Car> GetAllCars()
         {
             var cars = carRepository.GetAllCars();
-            return cars;
+            return cars.OrderBy(c => c.Make).ThenByDescending(c => c.Year).ThenBy(c => c.Model).ToList();
         }
 
         public Car GetCarByID(int id)

@@ -2,12 +2,48 @@ using api.core.services.UserService;
 using api.core.services.CarService;
 using api.core.services.RecordService;
 using api.core.services.BuildService;
+using api.core.middleware;
+using Microsoft.OpenApi.Models;
+
+
+var root = Directory.GetCurrentDirectory();
+var dotenv = Path.Combine(root, ".env");
+DotEnv.Load(dotenv);
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+System.Console.WriteLine("TESTING CONSOLE OUTPUT");
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Name = "X-Api-Key", // The name of the header
+        Type = SecuritySchemeType.ApiKey,
+        Description = "API Key required to access this API"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "ApiKey" // This matches the definition name above
+                }
+            },
+            new string[] {}
+        }
+    });
+});
+
 builder.Services.AddControllers(); // <-- Add this line to register controllers.
 
 builder.Services.AddScoped<IUserService, UserService>();
@@ -29,7 +65,10 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-
+var config =
+    new ConfigurationBuilder()
+        .AddEnvironmentVariables()
+        .Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -37,6 +76,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ApiKeyMiddleware>();
 
 app.UseHttpsRedirection();
 

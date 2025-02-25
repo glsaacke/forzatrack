@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/app/api.csproj": {}
+    "C:\\Users\\Gavin S\\Documents\\GitHub\\forzatrack\\api\\api.csproj": {}
   },
   "projects": {
-    "/app/api.csproj": {
+    "C:\\Users\\Gavin S\\Documents\\GitHub\\forzatrack\\api\\api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/app/api.csproj",
+        "projectUniqueName": "C:\\Users\\Gavin S\\Documents\\GitHub\\forzatrack\\api\\api.csproj",
         "projectName": "api",
-        "projectPath": "/app/api.csproj",
-        "packagesPath": "/root/.nuget/packages/",
-        "outputPath": "/app/obj/",
+        "projectPath": "C:\\Users\\Gavin S\\Documents\\GitHub\\forzatrack\\api\\api.csproj",
+        "packagesPath": "C:\\Users\\Gavin S\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Gavin S\\Documents\\GitHub\\forzatrack\\api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/root/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Gavin S\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -71,7 +71,11 @@
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
-              "version": "[6.4.0, )"
+              "version": "[7.2.0, )"
+            },
+            "dotenv.net": {
+              "target": "Package",
+              "version": "[3.2.1, )"
             }
           },
           "imports": [
@@ -93,7 +97,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.406/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
