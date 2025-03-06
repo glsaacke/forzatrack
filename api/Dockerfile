@@ -1,21 +1,28 @@
-# Use the .NET SDK image for development
+# Use the .NET SDK to build the application
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy everything (needed for hot reload)
-COPY . ./
-
-# Install dependencies
+# Copy project files and restore dependencies
+COPY *.csproj ./
 RUN dotnet restore
+
+# Copy the remaining files and build the application
+COPY . ./
+RUN dotnet publish -c Release -o /app/publish
+
+# Use a smaller runtime image for deployment
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+
+# Set the working directory in the runtime container
+WORKDIR /app
+
+# Copy the built application from the previous stage
+COPY --from=build /app/publish .
 
 # Expose API port (change if needed)
 EXPOSE 8080
 
-# Run the app in watch mode for hot reload
-CMD ["dotnet", "watch", "run", "--urls", "http://0.0.0.0:8080"]
-
-
-#docker build -t <tag name> .
-#docker run -p <port>:<port> -v ${PWD}:/app -w /app <image name>
+# Run the application
+ENTRYPOINT ["dotnet", "api.dll"]
