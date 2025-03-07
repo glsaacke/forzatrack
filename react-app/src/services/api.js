@@ -1,4 +1,4 @@
-const BASE_URL = "https://forzatrack.fly.dev";
+const BASE_URL = "https://forzatrack.fly.dev/api";
 const API_KEY = import.meta.env.VITE_API_KEY;
 
 
