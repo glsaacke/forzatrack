@@ -12,10 +12,15 @@ namespace api.core.services.BuildService
 {
     public class BuildRepository : IBuildRepository
     {
+        private readonly string cs;
+        public BuildRepository(string cs){
+            this.cs = cs;
+        }
+
          public List<Build> GetAllBuilds(){
             List<Build> builds = new List<Build>();
 
-            string cs = Connection.conString;
+            // string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
 
@@ -52,7 +57,7 @@ namespace api.core.services.BuildService
 
         public Build GetBuildByID(int id)
         {
-            string cs = Connection.conString;
+            // string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
 
@@ -91,7 +96,7 @@ namespace api.core.services.BuildService
         }
 
          public void CreateBuild(Build build){
-            string cs = Connection.conString;
+            // string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
 
@@ -119,7 +124,7 @@ namespace api.core.services.BuildService
          }
 
          public bool UpdateBuild(Build build, int id){
-            string cs = Connection.conString;
+            // string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
 
@@ -145,7 +150,7 @@ namespace api.core.services.BuildService
          }
 
          public void DeleteBuild(int id){
-            string cs = Connection.conString;
+            // string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
 
@@ -159,7 +164,7 @@ namespace api.core.services.BuildService
 
         public bool SetBuildDeleted(int id)
         {
-            string cs = Connection.conString;
+            // string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
 

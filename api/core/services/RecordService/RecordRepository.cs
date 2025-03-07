@@ -12,10 +12,15 @@ namespace api.core.services.RecordService
 {
     public class RecordRepository : IRecordRepository
     {
+        private readonly string cs;
+        public RecordRepository(string cs){
+            this.cs = cs;
+        }
+
         public List<Record> GetAllRecords(){
             List<Record> records = new List<Record>();
 
-            string cs = Connection.conString;
+            // string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
 
@@ -47,7 +52,7 @@ namespace api.core.services.RecordService
             return records;
          }
         public Record GetRecordByID(int id){
-            string cs = Connection.conString;
+            // string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
 
@@ -83,7 +88,7 @@ namespace api.core.services.RecordService
          } 
 
          public void CreateRecord(Record record){
-            string cs = Connection.conString;
+            // string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
 
@@ -109,7 +114,7 @@ namespace api.core.services.RecordService
          }
 
          public bool UpdateRecord(Record record, int id){
-            string cs = Connection.conString;
+            // string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
 
@@ -132,7 +137,7 @@ namespace api.core.services.RecordService
          }
 
          public void DeleteRecord(int id){
-            string cs = Connection.conString;
+            // string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
 
@@ -145,7 +150,7 @@ namespace api.core.services.RecordService
          }
 
          public bool SetRecordDeleted(int id){
-            string cs = Connection.conString;
+            // string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
 
@@ -163,7 +168,7 @@ namespace api.core.services.RecordService
         {
             List<Record> records = new List<Record>();
 
-            string cs = Connection.conString;
+            // string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
 

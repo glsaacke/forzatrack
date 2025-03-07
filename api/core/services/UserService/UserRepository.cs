@@ -12,11 +12,16 @@ namespace api.core.services.UserService
 {
     public class UserRepository : IUserRepository
     {
+        private readonly string cs;
+        public UserRepository(string cs){
+            this.cs = cs;
+        }
+
         public List<User> GetAllUsers(){
 
             List<User> users = new List<User>();
 
-            string cs = Connection.conString;
+            // string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
 
@@ -44,7 +49,7 @@ namespace api.core.services.UserService
         }
 
         public User GetUserByID(int id){
-            string cs = Connection.conString;
+            // string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
 
@@ -75,7 +80,7 @@ namespace api.core.services.UserService
          }
 
         public void CreateUser(CreateUser user){
-            string cs = Connection.conString;
+            // string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
 
@@ -94,7 +99,7 @@ namespace api.core.services.UserService
          }
 
         public bool UpdateUser(User user, int id){
-            string cs = Connection.conString;
+            // string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
 
@@ -112,7 +117,7 @@ namespace api.core.services.UserService
          }
 
         public void DeleteUser(int id){
-            string cs = Connection.conString;
+            // string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
 
@@ -125,7 +130,7 @@ namespace api.core.services.UserService
          }
 
          public bool SetUserDeleted(int id){
-            string cs = Connection.conString;
+            // string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
 
@@ -141,7 +146,7 @@ namespace api.core.services.UserService
 
         public User GetUserByEmail(string email)
         {
-            string cs = Connection.conString;
+            // string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
 
@@ -173,7 +178,7 @@ namespace api.core.services.UserService
 
         public User GetUserByUsername(string username)
         {
-            string cs = Connection.conString;
+            // string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
 

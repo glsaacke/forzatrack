@@ -349,3 +349,10 @@ C:\Users\Gavin S\Documents\GitHub\forzatrack\api\obj\Debug\net8.0\refint\api.dll
 C:\Users\Gavin S\Documents\GitHub\forzatrack\api\obj\Debug\net8.0\api.pdb
 C:\Users\Gavin S\Documents\GitHub\forzatrack\api\obj\Debug\net8.0\api.genruntimeconfig.cache
 C:\Users\Gavin S\Documents\GitHub\forzatrack\api\obj\Debug\net8.0\ref\api.dll
+C:\Users\Gavin S\Documents\GitHub\forzatrack\api\bin\Debug\net8.0\out\web.config
+C:\Users\Gavin S\Documents\GitHub\forzatrack\api\bin\Debug\net8.0\out\api.deps.json
+C:\Users\Gavin S\Documents\GitHub\forzatrack\api\bin\Debug\net8.0\out\api.runtimeconfig.json
+C:\Users\Gavin S\Documents\GitHub\forzatrack\api\bin\Debug\net8.0\out\appsettings.Development.json
+C:\Users\Gavin S\Documents\GitHub\forzatrack\api\bin\Debug\net8.0\out\appsettings.json
+C:\Users\Gavin S\Documents\GitHub\forzatrack\api\bin\Debug\net8.0\DotNetEnv.dll
+C:\Users\Gavin S\Documents\GitHub\forzatrack\api\bin\Debug\net8.0\Sprache.dll

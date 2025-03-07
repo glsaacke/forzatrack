@@ -15,7 +15,6 @@ namespace api.core.middleware
         {
             _next = next;
             _apiKey = configuration["API_KEY"];
-            Console.WriteLine(_apiKey);
 
         }
 

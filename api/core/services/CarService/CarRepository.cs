@@ -12,10 +12,14 @@ namespace api.core.services.CarService
 {
     public class CarRepository : ICarRepository
     {
+        private readonly string cs;
+        public CarRepository(string cs){
+            this.cs = cs;
+        }
          public List<Car> GetAllCars(){
             List<Car> cars = new List<Car>();
 
-            string cs = Connection.conString;
+            // string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
 
@@ -42,7 +46,7 @@ namespace api.core.services.CarService
             return cars;
          }
         public Car GetCarByID(int id){
-            string cs = Connection.conString;
+            // string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
 
@@ -74,7 +78,7 @@ namespace api.core.services.CarService
 
 
          public void CreateCar(Car car){
-            string cs = Connection.conString;
+            // string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
 
@@ -93,7 +97,7 @@ namespace api.core.services.CarService
          }
 
          public bool UpdateCar(Car car, int id){
-            string cs = Connection.conString;
+            // string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
 
@@ -111,7 +115,7 @@ namespace api.core.services.CarService
          }
 
          public void DeleteCar(int id){
-            string cs = Connection.conString;
+            // string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
 
@@ -125,7 +129,7 @@ namespace api.core.services.CarService
 
         public bool SetCarDeleted(int id)
         {
-            string cs = Connection.conString;
+            // string cs = Connection.conString;
             using var con = new MySqlConnection(cs);
             con.Open();
 

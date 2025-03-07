@@ -4,24 +4,24 @@ using api.core.services.RecordService;
 using api.core.services.BuildService;
 using api.core.middleware;
 using Microsoft.OpenApi.Models;
-
+using DotNetEnv;
 
 var root = Directory.GetCurrentDirectory();
 var dotenv = Path.Combine(root, ".env");
 DotEnv.Load(dotenv);
+Env.Load();
+string connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION");
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
-
-System.Console.WriteLine("TESTING CONSOLE OUTPUT");
 
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
-        Name = "X-Api-Key", // The name of the header
+        Name = "X-Api-Key",
         Type = SecuritySchemeType.ApiKey,
         Description = "API Key required to access this API"
     });
@@ -34,7 +34,7 @@ builder.Services.AddSwaggerGen(c =>
                 Reference = new OpenApiReference
                 {
                     Type = ReferenceType.SecurityScheme,
-                    Id = "ApiKey" // This matches the definition name above
+                    Id = "ApiKey"
                 }
             },
             new string[] {}
@@ -42,46 +42,60 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.AddControllers(); // <-- Add this line to register controllers.
+builder.Services.AddControllers();
 
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>(provider =>
+{
+    return new UserRepository(connectionString);
+});
 builder.Services.AddScoped<ICarService, CarService>();
-builder.Services.AddScoped<ICarRepository, CarRepository>();
+builder.Services.AddScoped<ICarRepository, CarRepository>(provider =>
+{
+    return new CarRepository(connectionString);
+});
 builder.Services.AddScoped<IRecordService, RecordService>();
-builder.Services.AddScoped<IRecordRepository, RecordRepository>();
+builder.Services.AddScoped<IRecordRepository, RecordRepository>(provider =>
+{
+    return new RecordRepository(connectionString);
+});
 builder.Services.AddScoped<IBuildService, BuildService>();
-builder.Services.AddScoped<IBuildRepository, BuildRepository>();
+builder.Services.AddScoped<IBuildRepository, BuildRepository>(provider =>
+{
+    return new BuildRepository(connectionString);
+});
 builder.Services.AddLogging();
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
-        builder => builder.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod());
-});
+        builder => builder.WithOrigins("http://localhost:5173")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .WithHeaders("X-Api-Key")
+                          .AllowCredentials());
 
+                          
+});
 
 var app = builder.Build();
 
-var config =
-    new ConfigurationBuilder()
-        .AddEnvironmentVariables()
-        .Build();
+var config = new ConfigurationBuilder()
+    .AddEnvironmentVariables()
+    .Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+app.UseCors("AllowSpecificOrigin");
+
 app.UseMiddleware<ApiKeyMiddleware>();
 
 app.UseHttpsRedirection();
 
-app.UseCors("AllowSpecificOrigin");
-
-// Map controllers (this is required for endpoint routing).
-app.MapControllers();  // <-- This line maps the controller endpoints.
+app.MapControllers();
 
 app.Run();
