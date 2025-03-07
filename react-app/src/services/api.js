@@ -3,7 +3,6 @@ const API_KEY = import.meta.env.VITE_API_KEY;
 
 
 export async function authenticateUser(email, password) {
-  console.log(import.meta.env.VITE_API_KEY)
   const response = await fetch(`${BASE_URL}/User/AuthenticateUser?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`, {
     method: 'GET',
     headers: {

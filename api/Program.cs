@@ -66,14 +66,24 @@ builder.Services.AddScoped<IBuildRepository, BuildRepository>(provider =>
 });
 builder.Services.AddLogging();
 
+// builder.Services.AddCors(options =>
+// {
+//     options.AddPolicy("AllowSpecificOrigin",
+//         builder => builder.WithOrigins("http://localhost:5173", "https://forzatrack.vercel.app")
+//                           .AllowAnyHeader()
+//                           .AllowAnyMethod()
+//                           .WithHeaders("X-Api-Key")
+//                           .AllowCredentials());                        
+// });
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigin",
-        builder => builder.WithOrigins("http://localhost:5173", "https://forzatrack.vercel.app")
+    options.AddPolicy("AllowAll",
+        builder => builder.SetIsOriginAllowed(_ => true) // Allow all origins
                           .AllowAnyHeader()
                           .AllowAnyMethod()
-                          .WithHeaders("X-Api-Key")
-                          .AllowCredentials());                        
+                          .WithExposedHeaders("X-Api-Key") // Optional: expose API key in responses if needed
+                          .AllowCredentials()); // Optional: only if you're using cookies/auth
 });
 
 var app = builder.Build();
@@ -88,7 +98,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("AllowSpecificOrigin");
+// app.UseCors("AllowSpecificOrigin");
+app.UseCors("AllowAll");
 
 app.UseMiddleware<ApiKeyMiddleware>();
 
