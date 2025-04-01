@@ -31,13 +31,16 @@
 
 .home-content h1{
     white-space: nowrap;
-    font-size: clamp(2rem, 5vw, 3rem);
+    font-size: clamp(3rem, 5vw, 5rem);
     margin-bottom: 5vh;
+    font-family: "Righteous"
 }
 
 .home-login {
     background: linear-gradient(to right, #FA5D88, #F86C76);
-    font-family: primary-bold;
+    font-family: "Righteous";
+    font-size: 1.5rem;
+    font-weight: bold;
     box-shadow: none;
     padding: 1rem 1rem;
     border-radius: 8px;
@@ -47,8 +50,11 @@
 }
 
 .home-login:hover {
-    background: #FFF;
-    color: #F86C76;
+    /* background: #FFF; */
+    background: linear-gradient(to right, #b64463, #bd535a);
+    /* color: #F86C76; */
+    color: #FFF;
+    text-decoration: none;
 }
 
 @media (max-width: 900) {
