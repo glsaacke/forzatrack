@@ -7,10 +7,11 @@
     align-items: center;
     font-family: primary-bold;
     height: 10vh;
+    z-index: 5;
   }
 
   .nav-logo {
-    font-size: clamp(3rem, 5vw, 4rem);
+    font-size: clamp(3rem, 5vw, 3.5rem);
     color: #fff;
     text-decoration: none;
     font-family: "Righteous";

@@ -7,9 +7,20 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-image: url('../assets/img/Forza2.PNG');
+    /* background-image: url('../assets/img/Forza2.PNG');
     background-size: cover;
-    background-position: center;
+    background-position: center; */
+}
+
+.home-background {
+    background-image: url('../assets/img/Forza2.PNG');
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    z-index: 1;
+    bottom: 0;
+    background-size: cover;
+    background-position: center calc(50% + 40px);
 }
 
 .home-overlay {
@@ -17,7 +28,7 @@
     height: 90vh;
     position: absolute;
     background-color: #4b4b4bdf;
-    z-index: 1;
+    z-index: 2;
 }
 
 .home-content {
@@ -33,7 +44,16 @@
     white-space: nowrap;
     font-size: clamp(3rem, 5vw, 5rem);
     margin-bottom: 5vh;
-    font-family: "Righteous"
+    font-family: "Righteous";
+    animation: fadeInSlideDown 1s ease-out forwards;
+    animation-delay: 0.3s;
+    opacity: 0;
+}
+
+.home-content h3{
+    animation: fadeInSlideDown 1s ease-out forwards;
+    animation-delay: 0.8s;
+    opacity: 0;
 }
 
 .home-login {
@@ -47,6 +67,9 @@
     color: #FFF;
     text-decoration: none;
     margin-top: 5vh;
+    animation: fadeInSlideDown 1s ease-out forwards;
+    animation-delay: 1.3s;
+    opacity: 0;
 }
 
 .home-login:hover {
@@ -55,6 +78,17 @@
     /* color: #F86C76; */
     color: #FFF;
     text-decoration: none;
+}
+
+@keyframes fadeInSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @media (max-width: 900) {
