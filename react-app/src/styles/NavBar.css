@@ -7,10 +7,11 @@
     align-items: center;
     font-family: primary-bold;
     height: 10vh;
+    z-index: 5;
   }
 
   .nav-logo {
-    font-size: clamp(3rem, 5vw, 4rem);
+    font-size: clamp(3rem, 5vw, 3.5rem);
     color: #fff;
     text-decoration: none;
     font-family: "Righteous";
@@ -45,7 +46,6 @@
   .login-links {
     display: flex;
     align-items: center;
-    gap: 2rem;
     font-size: 1.5rem;
     font-family: "Righteous";
     font-weight: Bold;
@@ -82,12 +82,19 @@
   }
 
   @media (max-width: 576px) {
-    .login-links {
-      display:none;
+    .navbar {
+      padding: 0 10px;
     }
 
-    .navbar-links {
-      width: 100%;
-      justify-content: space-between;
+    .nav-logo {
+      font-size: 2rem;
+    }
+
+    .login-link {
+      font-size: 1rem;
+    }
+
+    .nav-link {
+      font-size: 1rem;
     }
   }

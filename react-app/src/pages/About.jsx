@@ -2,25 +2,34 @@ import '../styles/About.css'
 
 const About = () => {
     return ( 
-        <div>
+        <div>           
+        <div className="about-background"></div>
+        <div className="about-overlay"></div>
             <div className="about-container">
-            <div className="about-overlay"></div>
-            <div className="about-content">
-                <h1>ABOUT</h1>
-                <h2>TRACK YOUR FORZA BUILDS & RECORDS</h2>
-                <p>If you love fine-tuning your car builds in Forza and pushing for the fastest lap times, this app is for you. Designed for Forza enthusiasts, this platform gives you a dedicated place to log and compare your builds and track records across different courses. No more scattered notes or messy spreadsheets—just a simple way to store and analyze your performance.</p>
-                <h2>WHAT YOU CAN DO</h2>
-                <p>Create & Save Builds: Log the custom car builds you've created in-game, including tuning details.</p>
-                <p>Track Your Best Times: Store and compare lap records across various courses.</p>
-                <p>Sort by Category: See your fastest times for different car classes, track types, or game modes.</p>
-                <p>Personalized Dashboard: Log in to access all your builds and records in one place.</p>
-                <h2>HOW IT WORKS</h2>
-                <p>Sign Up & Log In: Create an account to store your records.</p>
-                <p>Add a Build: Enter details for a custom car build you've made in Forza.</p>
-                <p>Record Your Times: Track your fastest lap times for different courses using that build.</p>
-                <p>Compare & Improve: View all your times in one place and find ways to improve your performance.</p>
+                <div className="about-content">
+                    <h2>ABOUT</h2>
+                    <div className="about-section">
+                        <h3>TRACK YOUR FORZA RECORDS</h3>
+                        <p>ForzaTrack is the ultimate racing tracker for Forza Horizon 5, built for racers looking to track their best runs, fine-tune builds, and improve their performance over time. Whether you're a casual player or a dedicated competitor, this platform helps you log and compare your results effortlessly.</p>
+                    </div>
+                    <div className="about-section">
+                        <h3>FEATURES</h3>
+                        <div className="about-section-list">
+                            <p>• Personalized Dashboard: Log in to access all your logged efforts in one place.</p>
+                            <p>• Track Your Best Times: Store and compare lap records across various courses and cars.</p>
+                            <p>• Filter & Compare: Sort your best times by track or car class.</p>
+                        </div>
+                    </div>
+                    <div className="about-section">
+                        <h3>HOW IT WORKS</h3>
+                        <div className="about-section-list">
+                            <p>Sign Up & Log In: Create an account to store your records.</p>
+                            <p>Record Your Times: Enter key information like time, car, course, and CPU difficulty.</p>
+                            <p>Compare & Improve: View all your times in one place and find ways to improve your performance.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
         </div>
      );
 }

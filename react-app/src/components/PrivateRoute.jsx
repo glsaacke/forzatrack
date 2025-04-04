@@ -1,9 +1,9 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
-const PrivateRoute = ({ element }) => {
+const PrivateRoute = () => {
   const userId = sessionStorage.getItem("userId");
 
-  return userId ? element : <Navigate to="/login" replace />;
+  return userId ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
 export default PrivateRoute;
