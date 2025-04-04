@@ -10,6 +10,8 @@ const Records = ({setOnDashboard}) => {
     const [eventFilter, setEventFilter] = useState('Goliath')
     const [deleteRecordId, setDeleteRecordId] = useState(null)
     const [selectedRecordId, setSelectedRecordId] = useState(null)
+    const [recordsLoading, setRecordsLoading] = useState(false)
+    const [recordsExist, setRecordsExist] = useState(false)
     
 
     useEffect(() => {
@@ -22,10 +24,12 @@ const Records = ({setOnDashboard}) => {
             const carResponse = await getAllCars()
             setCars(carResponse)
         }
-
+        
         setOnDashboard(true)
+        setRecordsLoading(true)
         GetRecords()
         GetCars()
+        setRecordsLoading(false)
     }, [])
 
     useEffect(() => {
@@ -153,6 +157,7 @@ const Records = ({setOnDashboard}) => {
                     </div>
                 </div>
 
+                {recordsLoading ? <div className="spinner"></div> : 
                 <table className="table table-responsive record-table">
                     <thead className="thead-dark">
                         <tr>
@@ -185,7 +190,7 @@ const Records = ({setOnDashboard}) => {
                         </tr>
                     ))}
                     </tbody>
-                </table>
+                </table>}
             </div>
         </div>
     )
