@@ -54,6 +54,8 @@
     animation: fadeInSlideDown 1s ease-out forwards;
     animation-delay: 0.8s;
     opacity: 0;
+    text-align: center;
+    padding: 0 20px;
 }
 
 .home-login {
@@ -73,9 +75,7 @@
 }
 
 .home-login:hover {
-    /* background: #FFF; */
     background: linear-gradient(to right, #b64463, #bd535a);
-    /* color: #F86C76; */
     color: #FFF;
     text-decoration: none;
 }

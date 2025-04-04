@@ -46,7 +46,6 @@
   .login-links {
     display: flex;
     align-items: center;
-    gap: 2rem;
     font-size: 1.5rem;
     font-family: "Righteous";
     font-weight: Bold;
@@ -83,12 +82,19 @@
   }
 
   @media (max-width: 576px) {
-    .login-links {
-      display:none;
+    .navbar {
+      padding: 0 10px;
     }
 
-    .navbar-links {
-      width: 100%;
-      justify-content: space-between;
+    .nav-logo {
+      font-size: 2rem;
+    }
+
+    .login-link {
+      font-size: 1rem;
+    }
+
+    .nav-link {
+      font-size: 1rem;
     }
   }
