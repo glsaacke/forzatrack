@@ -1,5 +1,12 @@
-.dash-container h1 {
+.record-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.record-container h2 {
     padding: 3vh 0;
+    margin-top: 3vh;
 }
 
 .dash-nav-link-records{
@@ -48,20 +55,25 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-self: center;
     z-index: 1;
+    width: 90vw;
 }
 
 .record-table {
-    margin: 0 5vw;
-    width: 90vw;
+    margin: 0;
     border: 2px solid black;
     border-collapse: collapse;
+    font-family: "Poppins";
+    margin-bottom: 5vh;
+    width: auto;
 }
 
 .record-table td, .record-table th {
-    padding: 10px;
+    padding: 10px 40px;
     text-align: center;
     vertical-align: middle;
+
 }
 
 .record-table tr {
@@ -69,30 +81,35 @@
 }
 
 .record-functions {
-    width: 90vw;
+    width: 100%;
     display: flex;
     justify-content: space-between;
+    /* gap: 40px; */
+    border-bottom: 1px black solid;
+    margin-bottom: 3vh;
+    padding: 2vh 5px;
 }
 
 .create-record {
-    margin: 1vh 0;
+    margin: 0;
     background: linear-gradient(to right, #F4914D, #F0AC2D);
-    font-family: primary-bold;
+    font-family: "Poppins";
+    font-weight: bold;
     font-size: 1rem;
     box-shadow: none;
-    border: 2px solid #F4914D; /* Ensures a single solid color */
+    border: 2px solid #F4914D;
     width: auto;
     height: auto;
     border-radius: 8px;
-    padding: 1vh 1vw;
+    padding: 5px;
     color: #FFF;
     text-decoration: none;
 }
 
 .create-record:hover {
-    border: 2px solid #F4914D;
-    background: #FFF;
-    color: #F4914D;
+    border: 2px solid #d57839;
+    background: #d57839;
+    color: #FFF;
 }
 
 .record-selects {
@@ -100,10 +117,11 @@
     justify-content: space-between;
     align-items: center;
     width: auto;
+    gap: 10px;
 }
 
 .record-selects select {
-    margin-right: 5px;
+    font-family: "Poppins";
 }
 
 .create-overlay {
@@ -114,120 +132,6 @@
     z-index: 2;
     bottom: 0;
     display: none;
-}
-
-.create-content {
-    z-index: 3;
-    position: fixed;
-    background-color: #FFF;
-    color:black;
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    height: 80vh;
-    width: 50vw;
-    border-radius: 15px;
-    z-index: 2;
-    justify-content: space-around;
-    top: 15vh;
-}
-
-.create-content form {
-    display: flex;
-    flex-direction: column;
-    height: 70%;
-    width: 80%;
-    align-items: center;
-    justify-content: space-between;
-    margin: 8vh 0;
-}
-
-.create-car-select {
-    width: 100%; /* Adjust as needed */
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    display: block;
-    border-radius: 8px;
-    border: 2px black solid;
-    font-family: Arial, Helvetica, sans-serif;
-    padding: 3px 0;
-}
-
-.create-time-div {
-    display: flex;
-    width: 100%;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.create-time-div label {
-    margin-right: 5px;
-}
-
-.create-time-div input {
-    width: 10%;
-    border-radius: 8px;
-    border: 2px black solid;
-    padding: 0 5px;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-.create-time-div p {
-    font-size: 1.5rem;
-    margin: 0 5px;
-}
-
-.create-select-div {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 100%;
-}
-
-.create-select-div select {
-    border-radius: 8px;
-    border: 2px black solid;
-    font-family: Arial, Helvetica, sans-serif;
-    padding: 3px 0;
-}
-
-.create-form-submit {
-    background: linear-gradient(to right, #FA5D88, #F86C76);
-    font-family: primary-bold;
-    font-size: 1.5rem;
-    box-shadow: none;
-    border: none;
-    width: 20vw;
-    height: 5vh;
-    border-radius: 8px;
-    color: #FFF;
-    text-decoration: none;
-    align-self: center;
-    margin-top: 2vh;
-}
-
-.create-form-submit:hover {
-    background: linear-gradient(to right, #F4914D, #F0AC2D);
-}
-
-.create-form-back {
-    background: #FFF;
-    font-family: primary-bold;
-    font-size: 1.5rem;
-    box-shadow: none;
-    border: 2px solid #F86C76; /* Ensures a single solid color */
-    width: 20vw;
-    height: 5vh;
-    border-radius: 8px;
-    color: #F86C76;
-    text-decoration: none;
-    margin-bottom: 5vh;
-}
-
-.create-form-back:hover {
-    background: linear-gradient(to right, #FA5D88, #F86C76);
-    color: #FFF;
 }
 
 .record-delete {
@@ -249,6 +153,11 @@
     border-radius: 15px;
     justify-content: space-around;
     top: 45vh;
+    margin: 0 10px;
+}
+
+.confirm-delete-content p {
+    text-align: center;
 }
 
 .confirm-delete-buttons {
@@ -256,6 +165,21 @@
     justify-content: space-between;
     width: 60%;
 }
+
+.spinner {
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #555;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    animation: spin 1s linear infinite;
+    margin: auto;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
 
 @media (max-width: 1180px) {
     .create-content{

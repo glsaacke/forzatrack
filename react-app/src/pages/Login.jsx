@@ -8,12 +8,18 @@ const Login = () => {
     const [password, setPassword] = useState('')
     const [loginError, setLoginError] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
+    const [isLoading, setIsLoading] = useState(false)
+
     const navigate = useNavigate()
 
     async function handleSubmit(e){
         e.preventDefault()
 
+        setIsLoading(true)
+
         const response = await authenticateUser(email, password)
+
+        setIsLoading(false) 
 
         if(response.success){
             console.log(response)
@@ -28,16 +34,19 @@ const Login = () => {
 
     return ( 
         <div className="login-container">
+            <div className="login-background"></div>
             <div className="home-overlay"></div>
             <div className="login-content">
-                <h1>LOGIN</h1>
+                <h2>LOGIN</h2>
                 <form onSubmit={handleSubmit}>
                     <label>EMAIL</label>
                     <input type="text" required value={email} onChange={(e) => setEmail(e.target.value)}/>
                     <label>PASSWORD</label>
                     <input type="text" required value={password} onChange={(e) => setPassword(e.target.value)}/>
-                    {loginError && <p className='login-error-message'>Error: {errorMessage}</p>}
-                    <button className='login-login'>GO</button>
+                    {loginError && <p className='login-error-message'>{errorMessage}</p>}
+                    <button className='login-login' disabled={isLoading}>
+                    {isLoading ? <div className="spinner"></div> : "GO"}
+                    </button>
                 </form>
                 
     

@@ -53,21 +53,27 @@ h1 {
 }
 
 h2 {
+  font-size: 3rem;
   font-family: "Righteous";
+  font-weight: bold;
 }
 
 h3 {
   font-size: 1.5rem;
   font-family: "Poppins";
+  font-weight: bold;
 }
 
 p {
   font-size: 1rem;
-  font-family: "Righteous";
+  font-family: "Poppins";
 }
 
-.righteous-bold {
-  
+.redb {
+  border: 2px red dashed;
+}
+.cyanb {
+  border: 2px cyan dashed;
 }
 
 /* @media (prefers-color-scheme: light) {
