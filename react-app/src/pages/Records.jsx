@@ -11,7 +11,6 @@ const Records = ({setOnDashboard}) => {
     const [deleteRecordId, setDeleteRecordId] = useState(null)
     const [selectedRecordId, setSelectedRecordId] = useState(null)
     const [recordsLoading, setRecordsLoading] = useState(false)
-    const [recordsExist, setRecordsExist] = useState(false)
     
 
     useEffect(() => {
