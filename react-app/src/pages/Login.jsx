@@ -44,6 +44,7 @@ const Login = () => {
                     <label>PASSWORD</label>
                     <input type="text" required value={password} onChange={(e) => setPassword(e.target.value)}/>
                     {loginError && <p className='login-error-message'>{errorMessage}</p>}
+                    <Link to="/forgotpass" className='forgot-pass-link'>Forgot Password</Link>
                     <button className='login-login' disabled={isLoading}>
                     {isLoading ? <div className="spinner"></div> : "GO"}
                     </button>

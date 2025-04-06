@@ -137,6 +137,17 @@
     animation: spin 1s linear infinite;
     margin: auto;
   }
+
+.forgot-pass-link {
+    font-family: "Poppins";
+    text-align: center;
+    margin-top: 10px;
+    color: #FA5D88
+}
+
+.forgot-pass-link:hover {
+    color:#b64463;
+}
   
   @keyframes spin {
     0% { transform: rotate(0deg); }

@@ -11,6 +11,7 @@ import PrivateRoute from './components/PrivateRoute'
 import DashLayout from './components/DashLayout'
 import Builds from './pages/Builds'
 import Records from './pages/Records'
+import ForgotPass from './pages/ForgotPass'
 
 function App() {
   const [onDashboard, setOnDashboard] = useState(false)
@@ -25,6 +26,7 @@ function App() {
             <Route path='/about' element={<About/>}/>
             <Route path='/login' element={<Login/>}/>
             <Route path='/signup' element={<Signup/>}/>
+            <Route path='/forgotpass' element={<ForgotPass/>}/>
             <Route path='/dashboard' element={<PrivateRoute/>}>
               <Route index element={<Navigate to="records" />} />
               <Route path='records' element={<Records setOnDashboard={setOnDashboard}/>}/>
