@@ -167,5 +167,29 @@ namespace api.core.controllers
                 throw;
             }
         }
+
+        [HttpPost("RequestPasswordReset")]
+        public IActionResult RequestPasswordReset(string email){
+            try{
+                response = userService.RequestPasswordReset(email);
+                return Ok(response);
+            }
+            catch(Exception ex){
+                logger.LogError(ex, "An error occurred while processing request.");
+                throw;
+            }
+        }
+
+        [HttpPut("ResetPassword")]
+        public IActionResult ResetPassword(){
+            try{
+                response = userService.ResetPassword();
+                return Ok(response);
+            }
+            catch(Exception ex){
+                logger.LogError(ex, "An error occurred while reseting password.");
+                throw;
+            }
+        }
     }
 }

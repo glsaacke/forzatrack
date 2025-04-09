@@ -16,5 +16,7 @@ namespace api.core.services.UserService
         void DeleteUser(int id);
         bool SetUserDeleted(int id);
         AuthResponse AuthenticateUser(string email, string password);
+        void RequestPasswordReset(string email);
+        void ResetPassword();
     }
 }

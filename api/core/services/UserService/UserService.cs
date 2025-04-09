@@ -85,5 +85,15 @@ namespace api.core.services.UserService
             bool rowsAffected = userRepository.UpdateUser(user, id);
             return rowsAffected;
         }
+
+        public void RequestPasswordReset(string email)
+        {
+                    
+        }
+
+        public void ResetPassword()
+        {
+
+        }
     }
 }

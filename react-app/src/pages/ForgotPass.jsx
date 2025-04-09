@@ -16,7 +16,8 @@ const ForgotPass = () => {
             <div className="login-background"></div>
             <div className="home-overlay"></div>
             <div className="forgotpass-content">
-                <h2>FORGOT PASSWORD</h2>
+                <h3>RECOVER PASSWORD</h3>
+                <p>Enter your email to receive a password reset link</p>
                 <form onSubmit={handleOnSubmit}>
                     <label>EMAIL</label>
                     <input type="text" />
