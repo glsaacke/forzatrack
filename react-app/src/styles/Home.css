@@ -13,7 +13,7 @@
 }
 
 .home-background {
-    background-image: url('../assets/img/Forza2.PNG');
+    background-image: url('../../Forza2.PNG');
     width: 100vw;
     height: 100vh;
     position: fixed;
