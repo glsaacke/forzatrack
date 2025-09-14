@@ -136,6 +136,8 @@ const Records = ({setOnDashboard}) => {
                             <option value="Gauntlet">Gauntlet</option>
                             <option value="Titan">Titan</option>
                             <option value="Marathon">Marathon</option>
+                            <option value="Vulcan Sprint">Vulcan Sprint</option>
+                            
                         </select>
                     </div>
                     <button className="create-record" onClick={showCreateScreen}>ADD RECORD</button>
