@@ -1,0 +1,158 @@
+.create-content {
+    z-index: 3;
+    position: absolute;
+    background-color: #FFF;
+    color:black;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+    width: auto;
+    border-radius: 15px;
+    align-self: center;
+    padding: 3vh 3vw;
+    margin: 0 5vw;
+}
+
+.create-content h2 {
+    padding: 0;
+    margin-bottom: 3vh;
+}
+
+.create-content form {
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    align-items: center;
+    gap: 40px;
+}
+
+.create-car-select {
+    width: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-radius: 8px;
+    border: 2px black solid;
+    font-family: "Poppins";
+    padding: 3px 0;
+}
+
+.create-time-div {
+    display: flex;
+    width: 100%;
+    height:auto;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.create-time-div label {
+    font-family: "Poppins";
+}
+
+.create-time-div input {
+    width: 3rem;
+    border-radius: 8px;
+    border: 2px black solid;
+    padding: 0 5px;
+    font-family: "Poppins";
+}
+
+.create-time-div p {
+    font-size: 1.5rem;
+}
+
+.create-select-div {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.create-select-div select {
+    border-radius: 8px;
+    border: 2px black solid;
+    font-family: "Poppins";
+    padding: 3px 0;
+}
+
+.create-form-submit {
+    background: linear-gradient(to right, #FA5D88, #F86C76);
+    font-family: primary-bold;
+    font-size: 1.5rem;
+    box-shadow: none;
+    border: none;
+    width: 200px;
+    height: 5vh;
+    border-radius: 8px;
+    color: #FFF;
+    text-decoration: none;
+    align-self: center;
+    margin-top: 2vh;
+    font-family: "Poppins";
+    font-weight: bold;
+}
+
+.create-form-submit:hover {
+    background: linear-gradient(to right, #b64463, #bd535a);
+    color: #FFF;
+    text-decoration: none;
+}
+
+.create-form-cancel {
+    background: #FFF;
+    font-family: "Righteous";
+    font-weight: bold;
+    font-size: 1.5rem;
+    box-shadow: none;
+    border: 2px solid #F86C76;
+    width: 200px;
+    height: 5vh;
+    border-radius: 8px;
+    color: #F86C76;
+    text-decoration: none;
+    margin-top: 2vh;
+}
+
+.create-form-cancel:hover {
+    background: linear-gradient(to right, #FA5D88, #F86C76);
+    color: #FFF;
+    text-decoration: none;
+}
+
+@media (max-width: 1080px) {
+    .create-content{
+        width: 75vw;
+    }
+}
+
+@media (max-width: 768px) {
+    .dash-nav-link-records {
+        width: 30vw;
+    }
+
+    .dash-nav-link-builds {
+        width: 30vw;
+    }
+
+    .create-car-select {
+        width: 90%;
+    }
+
+    .create-time-div {
+        width: 90%;
+        gap: 5px;
+    }
+}
+
+@media (max-width: 900px) {
+    .create-content{
+        width: 90vw;
+    }
+}
+
+@media (max-width: 650px) {
+    .create-select-div {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

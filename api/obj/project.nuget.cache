@@ -1,6 +1,10 @@
 {
   "version": 2,
+<<<<<<< HEAD
   "dgSpecHash": "qol0b2CONH6VStI/c1Flvl6OOfecyGUY6d+khAEkq/v+DoTl+gxwVSwLKmt1yJkpycvPqBzfkcBHaJX0Qqh41g==",
+=======
+  "dgSpecHash": "mZHEjxipbx8=",
+>>>>>>> 9538173331be3310a7fe384609c741a17c50ebc7
   "success": true,
   "projectFilePath": "C:\\Users\\gavin\\Documents\\GitHub\\forzatrack\\api\\api.csproj",
   "expectedPackageFiles": [
