@@ -112,33 +112,40 @@ const Records = ({setOnDashboard}) => {
             <h2>DASHBOARD</h2>
             <div className="record-content">
                 <div className="record-functions">
+                    <h3>CONFIGURE VIEW</h3>
                     <div className="record-selects">
-                        <select className="form-select" onChange={(e) => {
-                            setClassFilter(e.target.value)
-                            handleFilterRecords()
-                        }}>
-                            <option value="" selected>All Classes</option>
-                            <option value="X">X</option>
-                            <option value="S2">S2</option>
-                            <option value="S1">S1</option>
-                            <option value="A">A</option>
-                            <option value="B">B</option>
-                            <option value="C">C</option>
-                            <option value="D">D</option>
-                            <option value="E">E</option>
-                        </select>
-                        <select className="form-select" onChange={(e) => {
-                            setEventFilter(e.target.value)
-                            handleFilterRecords()
-                        }}>
-                            <option value="Goliath" selected>Goliath</option>
-                            <option value="Colossus">Colossus</option>
-                            <option value="Gauntlet">Gauntlet</option>
-                            <option value="Titan">Titan</option>
-                            <option value="Marathon">Marathon</option>
-                            <option value="Vulcan Sprint">Vulcan Sprint</option>
-                            
-                        </select>
+                        <div className="record-selects-select">
+                            <h5>Class</h5>
+                            <select className="form-select" onChange={(e) => {
+                                setClassFilter(e.target.value)
+                                handleFilterRecords()
+                            }}>
+                                <option value="" selected>All Classes</option>
+                                <option value="X">X</option>
+                                <option value="S2">S2</option>
+                                <option value="S1">S1</option>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                                <option value="E">E</option>
+                            </select>
+                        </div>
+                        <div className="record-selects-select">
+                            <h5>Event</h5>
+                            <select className="form-select" onChange={(e) => {
+                                setEventFilter(e.target.value)
+                                handleFilterRecords()
+                            }}>
+                                <option value="Goliath" selected>Goliath</option>
+                                <option value="Colossus">Colossus</option>
+                                <option value="Gauntlet">Gauntlet</option>
+                                <option value="Titan">Titan</option>
+                                <option value="Marathon">Marathon</option>
+                                <option value="Vulcan Sprint">Vulcan Sprint</option>
+                                
+                            </select>
+                        </div>
                     </div>
                     <button className="create-record" onClick={showCreateScreen}>ADD RECORD</button>
                 </div>
@@ -167,7 +174,6 @@ const Records = ({setOnDashboard}) => {
                             <th scope="col">Class</th>
                             <th scope="col">Car</th>
                             <th scope="col">Event</th>
-                            <th scope="col">CPU</th>
                             <th scope="col">Date</th>
                             <th scope="col">Delete</th>
                         </tr>
@@ -180,7 +186,6 @@ const Records = ({setOnDashboard}) => {
                             <td>{record.classRank}</td>
                             <td>{displayCar(record.carId)}</td>
                             <td>{record.event}</td>
-                            <td>{record.cpuDiff}</td>
                             <td>{formatDate(record.addDate)}</td>
                             <td>
                                 <button className='record-delete btn btn-danger' onClick={() => {

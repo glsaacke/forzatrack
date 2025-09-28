@@ -2,6 +2,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: #f1f1f1;
+    height: 100%;
 }
 
 .record-container h2 {
@@ -57,7 +59,7 @@
     align-items: center;
     justify-self: center;
     z-index: 1;
-    width: 90vw;
+    width: 80vw;
 }
 
 .record-table {
@@ -84,10 +86,16 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
-    /* gap: 40px; */
-    border-bottom: 1px black solid;
+    align-items: center;
+    border-radius: 16px;
+    border: 1px #d7d7d7 solid;
     margin-bottom: 3vh;
-    padding: 2vh 5px;
+    padding: 2vh 20px;
+    background: #ffffff;
+}
+
+.record-functions h3 {
+    margin: 0;
 }
 
 .create-record {
@@ -101,7 +109,7 @@
     width: auto;
     height: auto;
     border-radius: 8px;
-    padding: 5px;
+    padding: 5px 10px;
     color: #FFF;
     text-decoration: none;
 }
@@ -117,11 +125,22 @@
     justify-content: space-between;
     align-items: center;
     width: auto;
+    gap: 40px;
+}
+
+.record-selects-select {
+    display: flex;
     gap: 10px;
+    align-items: center;
 }
 
 .record-selects select {
     font-family: "Poppins";
+    border-radius: 8px;
+}
+
+.record-selects-select h5 {
+    margin-bottom: 5px;
 }
 
 .create-overlay {
