@@ -150,7 +150,7 @@ const Records = ({setOnDashboard}) => {
                     </div>
                     <button className="create-record" onClick={showCreateScreen}>ADD RECORD</button>
                 </div>
-                <AnalysisSection/>
+                <AnalysisSection filteredRecords={filteredRecords} cars={cars}/>
                 <div className="create-overlay"></div>
 
                 <AddRecordModal cars={cars} setRecords={setRecords}/>
