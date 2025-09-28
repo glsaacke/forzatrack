@@ -1,4 +1,5 @@
 import AddRecordModal from "../components/AddRecordModal";
+import AnalysisSection from "../components/AnalysisSection";
 import { getBuildById, getRecordsByUserId, getCarById, getAllCars, createRecord, setRecordDeleted } from "../services/api";
 import { useEffect, useState, useRef } from "react";
 
@@ -149,6 +150,7 @@ const Records = ({setOnDashboard}) => {
                     </div>
                     <button className="create-record" onClick={showCreateScreen}>ADD RECORD</button>
                 </div>
+                <AnalysisSection/>
                 <div className="create-overlay"></div>
 
                 <AddRecordModal cars={cars} setRecords={setRecords}/>
