@@ -2,6 +2,7 @@ const BASE_URL = "https://forzatrack.fly.dev/api";
 const API_KEY = import.meta.env.VITE_API_KEY;
 
 
+
 export async function authenticateUser(email, password) {
   const response = await fetch(`${BASE_URL}/User/AuthenticateUser?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`, {
     method: 'GET',
