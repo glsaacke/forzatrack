@@ -72,7 +72,6 @@ builder.Services.AddCors(options =>
         builder => builder.WithOrigins("http://localhost:5173", "https://forzatrack.vercel.app")
                           .AllowAnyHeader()
                           .AllowAnyMethod()
-                          .WithHeaders("X-Api-Key")
                           .AllowCredentials());                        
 });
 

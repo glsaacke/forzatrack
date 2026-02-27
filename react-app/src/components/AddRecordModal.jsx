@@ -108,6 +108,7 @@ const AddRecordModal = ({cars, setRecords}) => {
                         <option value="Gauntlet">Gauntlet</option>
                         <option value="Titan">Titan</option>
                         <option value="Marathon">Marathon</option>
+                        <option value="Vulcan Sprint">Vulcan Sprint</option>
                     </select>
 
                     <select required ref={selectedCpuDiff}>
