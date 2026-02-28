@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using api.core.models;
 using api.core.models.responses;
 
@@ -9,81 +5,92 @@ namespace api.core.services.UserService
 {
     public class UserService : IUserService
     {
-        private IUserRepository userRepository;
-        public UserService(IUserRepository userRepository){
-            this.userRepository = userRepository;
+        private readonly IUserRepository _userRepository;
+
+        public UserService(IUserRepository userRepository)
+        {
+            _userRepository = userRepository;
         }
 
-        public AuthResponse AuthenticateUser(string email, string password)
+        public async Task<AuthResponse> AuthenticateUserAsync(string email, string password)
         {
-            User user = userRepository.GetUserByEmail(email);
+            var user = await _userRepository.GetUserByEmailAsync(email);
 
-            if(user == null){
-                return new AuthResponse{ Success = false, Message=$"No accounts matching '{email}'"};
+            if (user == null)
+            {
+                return new AuthResponse { Success = false, Message = $"No accounts matching '{email}'" };
             }
-            else{
-                if(user.Password == password && user.Deleted == 0){
-                    return new AuthResponse{ Success = true, Message="Login Successful", User = new UserDto{
+
+            if (user.Password == password && user.Deleted == 0)
+            {
+                return new AuthResponse
+                {
+                    Success = true,
+                    Message = "Login Successful",
+                    User = new UserDto
+                    {
                         UserId = user.UserId,
                         Username = user.Username,
-                        Email = email
-                    }};
-                }
-                else{
-                    return new AuthResponse{ Success = false, Message="Incorrect Password"};
-                }
+                        Email = user.Email
+                    }
+                };
             }
+
+            return new AuthResponse { Success = false, Message = "Incorrect Password" };
         }
 
-        public AuthResponse CreateUser(CreateUser user)
+        public async Task<AuthResponse> CreateUserAsync(CreateUser user)
         {
-            User emailUser = userRepository.GetUserByEmail(user.Email);
-            User usernameUser = userRepository.GetUserByUsername(user.Username);
+            var emailUser = await _userRepository.GetUserByEmailAsync(user.Email);
+            if (emailUser != null)
+            {
+                return new AuthResponse { Success = false, Message = "An account with this email already exists" };
+            }
 
-            if (emailUser != null){
-                return new AuthResponse{ Success = false, Message = "An account with this email already exists"};
+            var usernameUser = await _userRepository.GetUserByUsernameAsync(user.Username);
+            if (usernameUser != null)
+            {
+                return new AuthResponse { Success = false, Message = "Username taken" };
             }
-            else if (usernameUser != null){
-                return new AuthResponse{Success = false, Message="Username taken"};
-            }
-            else{
-                userRepository.CreateUser(user);
-                User newUser = userRepository.GetUserByEmail(user.Email);
-                return new AuthResponse{ Success = true, Message="", User = new UserDto{
-                    UserId = newUser.UserId,
-                    Username = user.Username,
+
+            await _userRepository.CreateUserAsync(user);
+            var newUser = await _userRepository.GetUserByEmailAsync(user.Email);
+
+            return new AuthResponse
+            {
+                Success = true,
+                User = new UserDto
+                {
+                    UserId = newUser!.UserId,
+                    Username = newUser.Username,
                     Email = newUser.Email
-                }};
-            }
+                }
+            };
         }
 
-        public void DeleteUser(int id)
+        public async Task DeleteUserAsync(int id)
         {
-            userRepository.DeleteUser(id);
+            await _userRepository.DeleteUserAsync(id);
         }
 
-        public List<User> GetAllUsers()
+        public async Task<List<User>> GetAllUsersAsync()
         {
-            var users = userRepository.GetAllUsers();
-            return users;
+            return await _userRepository.GetAllUsersAsync();
         }
 
-        public User GetUserByID(int id)
+        public async Task<User?> GetUserByIdAsync(int id)
         {
-            User user = userRepository.GetUserByID(id);
-            return user;
+            return await _userRepository.GetUserByIdAsync(id);
         }
 
-        public bool SetUserDeleted(int id)
+        public async Task<bool> SetUserDeletedAsync(int id)
         {
-            bool rowsAffected = userRepository.SetUserDeleted(id);
-            return rowsAffected;
+            return await _userRepository.SetUserDeletedAsync(id);
         }
 
-        public bool UpdateUser(User user, int id)
+        public async Task<bool> UpdateUserAsync(User user, int id)
         {
-            bool rowsAffected = userRepository.UpdateUser(user, id);
-            return rowsAffected;
+            return await _userRepository.UpdateUserAsync(user, id);
         }
     }
 }

@@ -1,102 +1,57 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Data;
-using System.Data.SqlClient;
 using MySql.Data.MySqlClient;
 using api.core.models;
-using api.core.data;
 
 namespace api.core.services.RecordService
 {
     public class RecordRepository : IRecordRepository
     {
-        private readonly string cs;
-        public RecordRepository(string cs){
-            this.cs = cs;
+        private readonly string _connectionString;
+
+        public RecordRepository(string connectionString)
+        {
+            _connectionString = connectionString;
         }
 
-        public List<Record> GetAllRecords(){
-            List<Record> records = new List<Record>();
+        public async Task<List<Record>> GetAllRecordsAsync()
+        {
+            var records = new List<Record>();
 
-            // string cs = Connection.conString;
-            using var con = new MySqlConnection(cs);
-            con.Open();
+            using var con = new MySqlConnection(_connectionString);
+            await con.OpenAsync();
 
-            string stm = "SELECT record_id, user_id, car_id, event, class_rank, time_min, time_sec, time_ms, cpu_diff, deleted FROM Records";
+            const string sql = "SELECT record_id, user_id, car_id, event, class_rank, time_min, time_sec, time_ms, cpu_diff, deleted FROM Records";
+            using var cmd = new MySqlCommand(sql, con);
+            using var reader = (MySqlDataReader)await cmd.ExecuteReaderAsync();
 
-            using var cmd = new MySqlCommand(stm, con);
-
-            using var reader = cmd.ExecuteReader();
-            DataTable dataTable = new DataTable();
-            dataTable.Load(reader);
-
-            foreach (DataRow row in dataTable.Rows)
+            while (await reader.ReadAsync())
             {
-                Record record = new Record
-                {
-                    RecordId = Convert.ToInt32(row["record_id"]),
-                    UserId = Convert.ToInt32(row["user_id"]),
-                    CarId = Convert.ToInt32(row["car_id"]),
-                    Event = row["event"].ToString(),
-                    ClassRank = row["class_rank"].ToString(),
-                    TimeMin = Convert.ToInt32(row["time_min"]),
-                    TimeSec = Convert.ToInt32(row["time_sec"]),
-                    TimeMs = Convert.ToInt32(row["time_ms"]),
-                    CpuDiff = row["cpu_diff"].ToString(),
-                    Deleted = Convert.ToInt32(row["deleted"]),
-                };
-                records.Add(record);
+                records.Add(MapRecord(reader, includeDate: false));
             }
+
             return records;
-         }
-        public Record GetRecordByID(int id){
-            // string cs = Connection.conString;
-            using var con = new MySqlConnection(cs);
-            con.Open();
+        }
 
-            string stm = "SELECT record_id, user_id, car_id, event, class_rank, time_min, time_sec, time_ms, cpu_diff, deleted FROM Records WHERE record_id = @id";
+        public async Task<Record?> GetRecordByIdAsync(int id)
+        {
+            using var con = new MySqlConnection(_connectionString);
+            await con.OpenAsync();
 
-            using var cmd = new MySqlCommand(stm, con);
-
+            const string sql = "SELECT record_id, user_id, car_id, event, class_rank, time_min, time_sec, time_ms, cpu_diff, deleted FROM Records WHERE record_id = @id";
+            using var cmd = new MySqlCommand(sql, con);
             cmd.Parameters.AddWithValue("@id", id);
 
-            using var reader = cmd.ExecuteReader();
-            DataTable dataTable = new DataTable();
-            dataTable.Load(reader);
+            using var reader = (MySqlDataReader)await cmd.ExecuteReaderAsync();
+            return await reader.ReadAsync() ? MapRecord(reader, includeDate: false) : null;
+        }
 
-            if (dataTable.Rows.Count > 0)
-            {
-                DataRow row = dataTable.Rows[0];
-                return new Record
-                {
-                    RecordId = Convert.ToInt32(row["record_id"]),
-                    UserId = Convert.ToInt32(row["user_id"]),
-                    CarId = Convert.ToInt32(row["car_id"]),
-                    Event = row["event"].ToString(),
-                    ClassRank = row["class_rank"].ToString(),
-                    TimeMin = Convert.ToInt32(row["time_min"]),
-                    TimeSec = Convert.ToInt32(row["time_sec"]),
-                    TimeMs = Convert.ToInt32(row["time_ms"]),
-                    CpuDiff = row["cpu_diff"].ToString(),
-                    Deleted = Convert.ToInt32(row["deleted"]),
-                };
-            }
+        public async Task CreateRecordAsync(Record record)
+        {
+            using var con = new MySqlConnection(_connectionString);
+            await con.OpenAsync();
 
-            return null;
-         } 
-
-         public void CreateRecord(Record record){
-            // string cs = Connection.conString;
-            using var con = new MySqlConnection(cs);
-            con.Open();
-
-            string stm = @"INSERT INTO Records(record_id, user_id, car_id, event, class_rank, time_min, time_sec, time_ms, cpu_diff, deleted, date) VALUES(@record_id, @user_id, @car_id, @event, @class_rank, @time_min, @time_sec, @time_ms, @cpu_diff, @deleted, @date)";
-
-            using var cmd = new MySqlCommand(stm,con);
-
-            cmd.Parameters.AddWithValue("@record_id", record.RecordId);
+            const string sql = @"INSERT INTO Records(user_id, car_id, event, class_rank, time_min, time_sec, time_ms, cpu_diff, deleted, date) 
+                                 VALUES(@user_id, @car_id, @event, @class_rank, @time_min, @time_sec, @time_ms, @cpu_diff, 0, @date)";
+            using var cmd = new MySqlCommand(sql, con);
             cmd.Parameters.AddWithValue("@user_id", record.UserId);
             cmd.Parameters.AddWithValue("@car_id", record.CarId);
             cmd.Parameters.AddWithValue("@event", record.Event);
@@ -105,22 +60,19 @@ namespace api.core.services.RecordService
             cmd.Parameters.AddWithValue("@time_sec", record.TimeSec);
             cmd.Parameters.AddWithValue("@time_ms", record.TimeMs);
             cmd.Parameters.AddWithValue("@cpu_diff", record.CpuDiff);
-            cmd.Parameters.AddWithValue("@deleted", record.Deleted);
             cmd.Parameters.AddWithValue("@date", record.AddDate);
 
-            cmd.Prepare();
+            await cmd.ExecuteNonQueryAsync();
+        }
 
-            cmd.ExecuteNonQuery();
-         }
+        public async Task<bool> UpdateRecordAsync(Record record, int id)
+        {
+            using var con = new MySqlConnection(_connectionString);
+            await con.OpenAsync();
 
-         public bool UpdateRecord(Record record, int id){
-            // string cs = Connection.conString;
-            using var con = new MySqlConnection(cs);
-            con.Open();
-
-            string stm = $"UPDATE Records SET user_id = @user_id, car_id = @car_id, event = @event, class_rank = @class_rank, time_min = @time_min, time_sec = @time_sec, time_ms = @time_ms, cpu_diff = @cpu_diff WHERE record_id = @id";
-
-            using var cmd = new MySqlCommand(stm, con);
+            const string sql = @"UPDATE Records SET user_id = @user_id, car_id = @car_id, event = @event, class_rank = @class_rank, 
+                                 time_min = @time_min, time_sec = @time_sec, time_ms = @time_ms, cpu_diff = @cpu_diff WHERE record_id = @id";
+            using var cmd = new MySqlCommand(sql, con);
             cmd.Parameters.AddWithValue("@user_id", record.UserId);
             cmd.Parameters.AddWithValue("@car_id", record.CarId);
             cmd.Parameters.AddWithValue("@event", record.Event);
@@ -131,77 +83,67 @@ namespace api.core.services.RecordService
             cmd.Parameters.AddWithValue("@cpu_diff", record.CpuDiff);
             cmd.Parameters.AddWithValue("@id", id);
 
-            int rowsAffected = cmd.ExecuteNonQuery();
+            return await cmd.ExecuteNonQueryAsync() > 0;
+        }
 
-            return rowsAffected > 0;
-         }
-
-         public void DeleteRecord(int id){
-            // string cs = Connection.conString;
-            using var con = new MySqlConnection(cs);
-            con.Open();
-
-            string stm = "DELETE FROM Records WHERE record_id = @id";
-
-            using var cmd = new MySqlCommand(stm, con);
-            cmd.Parameters.AddWithValue("@id", id);
-
-            cmd.ExecuteNonQuery();
-         }
-
-         public bool SetRecordDeleted(int id){
-            // string cs = Connection.conString;
-            using var con = new MySqlConnection(cs);
-            con.Open();
-
-            string stm = "UPDATE Records SET deleted = 1 WHERE record_id = @id";
-
-            using var cmd = new MySqlCommand(stm, con);
-            cmd.Parameters.AddWithValue("@id", id);
-
-            int rowsAffected = cmd.ExecuteNonQuery();
-
-            return rowsAffected > 0;
-         }
-
-        public List<Record> GetRecordsByUserId(int id)
+        public async Task DeleteRecordAsync(int id)
         {
-            List<Record> records = new List<Record>();
+            using var con = new MySqlConnection(_connectionString);
+            await con.OpenAsync();
 
-            // string cs = Connection.conString;
-            using var con = new MySqlConnection(cs);
-            con.Open();
-
-            string stm = "SELECT record_id, user_id, car_id, event, class_rank, time_min, time_sec, time_ms, cpu_diff, deleted, date FROM Records WHERE user_id = @id";
-
-            using var cmd = new MySqlCommand(stm, con);
-
+            const string sql = "DELETE FROM Records WHERE record_id = @id";
+            using var cmd = new MySqlCommand(sql, con);
             cmd.Parameters.AddWithValue("@id", id);
 
-            using var reader = cmd.ExecuteReader();
-            DataTable dataTable = new DataTable();
-            dataTable.Load(reader);
+            await cmd.ExecuteNonQueryAsync();
+        }
 
-            foreach (DataRow row in dataTable.Rows)
+        public async Task<bool> SetRecordDeletedAsync(int id)
+        {
+            using var con = new MySqlConnection(_connectionString);
+            await con.OpenAsync();
+
+            const string sql = "UPDATE Records SET deleted = 1 WHERE record_id = @id";
+            using var cmd = new MySqlCommand(sql, con);
+            cmd.Parameters.AddWithValue("@id", id);
+
+            return await cmd.ExecuteNonQueryAsync() > 0;
+        }
+
+        public async Task<List<Record>> GetRecordsByUserIdAsync(int id)
+        {
+            var records = new List<Record>();
+
+            using var con = new MySqlConnection(_connectionString);
+            await con.OpenAsync();
+
+            const string sql = "SELECT record_id, user_id, car_id, event, class_rank, time_min, time_sec, time_ms, cpu_diff, deleted, date FROM Records WHERE user_id = @id";
+            using var cmd = new MySqlCommand(sql, con);
+            cmd.Parameters.AddWithValue("@id", id);
+
+            using var reader = (MySqlDataReader)await cmd.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
             {
-                Record record = new Record
-                {
-                    RecordId = Convert.ToInt32(row["record_id"]),
-                    UserId = Convert.ToInt32(row["user_id"]),
-                    CarId = Convert.ToInt32(row["car_id"]),
-                    Event = row["event"].ToString(),
-                    ClassRank = row["class_rank"].ToString(),
-                    TimeMin = Convert.ToInt32(row["time_min"]),
-                    TimeSec = Convert.ToInt32(row["time_sec"]),
-                    TimeMs = Convert.ToInt32(row["time_ms"]),
-                    CpuDiff = row["cpu_diff"].ToString(),
-                    AddDate = Convert.ToDateTime(row["date"]),
-                    Deleted = Convert.ToInt32(row["deleted"]),
-                    
-                };
-                records.Add(record);
+                records.Add(MapRecord(reader, includeDate: true));
             }
+
             return records;
         }
+
+        private static Record MapRecord(MySqlDataReader reader, bool includeDate) => new()
+        {
+            RecordId = reader.GetInt32("record_id"),
+            UserId = reader.GetInt32("user_id"),
+            CarId = reader.GetInt32("car_id"),
+            Event = reader.GetString("event"),
+            ClassRank = reader.GetString("class_rank"),
+            TimeMin = reader.GetInt32("time_min"),
+            TimeSec = reader.GetInt32("time_sec"),
+            TimeMs = reader.GetInt32("time_ms"),
+            CpuDiff = reader.GetString("cpu_diff"),
+            AddDate = includeDate ? reader.GetDateTime("date") : default,
+            Deleted = reader.GetInt32("deleted"),
+        };
     }
 }

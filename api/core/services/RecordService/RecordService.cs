@@ -1,57 +1,52 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using api.core.models;
-using api.core.models.responses;
 
 namespace api.core.services.RecordService
 {
     public class RecordService : IRecordService
     {
-        private IRecordRepository recordRepository;
-        public RecordService(IRecordRepository recordRepository){
-            this.recordRepository = recordRepository;
+        private readonly IRecordRepository _recordRepository;
+
+        public RecordService(IRecordRepository recordRepository)
+        {
+            _recordRepository = recordRepository;
         }
 
-        public void CreateRecord(Record record)
+        public async Task CreateRecordAsync(Record record)
         {
-            recordRepository.CreateRecord(record);
+            await _recordRepository.CreateRecordAsync(record);
         }
 
-        public void DeleteRecord(int id)
+        public async Task DeleteRecordAsync(int id)
         {
-            recordRepository.DeleteRecord(id);
+            await _recordRepository.DeleteRecordAsync(id);
         }
 
-        public List<Record> GetAllRecords()
+        public async Task<List<Record>> GetAllRecordsAsync()
         {
-            var records = recordRepository.GetAllRecords();
-            return records;
+            return await _recordRepository.GetAllRecordsAsync();
         }
 
-        public Record GetRecordByID(int id)
+        public async Task<Record?> GetRecordByIdAsync(int id)
         {
-            Record record = recordRepository.GetRecordByID(id);
-            return record;
+            return await _recordRepository.GetRecordByIdAsync(id);
         }
 
-        public List<Record> GetRecordsByUserId(int id)
+        public async Task<List<Record>> GetRecordsByUserIdAsync(int id)
         {
-            var records = recordRepository.GetRecordsByUserId(id);
-            return records.OrderBy(record => (record.TimeMin * 60 * 1000) + (record.TimeSec * 1000) + record.TimeMs).ToList();
+            var records = await _recordRepository.GetRecordsByUserIdAsync(id);
+            return records
+                .OrderBy(r => (r.TimeMin * 60 * 1000) + (r.TimeSec * 1000) + r.TimeMs)
+                .ToList();
         }
 
-        public bool SetRecordDeleted(int id)
+        public async Task<bool> SetRecordDeletedAsync(int id)
         {
-            bool rowsAffected = recordRepository.SetRecordDeleted(id);
-            return rowsAffected;
+            return await _recordRepository.SetRecordDeletedAsync(id);
         }
 
-        public bool UpdateRecord(Record record, int id)
+        public async Task<bool> UpdateRecordAsync(Record record, int id)
         {
-            bool rowsAffected = recordRepository.UpdateRecord(record, id);
-            return rowsAffected;
+            return await _recordRepository.UpdateRecordAsync(record, id);
         }
     }
 }

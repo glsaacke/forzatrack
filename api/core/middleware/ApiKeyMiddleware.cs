@@ -14,8 +14,8 @@ namespace api.core.middleware
         public ApiKeyMiddleware(RequestDelegate next, IConfiguration configuration)
         {
             _next = next;
-            _apiKey = configuration["API_KEY"];
-
+            _apiKey = configuration["API_KEY"]
+                ?? throw new InvalidOperationException("API_KEY configuration value is not set.");
         }
 
         public async Task Invoke(HttpContext context)
@@ -28,7 +28,6 @@ namespace api.core.middleware
 
             if (!context.Request.Headers.TryGetValue(API_KEY_HEADER, out var extractedApiKey) || extractedApiKey != _apiKey)
             {
-                System.Console.WriteLine(_apiKey);
                 context.Response.StatusCode = 401; // Unauthorized
                 await context.Response.WriteAsync("Unauthorized: Invalid API Key");
                 return;

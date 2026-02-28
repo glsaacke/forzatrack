@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using api.core.models;
 using api.core.models.responses;
 
@@ -9,12 +5,12 @@ namespace api.core.services.UserService
 {
     public interface IUserService
     {
-        List<User> GetAllUsers();
-        User GetUserByID(int id);
-        AuthResponse CreateUser(CreateUser user);
-        bool UpdateUser(User user, int id);
-        void DeleteUser(int id);
-        bool SetUserDeleted(int id);
-        AuthResponse AuthenticateUser(string email, string password);
+        Task<List<User>> GetAllUsersAsync();
+        Task<User?> GetUserByIdAsync(int id);
+        Task<AuthResponse> CreateUserAsync(CreateUser user);
+        Task<bool> UpdateUserAsync(User user, int id);
+        Task DeleteUserAsync(int id);
+        Task<bool> SetUserDeletedAsync(int id);
+        Task<AuthResponse> AuthenticateUserAsync(string email, string password);
     }
 }

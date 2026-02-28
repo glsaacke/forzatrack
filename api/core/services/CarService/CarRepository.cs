@@ -1,146 +1,109 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Data;
-using System.Data.SqlClient;
 using MySql.Data.MySqlClient;
 using api.core.models;
-using api.core.data;
 
 namespace api.core.services.CarService
 {
     public class CarRepository : ICarRepository
     {
-        private readonly string cs;
-        public CarRepository(string cs){
-            this.cs = cs;
-        }
-         public List<Car> GetAllCars(){
-            List<Car> cars = new List<Car>();
+        private readonly string _connectionString;
 
-            // string cs = Connection.conString;
-            using var con = new MySqlConnection(cs);
-            con.Open();
-
-            string stm = "SELECT car_id, make, model, year, deleted FROM Cars";
-
-            using var cmd = new MySqlCommand(stm, con);
-
-            using var reader = cmd.ExecuteReader();
-            DataTable dataTable = new DataTable();
-            dataTable.Load(reader);
-
-            foreach (DataRow row in dataTable.Rows)
-            {
-                Car car = new Car
-                {
-                    CarId = Convert.ToInt32(row["car_id"]),
-                    Make = row["make"].ToString(),
-                    Model = row["model"].ToString(),
-                    Year = Convert.ToInt32(row["year"]),
-                    Deleted = Convert.ToInt32(row["deleted"]),
-                };
-                cars.Add(car);
-            }
-            return cars;
-         }
-        public Car GetCarByID(int id){
-            // string cs = Connection.conString;
-            using var con = new MySqlConnection(cs);
-            con.Open();
-
-            string stm = "SELECT car_id, make, model, year, deleted FROM Cars WHERE car_id = @id";
-
-            using var cmd = new MySqlCommand(stm, con);
-
-            cmd.Parameters.AddWithValue("@id", id);
-
-            using var reader = cmd.ExecuteReader();
-            DataTable dataTable = new DataTable();
-            dataTable.Load(reader);
-
-            if (dataTable.Rows.Count > 0)
-            {
-                DataRow row = dataTable.Rows[0];
-                return new Car
-                {
-                    CarId = Convert.ToInt32(row["car_id"]),
-                    Make = row["make"].ToString(),
-                    Model = row["model"].ToString(),
-                    Year = Convert.ToInt32(row["year"]),
-                    Deleted = Convert.ToInt32(row["deleted"]),
-                };
-            }
-
-            return null;
-         }
-
-
-         public void CreateCar(Car car){
-            // string cs = Connection.conString;
-            using var con = new MySqlConnection(cs);
-            con.Open();
-
-            string stm = @"INSERT INTO Cars(make, model, year, deleted) VALUES(@make, @model, @year, @deleted)";
-
-            using var cmd = new MySqlCommand(stm,con);
-
-            cmd.Parameters.AddWithValue("@make", car.Make);
-            cmd.Parameters.AddWithValue("@model", car.Model);
-            cmd.Parameters.AddWithValue("@year", car.Year);
-            cmd.Parameters.AddWithValue("deleted", car.Deleted);
-
-            cmd.Prepare();
-
-            cmd.ExecuteNonQuery();
-         }
-
-         public bool UpdateCar(Car car, int id){
-            // string cs = Connection.conString;
-            using var con = new MySqlConnection(cs);
-            con.Open();
-
-            string stm = $"UPDATE Cars SET make = @make, model = @model, year = @year WHERE car_id = @id";
-
-            using var cmd = new MySqlCommand(stm, con);
-            cmd.Parameters.AddWithValue("@make", car.Make);
-            cmd.Parameters.AddWithValue("@model", car.Model);
-            cmd.Parameters.AddWithValue("@year", car.Year);
-            cmd.Parameters.AddWithValue("@id", id);
-
-            int rowsAffected = cmd.ExecuteNonQuery();
-
-            return rowsAffected > 0;
-         }
-
-         public void DeleteCar(int id){
-            // string cs = Connection.conString;
-            using var con = new MySqlConnection(cs);
-            con.Open();
-
-            string stm = "DELETE FROM Cars WHERE car_id = @id";
-
-            using var cmd = new MySqlCommand(stm, con);
-            cmd.Parameters.AddWithValue("@id", id);
-
-            cmd.ExecuteNonQuery();
-         }
-
-        public bool SetCarDeleted(int id)
+        public CarRepository(string connectionString)
         {
-            // string cs = Connection.conString;
-            using var con = new MySqlConnection(cs);
-            con.Open();
+            _connectionString = connectionString;
+        }
 
-            string stm = "UPDATE Cars SET deleted = 1 WHERE car_id = @id";
+        public async Task<List<Car>> GetAllCarsAsync()
+        {
+            var cars = new List<Car>();
 
-            using var cmd = new MySqlCommand(stm, con);
+            using var con = new MySqlConnection(_connectionString);
+            await con.OpenAsync();
+
+            const string sql = "SELECT car_id, make, model, year, deleted FROM Cars";
+            using var cmd = new MySqlCommand(sql, con);
+            using var reader = (MySqlDataReader)await cmd.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
+            {
+                cars.Add(MapCar(reader));
+            }
+
+            return cars;
+        }
+
+        public async Task<Car?> GetCarByIdAsync(int id)
+        {
+            using var con = new MySqlConnection(_connectionString);
+            await con.OpenAsync();
+
+            const string sql = "SELECT car_id, make, model, year, deleted FROM Cars WHERE car_id = @id";
+            using var cmd = new MySqlCommand(sql, con);
             cmd.Parameters.AddWithValue("@id", id);
 
-            int rowsAffected = cmd.ExecuteNonQuery();
-
-            return rowsAffected > 0;
+            using var reader = (MySqlDataReader)await cmd.ExecuteReaderAsync();
+            return await reader.ReadAsync() ? MapCar(reader) : null;
         }
+
+        public async Task CreateCarAsync(Car car)
+        {
+            using var con = new MySqlConnection(_connectionString);
+            await con.OpenAsync();
+
+            const string sql = "INSERT INTO Cars(make, model, year, deleted) VALUES(@make, @model, @year, 0)";
+            using var cmd = new MySqlCommand(sql, con);
+            cmd.Parameters.AddWithValue("@make", car.Make);
+            cmd.Parameters.AddWithValue("@model", car.Model);
+            cmd.Parameters.AddWithValue("@year", car.Year);
+
+            await cmd.ExecuteNonQueryAsync();
+        }
+
+        public async Task<bool> UpdateCarAsync(Car car, int id)
+        {
+            using var con = new MySqlConnection(_connectionString);
+            await con.OpenAsync();
+
+            const string sql = "UPDATE Cars SET make = @make, model = @model, year = @year WHERE car_id = @id";
+            using var cmd = new MySqlCommand(sql, con);
+            cmd.Parameters.AddWithValue("@make", car.Make);
+            cmd.Parameters.AddWithValue("@model", car.Model);
+            cmd.Parameters.AddWithValue("@year", car.Year);
+            cmd.Parameters.AddWithValue("@id", id);
+
+            return await cmd.ExecuteNonQueryAsync() > 0;
+        }
+
+        public async Task DeleteCarAsync(int id)
+        {
+            using var con = new MySqlConnection(_connectionString);
+            await con.OpenAsync();
+
+            const string sql = "DELETE FROM Cars WHERE car_id = @id";
+            using var cmd = new MySqlCommand(sql, con);
+            cmd.Parameters.AddWithValue("@id", id);
+
+            await cmd.ExecuteNonQueryAsync();
+        }
+
+        public async Task<bool> SetCarDeletedAsync(int id)
+        {
+            using var con = new MySqlConnection(_connectionString);
+            await con.OpenAsync();
+
+            const string sql = "UPDATE Cars SET deleted = 1 WHERE car_id = @id";
+            using var cmd = new MySqlCommand(sql, con);
+            cmd.Parameters.AddWithValue("@id", id);
+
+            return await cmd.ExecuteNonQueryAsync() > 0;
+        }
+
+        private static Car MapCar(MySqlDataReader reader) => new()
+        {
+            CarId = reader.GetInt32("car_id"),
+            Make = reader.GetString("make"),
+            Model = reader.GetString("model"),
+            Year = reader.GetInt32("year"),
+            Deleted = reader.GetInt32("deleted"),
+        };
     }
 }

@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useState } from "react";
 import { authenticateUser } from '../services/api';
 import '../styles/Login.css'
@@ -12,27 +12,30 @@ const Login = () => {
 
     const navigate = useNavigate()
 
-    async function handleSubmit(e){
+    async function handleSubmit(e) {
         e.preventDefault()
-
         setIsLoading(true)
+        setLoginError(false)
 
-        const response = await authenticateUser(email, password)
+        try {
+            const response = await authenticateUser(email, password)
 
-        setIsLoading(false) 
-
-        if(response.success){
-            console.log(response)
-            sessionStorage.setItem("userId", response.user.userId)
-            navigate('/dashboard/records')
-        }
-        else{
-            setErrorMessage(response.message)
+            if (response.success) {
+                sessionStorage.setItem("userId", response.user.userId)
+                navigate('/dashboard/records')
+            } else {
+                setErrorMessage(response.message)
+                setLoginError(true)
+            }
+        } catch {
+            setErrorMessage("An unexpected error occurred. Please try again.")
             setLoginError(true)
+        } finally {
+            setIsLoading(false)
         }
     }
 
-    return ( 
+    return (
         <div className="login-container">
             <div className="login-background"></div>
             <div className="home-overlay"></div>
@@ -40,21 +43,19 @@ const Login = () => {
                 <h2>LOGIN</h2>
                 <form onSubmit={handleSubmit}>
                     <label>EMAIL</label>
-                    <input type="text" required value={email} onChange={(e) => setEmail(e.target.value)}/>
+                    <input type="text" required value={email} onChange={(e) => setEmail(e.target.value)} />
                     <label>PASSWORD</label>
-                    <input type="text" required value={password} onChange={(e) => setPassword(e.target.value)}/>
+                    <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
                     {loginError && <p className='login-error-message'>{errorMessage}</p>}
                     <button className='login-login' disabled={isLoading}>
-                    {isLoading ? <div className="spinner"></div> : "GO"}
+                        {isLoading ? <div className="spinner"></div> : "GO"}
                     </button>
                 </form>
-                
-    
-                <button className='login-create' onClick={() => navigate('/signup')}>CREATE ACCOUNT</button>
 
+                <button className='login-create' onClick={() => navigate('/signup')}>CREATE ACCOUNT</button>
             </div>
         </div>
-     );
+    );
 }
- 
+
 export default Login;

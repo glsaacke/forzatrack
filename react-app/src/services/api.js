@@ -1,104 +1,68 @@
-const BASE_URL = "https://forzatrack.fly.dev/api";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://forzatrack.fly.dev/api";
 const API_KEY = import.meta.env.VITE_API_KEY;
 
+const defaultHeaders = {
+  "Content-Type": "application/json",
+  "X-Api-Key": API_KEY,
+};
 
-
-export async function authenticateUser(email, password) {
-  const response = await fetch(`${BASE_URL}/User/AuthenticateUser?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Api-Key': API_KEY
-    }
+async function apiFetch(url, options = {}) {
+  const response = await fetch(url, {
+    ...options,
+    headers: { ...defaultHeaders, ...options.headers },
   });
 
-  const authResponse = await response.json();
-  return authResponse;
+  if (!response.ok) {
+    const errorBody = await response.text().catch(() => "");
+    throw new Error(errorBody || `Request failed with status ${response.status}`);
+  }
+
+  const contentType = response.headers.get("content-type");
+  if (contentType && contentType.includes("application/json")) {
+    return response.json();
+  }
+
+  return null;
 }
 
-export async function createUser(username, email, password){
-  const user = {username: username, email: email, password: password}
-
-  let response = await fetch(`${BASE_URL}/User/CreateUser`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'X-Api-Key': API_KEY},
-    body: JSON.stringify(user)
-  })
-  
-  const createResponse = await response.json()
-  return createResponse
+export async function authenticateUser(email, password) {
+  return apiFetch(
+    `${BASE_URL}/User/AuthenticateUser?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
+  );
 }
 
-export async function getRecordsByUserId(id){
-  const response = await fetch(`${BASE_URL}/Record/GetRecordsByUserId?id=${id}`,{
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Api-Key': API_KEY
-    }
-  })
-  const records = await response.json()
-  return records
+export async function createUser(username, email, password) {
+  return apiFetch(`${BASE_URL}/User/CreateUser`, {
+    method: "POST",
+    body: JSON.stringify({ username, email, password }),
+  });
 }
 
-export async function getBuildById(id){
-  const response = await fetch(`${BASE_URL}/Build/GetBuildById/${id}`,{
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Api-Key': API_KEY
-    }
-  })
-  const build = await response.json()
-  return build
+export async function getRecordsByUserId(id) {
+  return apiFetch(`${BASE_URL}/Record/GetRecordsByUserId?id=${id}`);
 }
 
-export async function getCarById(id){
-  const response = await fetch(`${BASE_URL}/Car/GetCarById/${id}`,{
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Api-Key': API_KEY
-    }
-  })
-  const car = await response.json()
-  return car
+export async function getBuildById(id) {
+  return apiFetch(`${BASE_URL}/Build/GetBuildById/${id}`);
 }
 
-export async function getAllCars(){
-  const response = await fetch(`${BASE_URL}/Car/GetAllCars`,{
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Api-Key': API_KEY
-    }
-  })
-  const cars = await response.json()
-  return cars
+export async function getCarById(id) {
+  return apiFetch(`${BASE_URL}/Car/GetCarById/${id}`);
 }
 
-export async function createRecord(record){
+export async function getAllCars() {
+  return apiFetch(`${BASE_URL}/Car/GetAllCars`);
+}
 
-  let response = await fetch(`${BASE_URL}/Record/CreateRecord`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'X-Api-Key': API_KEY },
-    body: JSON.stringify(record)
-  })
-
-  const jsonResponse = await response.json()
-
-  return jsonResponse
-
+export async function createRecord(record) {
+  return apiFetch(`${BASE_URL}/Record/CreateRecord`, {
+    method: "POST",
+    body: JSON.stringify(record),
+  });
 }
 
 export async function setRecordDeleted(recordId) {
-  let response = await fetch(`${BASE_URL}/Record/SetRecordDeleted/${recordId}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Api-Key': API_KEY
-    }
-  })
-
-  return response
+  return apiFetch(`${BASE_URL}/Record/SetRecordDeleted/${recordId}`, {
+    method: "PUT",
+  });
 }

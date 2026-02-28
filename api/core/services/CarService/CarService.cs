@@ -1,50 +1,45 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using api.core.models;
 
 namespace api.core.services.CarService
 {
     public class CarService : ICarService
     {
-        private ICarRepository carRepository;
-        public CarService(ICarRepository carRepository){
-            this.carRepository = carRepository;
+        private readonly ICarRepository _carRepository;
+
+        public CarService(ICarRepository carRepository)
+        {
+            _carRepository = carRepository;
         }
 
-        public void CreateCar(Car car)
+        public async Task CreateCarAsync(Car car)
         {
-            carRepository.CreateCar(car);
+            await _carRepository.CreateCarAsync(car);
         }
 
-        public void DeleteCar(int id)
+        public async Task DeleteCarAsync(int id)
         {
-            carRepository.DeleteCar(id);
+            await _carRepository.DeleteCarAsync(id);
         }
 
-        public List<Car> GetAllCars()
+        public async Task<List<Car>> GetAllCarsAsync()
         {
-            var cars = carRepository.GetAllCars();
+            var cars = await _carRepository.GetAllCarsAsync();
             return cars.OrderBy(c => c.Make).ThenByDescending(c => c.Year).ThenBy(c => c.Model).ToList();
         }
 
-        public Car GetCarByID(int id)
+        public async Task<Car?> GetCarByIdAsync(int id)
         {
-            Car car = carRepository.GetCarByID(id);
-            return car;
+            return await _carRepository.GetCarByIdAsync(id);
         }
 
-        public bool SetCarDeleted(int id)
+        public async Task<bool> SetCarDeletedAsync(int id)
         {
-            bool rowsAffected = carRepository.SetCarDeleted(id);
-            return rowsAffected;
+            return await _carRepository.SetCarDeletedAsync(id);
         }
 
-        public bool UpdateCar(Car car, int id)
+        public async Task<bool> UpdateCarAsync(Car car, int id)
         {
-            bool rowsAffected = carRepository.UpdateCar(car, id);
-            return rowsAffected;
+            return await _carRepository.UpdateCarAsync(car, id);
         }
     }
 }

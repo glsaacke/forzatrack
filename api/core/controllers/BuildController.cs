@@ -1,13 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using api.core.services.BuildService;
 using api.core.controllers.models;
 using api.core.models;
-using Microsoft.Extensions.Logging;
+using api.core.services.BuildService;
 
 namespace api.core.controllers
 {
@@ -15,158 +9,91 @@ namespace api.core.controllers
     [ApiController]
     public class BuildController : ControllerBase
     {
-        private IBuildService buildService;
-        private ILogger<BuildController> logger;
-        public BuildController(IBuildService buildService, ILogger<BuildController> logger){
-            this.buildService = buildService;
-            this.logger = logger;
+        private readonly IBuildService _buildService;
+
+        public BuildController(IBuildService buildService)
+        {
+            _buildService = buildService;
         }
 
         [HttpGet("GetAllBuilds")]
-        public IActionResult GetAllBuilds()
+        public async Task<IActionResult> GetAllBuilds()
         {
-            try{
-                var builds = buildService.GetAllBuilds();
+            var builds = await _buildService.GetAllBuildsAsync();
 
-                if (builds == null || builds.Count == 0)
-                {
-                    logger.LogWarning("No builds found.");
-                    return NotFound(new { Message = "No builds found." });
-                } else {
-                    return Ok(builds);
-                }
-            }
-            catch(Exception ex){
-                logger.LogError(ex, "An error occurred while fetching all builds.");
-                throw;
-            }
+            if (builds == null || builds.Count == 0)
+                return NotFound(new { Message = "No builds found." });
+
+            return Ok(builds);
         }
 
         [HttpGet("GetBuildById/{id}")]
-        public IActionResult GetBuildById(int id)
+        public async Task<IActionResult> GetBuildById(int id)
         {
-            Build build;
-            try{
-                build = buildService.GetBuildByID(id);
+            var build = await _buildService.GetBuildByIdAsync(id);
 
-                if (build == null){
-                    logger.LogWarning("No cars found.");
-                    return NotFound(new { Message = "No cars found." });
-                } else {
-                    return Ok(build);
-                }
-            }
-            catch(Exception ex){
-                logger.LogError(ex, "An error occurred while fetching car.");
-                throw;
-            }
+            if (build == null)
+                return NotFound(new { Message = "No build found matching the id." });
+
+            return Ok(build);
         }
 
         [HttpPost("CreateBuild")]
-        public IActionResult CreateBuild([FromBody] BuildRequest request)
+        public async Task<IActionResult> CreateBuild([FromBody] BuildRequest request)
         {
-            if(request == null){
-                logger.LogError("The request was null");
-                return BadRequest("Request body cannot be null.");
-            }
-            else{
-                Build build;
-                try{
+            var build = new Build
+            {
+                UserId = request.UserId,
+                CarId = request.CarId,
+                Rank = request.Rank,
+                SpeedST = request.SpeedST,
+                HandlingST = request.HandlingST,
+                AccelerationST = request.AccelerationST,
+                LaunchST = request.LaunchST,
+                BrakingST = request.BrakingST,
+                OffroadST = request.OffroadST,
+                TopSpeed = request.TopSpeed,
+                ZeroToSixty = request.ZeroToSixty,
+            };
 
-                    build = new Build{
-                        UserId = request.UserId,
-                        CarId = request.CarId,
-                        Rank = request.Rank,
-                        SpeedST = request.SpeedST,
-                        HandlingST = request.HandlingST,
-                        AccelerationST = request.AccelerationST,
-                        LaunchST = request.LaunchST,
-                        BrakingST = request.BrakingST,
-                        OffroadST = request.OffroadST,
-                        TopSpeed = request.TopSpeed,
-                        ZeroToSixty = request.ZeroToSixty,
-                        Deleted = request.Deleted
-                    };
-
-                    buildService.CreateBuild(build);
-
-                    return Ok();
-                }
-                catch(Exception ex){
-                    logger.LogError(ex, "An error occurred while creating build.");
-                    throw;
-                }
-            }
+            await _buildService.CreateBuildAsync(build);
+            return Ok();
         }
 
         [HttpPut("UpdateBuild/{id}")]
-        public IActionResult UpdateBuild(int id, [FromBody] BuildRequest request)
+        public async Task<IActionResult> UpdateBuild(int id, [FromBody] BuildRequest request)
         {
-             if(request == null){
-                logger.LogError("The request was null");
-                return BadRequest("Request body cannot be null.");
-            }
-            else{
-                Build build;
-                try{
+            var build = new Build
+            {
+                UserId = request.UserId,
+                CarId = request.CarId,
+                Rank = request.Rank,
+                SpeedST = request.SpeedST,
+                HandlingST = request.HandlingST,
+                AccelerationST = request.AccelerationST,
+                LaunchST = request.LaunchST,
+                BrakingST = request.BrakingST,
+                OffroadST = request.OffroadST,
+                TopSpeed = request.TopSpeed,
+                ZeroToSixty = request.ZeroToSixty,
+            };
 
-                    build = new Build{
-                        UserId = request.UserId,
-                        CarId = request.CarId,
-                        Rank = request.Rank,
-                        SpeedST = request.SpeedST,
-                        HandlingST = request.HandlingST,
-                        AccelerationST = request.AccelerationST,
-                        LaunchST = request.LaunchST,
-                        BrakingST = request.BrakingST,
-                        OffroadST = request.OffroadST,
-                        TopSpeed = request.TopSpeed,
-                        ZeroToSixty = request.ZeroToSixty,
-                        Deleted = request.Deleted
-                    };
-
-                    bool rowsAffected = buildService.UpdateBuild(build, id);
-                    if(rowsAffected){
-                        return Ok();
-                    } else {
-                        return NotFound("No Builds found matching the id.");
-                    }
-                }
-                catch(Exception ex){
-                    logger.LogError(ex, "An error occurred while updating build.");
-                    throw;
-                }
-            }
+            var updated = await _buildService.UpdateBuildAsync(build, id);
+            return updated ? Ok() : NotFound("No build found matching the id.");
         }
 
         [HttpPut("SetBuildDeleted/{id}")]
-        public IActionResult SetBuildDeleted(int id)
+        public async Task<IActionResult> SetBuildDeleted(int id)
         {
-            try{
-                bool rowsAffected = buildService.SetBuildDeleted(id);
-                if(rowsAffected){
-                    return Ok();
-                } else {
-                    return NotFound("No Builds found matching the id.");
-                }
-            }
-            catch(Exception ex){
-                logger.LogError(ex, "An error occured while setting Build Deleted");
-                throw;
-            }
+            var updated = await _buildService.SetBuildDeletedAsync(id);
+            return updated ? Ok() : NotFound("No build found matching the id.");
         }
 
         [HttpDelete("DeleteBuild/{id}")]
-        public IActionResult DeleteBuild(int id)
+        public async Task<IActionResult> DeleteBuild(int id)
         {
-            try{
-                buildService.DeleteBuild(id);
-                return Ok();
-            }
-            catch(Exception ex){
-                logger.LogError(ex, "An error occurred while deleting build.");
-                throw;
-            }
+            await _buildService.DeleteBuildAsync(id);
+            return Ok();
         }
     }
 }

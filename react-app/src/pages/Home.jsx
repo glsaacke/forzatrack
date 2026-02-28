@@ -1,11 +1,13 @@
-import {Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import { useEffect } from 'react'
 import '../styles/Home.css'
-import { useEffect } from 'react';
 
-const Home = ({setOnDashboard}) => {
-    setOnDashboard(false)
-    
-    return ( 
+const Home = ({ setOnDashboard }) => {
+    useEffect(() => {
+        setOnDashboard(false)
+    }, [setOnDashboard])
+
+    return (
         <div className="home-container">
             <div className="home-overlay"></div>
             <div className="home-background"></div>
@@ -15,7 +17,7 @@ const Home = ({setOnDashboard}) => {
                 <Link to='/login' className='home-login'>GET STARTED</Link>
             </div>
         </div>
-     );
+    );
 }
- 
+
 export default Home;

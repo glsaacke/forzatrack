@@ -1,13 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using api.core.controllers.models;
 using api.core.models;
 using api.core.services.CarService;
-using Microsoft.Extensions.Logging;
 
 namespace api.core.controllers
 {
@@ -15,142 +9,75 @@ namespace api.core.controllers
     [ApiController]
     public class CarController : ControllerBase
     {
-        private ICarService carService;
-        private ILogger<CarController> logger;
-        public CarController(ICarService carService, ILogger<CarController> logger){
-            this.carService = carService;
-            this.logger = logger;
+        private readonly ICarService _carService;
+
+        public CarController(ICarService carService)
+        {
+            _carService = carService;
         }
 
         [HttpGet("GetAllCars")]
-        public IActionResult GetAllCars()
+        public async Task<IActionResult> GetAllCars()
         {
-            try{
-                var cars = carService.GetAllCars();
+            var cars = await _carService.GetAllCarsAsync();
 
-                if (cars == null || cars.Count == 0)
-                {
-                    logger.LogWarning("No cars found.");
-                    return NotFound(new { Message = "No cars found." });
-                } else {
-                    return Ok(cars);
-                }
-            }
-            catch(Exception ex){
-                logger.LogError(ex, "An error occurred while fetching all cars.");
-                throw;
-            }
+            if (cars == null || cars.Count == 0)
+                return NotFound(new { Message = "No cars found." });
+
+            return Ok(cars);
         }
 
         [HttpGet("GetCarById/{id}")]
-        public IActionResult GetCarById(int id)
+        public async Task<IActionResult> GetCarById(int id)
         {
-            Car car;
-            try{
-                car = carService.GetCarByID(id);
+            var car = await _carService.GetCarByIdAsync(id);
 
-                if (car == null){
-                    logger.LogWarning("No cars found.");
-                    return NotFound(new { Message = "No cars found." });
-                } else {
-                    return Ok(car);
-                }
-            }
-            catch(Exception ex){
-                logger.LogError(ex, "An error occurred while fetching car.");
-                throw;
-            }
+            if (car == null)
+                return NotFound(new { Message = "No car found matching the id." });
+
+            return Ok(car);
         }
 
         [HttpPost("CreateCar")]
-        public IActionResult CreateCar([FromBody] CarRequest request)
+        public async Task<IActionResult> CreateCar([FromBody] CarRequest request)
         {
-            if(request == null){
-                logger.LogError("The request was null");
-                return BadRequest("Request body cannot be null.");
-            }
-            else{
-                Car car;
-                try{
+            var car = new Car
+            {
+                Make = request.Make,
+                Model = request.Model,
+                Year = request.Year,
+            };
 
-                    car = new Car{
-                        Make = request.Make,
-                        Model = request.Model,
-                        Year = request.Year,
-                        Deleted = request.Deleted
-                    };
-
-                    carService.CreateCar(car);
-
-                    return Ok();
-                }
-                catch(Exception ex){
-                    logger.LogError(ex, "An error occurred while creating car.");
-                    throw;
-                }
-            }
+            await _carService.CreateCarAsync(car);
+            return Ok();
         }
 
         [HttpPut("UpdateCar/{id}")]
-        public IActionResult UpdateCar(int id, [FromBody] CarRequest request)
+        public async Task<IActionResult> UpdateCar(int id, [FromBody] CarRequest request)
         {
-             if(request == null){
-                logger.LogError("The request was null");
-                return BadRequest("Request body cannot be null.");
-            }
-            else{
-                Car car;
-                try{
+            var car = new Car
+            {
+                Make = request.Make,
+                Model = request.Model,
+                Year = request.Year,
+            };
 
-                    car = new Car{
-                        Make = request.Make,
-                        Model = request.Model,
-                        Year = request.Year,
-                        Deleted = request.Deleted
-                    };
-
-                    bool rowsAffected = carService.UpdateCar(car, id);
-                    if(rowsAffected){
-                        return Ok();
-                    } else {
-                        return NotFound("No Cars found matching the id.");
-                    }
-                }
-                catch(Exception ex){
-                    logger.LogError(ex, "An error occurred while updating car.");
-                    throw;
-                }
-            }
+            var updated = await _carService.UpdateCarAsync(car, id);
+            return updated ? Ok() : NotFound("No car found matching the id.");
         }
 
         [HttpPut("SetCarDeleted/{id}")]
-        public IActionResult SetCarDeleted(int id)
+        public async Task<IActionResult> SetCarDeleted(int id)
         {
-            try{
-                bool rowsAffected = carService.SetCarDeleted(id);
-                if(rowsAffected){
-                    return Ok();
-                } else {
-                    return NotFound("No Cars found matching the id.");
-                }
-            }
-            catch(Exception ex){
-                logger.LogError(ex, "An error occured while setting Car Deleted");
-                throw;
-            }
+            var updated = await _carService.SetCarDeletedAsync(id);
+            return updated ? Ok() : NotFound("No car found matching the id.");
         }
 
         [HttpDelete("DeleteCar/{id}")]
-        public IActionResult DeleteCar(int id)
+        public async Task<IActionResult> DeleteCar(int id)
         {
-            try{
-                carService.DeleteCar(id);
-                return Ok();
-            }
-            catch(Exception ex){
-                logger.LogError(ex, "An error occurred while deleting car.");
-                throw;
-            }
+            await _carService.DeleteCarAsync(id);
+            return Ok();
         }
     }
 }

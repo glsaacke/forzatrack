@@ -1,211 +1,135 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Data;
-using System.Data.SqlClient;
 using MySql.Data.MySqlClient;
 using api.core.models;
-using api.core.data;
 
 namespace api.core.services.UserService
 {
     public class UserRepository : IUserRepository
     {
-        private readonly string cs;
-        public UserRepository(string cs){
-            this.cs = cs;
+        private readonly string _connectionString;
+
+        public UserRepository(string connectionString)
+        {
+            _connectionString = connectionString;
         }
 
-        public List<User> GetAllUsers(){
+        public async Task<List<User>> GetAllUsersAsync()
+        {
+            var users = new List<User>();
 
-            List<User> users = new List<User>();
+            using var con = new MySqlConnection(_connectionString);
+            await con.OpenAsync();
 
-            // string cs = Connection.conString;
-            using var con = new MySqlConnection(cs);
-            con.Open();
+            const string sql = "SELECT user_id, username, email, password, deleted FROM Users";
+            using var cmd = new MySqlCommand(sql, con);
+            using var reader = (MySqlDataReader)await cmd.ExecuteReaderAsync();
 
-            string stm = "SELECT user_id, username, email, password, deleted FROM Users";
-
-            using var cmd = new MySqlCommand(stm, con);
-
-            using var reader = cmd.ExecuteReader();
-            DataTable dataTable = new DataTable();
-            dataTable.Load(reader);
-
-            foreach (DataRow row in dataTable.Rows)
+            while (await reader.ReadAsync())
             {
-                User user = new User
-                {
-                    UserId = Convert.ToInt32(row["user_id"]),
-                    Username = row["username"].ToString(),
-                    Email = row["email"].ToString(),
-                    Password = row["password"].ToString(),
-                    Deleted = Convert.ToInt32(row["deleted"]),
-                };
-                users.Add(user);
+                users.Add(MapUser(reader));
             }
+
             return users;
         }
 
-        public User GetUserByID(int id){
-            // string cs = Connection.conString;
-            using var con = new MySqlConnection(cs);
-            con.Open();
-
-            string stm = "SELECT user_id, username, email, password, deleted FROM Users WHERE user_id = @id";
-
-            using var cmd = new MySqlCommand(stm, con);
-
-            cmd.Parameters.AddWithValue("@id", id);
-
-            using var reader = cmd.ExecuteReader();
-            DataTable dataTable = new DataTable();
-            dataTable.Load(reader);
-
-            if (dataTable.Rows.Count > 0)
-            {
-                DataRow row = dataTable.Rows[0];
-                return new User
-                {
-                    UserId = Convert.ToInt32(row["user_id"]),
-                    Username = row["username"].ToString(),
-                    Email = row["email"].ToString(),
-                    Password = row["password"].ToString(),
-                    Deleted = Convert.ToInt32(row["deleted"]),
-                };
-            }
-
-            return null;
-         }
-
-        public void CreateUser(CreateUser user){
-            // string cs = Connection.conString;
-            using var con = new MySqlConnection(cs);
-            con.Open();
-
-            string stm = @"INSERT INTO Users(username, email, password, deleted) VALUES(@username, @email, @password, @deleted)";
-
-            using var cmd = new MySqlCommand(stm,con);
-
-            cmd.Parameters.AddWithValue("@username", user.Username);
-            cmd.Parameters.AddWithValue("@email", user.Email);
-            cmd.Parameters.AddWithValue("@password", user.Password);
-            cmd.Parameters.AddWithValue("@deleted", user.Deleted);
-
-            cmd.Prepare();
-
-            cmd.ExecuteNonQuery();
-         }
-
-        public bool UpdateUser(User user, int id){
-            // string cs = Connection.conString;
-            using var con = new MySqlConnection(cs);
-            con.Open();
-
-            string stm = $"UPDATE Users SET username = @username, email = @email, password = @password WHERE user_id = @id";
-
-            using var cmd = new MySqlCommand(stm, con);
-            cmd.Parameters.AddWithValue("@username", user.Username);
-            cmd.Parameters.AddWithValue("@email", user.Email);
-            cmd.Parameters.AddWithValue("@password", user.Password);
-            cmd.Parameters.AddWithValue("@id", id);
-
-            int rowsAffected = cmd.ExecuteNonQuery();
-
-            return rowsAffected > 0;
-         }
-
-        public void DeleteUser(int id){
-            // string cs = Connection.conString;
-            using var con = new MySqlConnection(cs);
-            con.Open();
-
-            string stm = "DELETE FROM Users WHERE user_id = @id";
-
-            using var cmd = new MySqlCommand(stm, con);
-            cmd.Parameters.AddWithValue("@id", id);
-
-            cmd.ExecuteNonQuery();
-         }
-
-         public bool SetUserDeleted(int id){
-            // string cs = Connection.conString;
-            using var con = new MySqlConnection(cs);
-            con.Open();
-
-            string stm = "UPDATE Users SET deleted = 1 WHERE user_id = @id";
-
-            using var cmd = new MySqlCommand(stm, con);
-            cmd.Parameters.AddWithValue("@id", id);
-
-            int rowsAffected = cmd.ExecuteNonQuery();
-
-            return rowsAffected > 0;
-         }
-
-        public User GetUserByEmail(string email)
+        public async Task<User?> GetUserByIdAsync(int id)
         {
-            // string cs = Connection.conString;
-            using var con = new MySqlConnection(cs);
-            con.Open();
+            using var con = new MySqlConnection(_connectionString);
+            await con.OpenAsync();
 
-            string stm = "SELECT user_id, username, email, password, deleted FROM Users WHERE email = @email";
+            const string sql = "SELECT user_id, username, email, password, deleted FROM Users WHERE user_id = @id";
+            using var cmd = new MySqlCommand(sql, con);
+            cmd.Parameters.AddWithValue("@id", id);
 
-            using var cmd = new MySqlCommand(stm, con);
+            using var reader = (MySqlDataReader)await cmd.ExecuteReaderAsync();
+            return await reader.ReadAsync() ? MapUser(reader) : null;
+        }
 
+        public async Task CreateUserAsync(CreateUser user)
+        {
+            using var con = new MySqlConnection(_connectionString);
+            await con.OpenAsync();
+
+            const string sql = "INSERT INTO Users(username, email, password, deleted) VALUES(@username, @email, @password, 0)";
+            using var cmd = new MySqlCommand(sql, con);
+            cmd.Parameters.AddWithValue("@username", user.Username);
+            cmd.Parameters.AddWithValue("@email", user.Email);
+            cmd.Parameters.AddWithValue("@password", user.Password);
+
+            await cmd.ExecuteNonQueryAsync();
+        }
+
+        public async Task<bool> UpdateUserAsync(User user, int id)
+        {
+            using var con = new MySqlConnection(_connectionString);
+            await con.OpenAsync();
+
+            const string sql = "UPDATE Users SET username = @username, email = @email, password = @password WHERE user_id = @id";
+            using var cmd = new MySqlCommand(sql, con);
+            cmd.Parameters.AddWithValue("@username", user.Username);
+            cmd.Parameters.AddWithValue("@email", user.Email);
+            cmd.Parameters.AddWithValue("@password", user.Password);
+            cmd.Parameters.AddWithValue("@id", id);
+
+            return await cmd.ExecuteNonQueryAsync() > 0;
+        }
+
+        public async Task DeleteUserAsync(int id)
+        {
+            using var con = new MySqlConnection(_connectionString);
+            await con.OpenAsync();
+
+            const string sql = "DELETE FROM Users WHERE user_id = @id";
+            using var cmd = new MySqlCommand(sql, con);
+            cmd.Parameters.AddWithValue("@id", id);
+
+            await cmd.ExecuteNonQueryAsync();
+        }
+
+        public async Task<bool> SetUserDeletedAsync(int id)
+        {
+            using var con = new MySqlConnection(_connectionString);
+            await con.OpenAsync();
+
+            const string sql = "UPDATE Users SET deleted = 1 WHERE user_id = @id";
+            using var cmd = new MySqlCommand(sql, con);
+            cmd.Parameters.AddWithValue("@id", id);
+
+            return await cmd.ExecuteNonQueryAsync() > 0;
+        }
+
+        public async Task<User?> GetUserByEmailAsync(string email)
+        {
+            using var con = new MySqlConnection(_connectionString);
+            await con.OpenAsync();
+
+            const string sql = "SELECT user_id, username, email, password, deleted FROM Users WHERE email = @email";
+            using var cmd = new MySqlCommand(sql, con);
             cmd.Parameters.AddWithValue("@email", email);
 
-            using var reader = cmd.ExecuteReader();
-            DataTable dataTable = new DataTable();
-            dataTable.Load(reader);
-
-            if (dataTable.Rows.Count > 0)
-            {
-                DataRow row = dataTable.Rows[0];
-                return new User
-                {
-                    UserId = Convert.ToInt32(row["user_id"]),
-                    Username = row["username"].ToString(),
-                    Email = row["email"].ToString(),
-                    Password = row["password"].ToString(),
-                    Deleted = Convert.ToInt32(row["deleted"]),
-                };
-            }
-
-            return null;
+            using var reader = (MySqlDataReader)await cmd.ExecuteReaderAsync();
+            return await reader.ReadAsync() ? MapUser(reader) : null;
         }
 
-        public User GetUserByUsername(string username)
+        public async Task<User?> GetUserByUsernameAsync(string username)
         {
-            // string cs = Connection.conString;
-            using var con = new MySqlConnection(cs);
-            con.Open();
+            using var con = new MySqlConnection(_connectionString);
+            await con.OpenAsync();
 
-            string stm = "SELECT user_id, username, email, password, deleted FROM Users WHERE username = @username";
-
-            using var cmd = new MySqlCommand(stm, con);
-
+            const string sql = "SELECT user_id, username, email, password, deleted FROM Users WHERE username = @username";
+            using var cmd = new MySqlCommand(sql, con);
             cmd.Parameters.AddWithValue("@username", username);
 
-            using var reader = cmd.ExecuteReader();
-            DataTable dataTable = new DataTable();
-            dataTable.Load(reader);
-
-            if (dataTable.Rows.Count > 0)
-            {
-                DataRow row = dataTable.Rows[0];
-                return new User
-                {
-                    UserId = Convert.ToInt32(row["user_id"]),
-                    Username = row["username"].ToString(),
-                    Email = row["email"].ToString(),
-                    Password = row["password"].ToString(),
-                    Deleted = Convert.ToInt32(row["deleted"]),
-                };
-            }
-
-            return null;
+            using var reader = (MySqlDataReader)await cmd.ExecuteReaderAsync();
+            return await reader.ReadAsync() ? MapUser(reader) : null;
         }
+
+        private static User MapUser(MySqlDataReader reader) => new()
+        {
+            UserId = reader.GetInt32("user_id"),
+            Username = reader.GetString("username"),
+            Email = reader.GetString("email"),
+            Password = reader.GetString("password"),
+            Deleted = reader.GetInt32("deleted"),
+        };
     }
 }

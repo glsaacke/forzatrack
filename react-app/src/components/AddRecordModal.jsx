@@ -1,26 +1,35 @@
-import { getBuildById, getRecordsByUserId, createRecord, } from "../services/api";
-import { useEffect, useState, useRef } from "react";
+import { getRecordsByUserId, createRecord } from "../services/api";
+import { useState, useRef } from "react";
 import "../styles/AddRecordModal.css"
 
-const AddRecordModal = ({cars, setRecords}) => {
-
-    const inputTimeMin = useRef('')
-    const inputTimeSec = useRef('')
-    const inputTimeMs = useRef('')
-    const selectedCar = useRef('')
-    const selectedClass = useRef('')
-    const selectedEvent = useRef('')
-    const selectedCpuDiff = useRef('')
+const AddRecordModal = ({ cars, setRecords, onClose }) => {
+    const inputTimeMin = useRef(null)
+    const inputTimeSec = useRef(null)
+    const inputTimeMs = useRef(null)
+    const selectedCar = useRef(null)
+    const selectedClass = useRef(null)
+    const selectedEvent = useRef(null)
+    const selectedCpuDiff = useRef(null)
     const [createRecordError, setCreateRecordError] = useState(false)
     const [createRecordErrorMessage, setCreateRecordErrorMessage] = useState('')
     const [isLoading, setIsLoading] = useState(false)
 
+    function resetForm() {
+        if (inputTimeMin.current) inputTimeMin.current.value = '';
+        if (inputTimeSec.current) inputTimeSec.current.value = '';
+        if (inputTimeMs.current) inputTimeMs.current.value = '';
+        if (selectedCar.current) selectedCar.current.value = '';
+        if (selectedClass.current) selectedClass.current.value = '';
+        if (selectedEvent.current) selectedEvent.current.value = '';
+        if (selectedCpuDiff.current) selectedCpuDiff.current.value = '';
+    }
 
-    async function handleCreateSubmit(e){
+    async function handleCreateSubmit(e) {
         e.preventDefault()
         setIsLoading(true)
+        setCreateRecordError(false)
 
-        let newRecord = {
+        const newRecord = {
             userId: sessionStorage.getItem("userId"),
             carId: selectedCar.current.value,
             event: selectedEvent.current.value,
@@ -29,47 +38,30 @@ const AddRecordModal = ({cars, setRecords}) => {
             timeSec: inputTimeSec.current.value,
             timeMs: inputTimeMs.current.value,
             cpuDiff: selectedCpuDiff.current.value,
-            deleted: 0
         }
-        // console.log(`New record created: ${newRecord}`)
-        let response = await createRecord(newRecord)
-        console.log(response.message)
 
-        if(response.success){
-            hideCreateScreen()
-            console.log('record created successfully')
+        try {
+            const response = await createRecord(newRecord)
 
-            inputTimeMin.current.value = '';
-            inputTimeSec.current.value = '';
-            inputTimeMs.current.value = '';
-            selectedCar.current.value = '';
-            selectedClass.current.value = '';
-            selectedEvent.current.value = '';
-            selectedCpuDiff.current.value = '';
-
-            setCreateRecordError(false)
-
-            setRecords(await getRecordsByUserId(sessionStorage.getItem("userId")));
-        }
-        else{
-            setCreateRecordErrorMessage(response.message)
+            if (response.success) {
+                resetForm()
+                setCreateRecordError(false)
+                setRecords(await getRecordsByUserId(sessionStorage.getItem("userId")))
+                onClose()
+            } else {
+                setCreateRecordErrorMessage(response.message)
+                setCreateRecordError(true)
+            }
+        } catch {
+            setCreateRecordErrorMessage("An unexpected error occurred. Please try again.")
             setCreateRecordError(true)
+        } finally {
+            setIsLoading(false)
         }
-
-        setIsLoading(false)
     }
 
-    function hideCreateScreen(){
-        let overlay = document.querySelector(".create-overlay")
-        let content = document.querySelector(".create-content")
-
-        overlay.style.display = "none";
-        content.style.display = "none";
-    }
-
-
-    return ( 
-        <div className="create-content">
+    return (
+        <div className="create-content" style={{ display: "flex" }}>
             <h2>ADD RECORD</h2>
             <form onSubmit={handleCreateSubmit}>
                 <div className="create-time-div">
@@ -80,17 +72,17 @@ const AddRecordModal = ({cars, setRecords}) => {
                     <p>.</p>
                     <input type="text" required ref={inputTimeMs} />
                 </div>
-                
-                <select className="create-car-select" required ref={selectedCar}>
-                    <option value='' selected>SELECT CAR</option>
+
+                <select className="create-car-select" required ref={selectedCar} defaultValue="">
+                    <option value="" disabled>SELECT CAR</option>
                     {cars.map((car) => (
-                        <option value={car.carId}>{car.make} {car.model} {car.year}</option>
+                        <option key={car.carId} value={car.carId}>{car.make} {car.model} {car.year}</option>
                     ))}
                 </select>
 
                 <div className="create-select-div">
-                    <select required ref={selectedClass}>
-                        <option selected value=''>SELECT CLASS</option>
+                    <select required ref={selectedClass} defaultValue="">
+                        <option disabled value=''>SELECT CLASS</option>
                         <option value="X">X</option>
                         <option value="S2">S2</option>
                         <option value="S1">S1</option>
@@ -101,8 +93,8 @@ const AddRecordModal = ({cars, setRecords}) => {
                         <option value="E">E</option>
                     </select>
 
-                    <select required ref={selectedEvent}>
-                        <option selected value=''>SELECT EVENT</option>
+                    <select required ref={selectedEvent} defaultValue="">
+                        <option disabled value=''>SELECT EVENT</option>
                         <option value="Goliath">Goliath</option>
                         <option value="Colossus">Colossus</option>
                         <option value="Gauntlet">Gauntlet</option>
@@ -111,8 +103,8 @@ const AddRecordModal = ({cars, setRecords}) => {
                         <option value="Vulcan Sprint">Vulcan Sprint</option>
                     </select>
 
-                    <select required ref={selectedCpuDiff}>
-                        <option selected value=''>SELECT CPU LEVEL</option>
+                    <select required ref={selectedCpuDiff} defaultValue="">
+                        <option disabled value=''>SELECT CPU LEVEL</option>
                         <option value="Unbeatable">Unbeatable</option>
                         <option value="Pro">Pro</option>
                         <option value="Expert">Expert</option>
@@ -130,8 +122,9 @@ const AddRecordModal = ({cars, setRecords}) => {
                     {isLoading ? <div className="spinner"></div> : "GO"}
                 </button>
             </form>
-            <button className='create-form-cancel' onClick={hideCreateScreen}>CANCEL</button>
-        </div> );
+            <button className='create-form-cancel' onClick={onClose}>CANCEL</button>
+        </div>
+    );
 }
- 
+
 export default AddRecordModal;

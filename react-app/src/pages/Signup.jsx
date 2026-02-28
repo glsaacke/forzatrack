@@ -1,7 +1,7 @@
-import { Link, useNavigate, } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useState } from "react";
 import '../styles/Login.css';
-import {createUser} from '../services/api';
+import { createUser } from '../services/api';
 
 const Signup = () => {
     const [username, setUsername] = useState('')
@@ -12,27 +12,30 @@ const Signup = () => {
     const [isLoading, setIsLoading] = useState(false)
     const navigate = useNavigate();
 
-    async function handleSubmit(e){
+    async function handleSubmit(e) {
         e.preventDefault()
         setIsLoading(true)
-        const response = await createUser(username, email, password)
-        console.log(response)
+        setSignupError(false)
 
-        if(response.success == true){
-            console.log(`hooray! ${email} and ${username} are untaken`)
-            sessionStorage.setItem("userId", response.user.userId)
+        try {
+            const response = await createUser(username, email, password)
 
-            navigate('/dashboard/records')
+            if (response.success) {
+                sessionStorage.setItem("userId", response.user.userId)
+                navigate('/dashboard/records')
+            } else {
+                setErrorMessage(response.message)
+                setSignupError(true)
+            }
+        } catch {
+            setErrorMessage("An unexpected error occurred. Please try again.")
+            setSignupError(true)
+        } finally {
+            setIsLoading(false)
         }
-        else{
-            alert(response.message)
-            // setErrorMessage(user.message)
-            // setLoginError(true)
-        }
-        setIsLoading(false)
     }
 
-    return ( 
+    return (
         <div className="login-container">
             <div className="login-background"></div>
             <div className="login-overlay"></div>
@@ -40,19 +43,19 @@ const Signup = () => {
                 <h2>SIGN UP</h2>
                 <form onSubmit={handleSubmit}>
                     <label>USERNAME</label>
-                    <input type="text" required value={username} onChange={(e) => setUsername(e.target.value)}/>
+                    <input type="text" required value={username} onChange={(e) => setUsername(e.target.value)} />
                     <label>EMAIL</label>
-                    <input type="text" required value={email} onChange={(e) => setEmail(e.target.value)}/>
+                    <input type="text" required value={email} onChange={(e) => setEmail(e.target.value)} />
                     <label>PASSWORD</label>
-                    <input type="text" required value={password} onChange={(e) => setPassword(e.target.value)}/>
-                    {signupError && <p className='login-error-message'>Error: {errorMessage}</p>}
+                    <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+                    {signupError && <p className='login-error-message'>{errorMessage}</p>}
                     <button className='login-login' disabled={isLoading}>
-                    {isLoading ? <div className="spinner"></div> : "GO"}
+                        {isLoading ? <div className="spinner"></div> : "GO"}
                     </button>
                 </form>
             </div>
         </div>
-     );
+    );
 }
- 
+
 export default Signup;

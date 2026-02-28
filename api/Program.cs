@@ -6,11 +6,10 @@ using api.core.middleware;
 using Microsoft.OpenApi.Models;
 using DotNetEnv;
 
-var root = Directory.GetCurrentDirectory();
-var dotenv = Path.Combine(root, ".env");
-DotEnv.Load(dotenv);
 Env.Load();
-string connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION");
+
+var connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION")
+    ?? throw new InvalidOperationException("DATABASE_CONNECTION environment variable is not set.");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,60 +36,37 @@ builder.Services.AddSwaggerGen(c =>
                     Id = "ApiKey"
                 }
             },
-            new string[] {}
+            Array.Empty<string>()
         }
     });
 });
 
 builder.Services.AddControllers();
 
+// Register repositories with the connection string
+builder.Services.AddScoped<IUserRepository>(_ => new UserRepository(connectionString));
+builder.Services.AddScoped<ICarRepository>(_ => new CarRepository(connectionString));
+builder.Services.AddScoped<IRecordRepository>(_ => new RecordRepository(connectionString));
+builder.Services.AddScoped<IBuildRepository>(_ => new BuildRepository(connectionString));
+
+// Register services
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IUserRepository, UserRepository>(provider =>
-{
-    return new UserRepository(connectionString);
-});
 builder.Services.AddScoped<ICarService, CarService>();
-builder.Services.AddScoped<ICarRepository, CarRepository>(provider =>
-{
-    return new CarRepository(connectionString);
-});
 builder.Services.AddScoped<IRecordService, RecordService>();
-builder.Services.AddScoped<IRecordRepository, RecordRepository>(provider =>
-{
-    return new RecordRepository(connectionString);
-});
 builder.Services.AddScoped<IBuildService, BuildService>();
-builder.Services.AddScoped<IBuildRepository, BuildRepository>(provider =>
-{
-    return new BuildRepository(connectionString);
-});
+
 builder.Services.AddLogging();
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
-        builder => builder.WithOrigins("http://localhost:5173", "https://forzatrack.vercel.app")
-                          .AllowAnyHeader()
-                          .AllowAnyMethod()
-                          .WithHeaders("X-Api-Key")
-                          .AllowCredentials());                        
+        policy => policy.WithOrigins("http://localhost:5173", "https://forzatrack.vercel.app")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials());
 });
 
-// builder.Services.AddCors(options =>
-// {
-//     options.AddPolicy("AllowAll",
-//         builder => builder.SetIsOriginAllowed(_ => true) // Allow all origins
-//                           .AllowAnyHeader()
-//                           .AllowAnyMethod()
-//                           .WithExposedHeaders("X-Api-Key") // Optional: expose API key in responses if needed
-//                           .AllowCredentials()); // Optional: only if you're using cookies/auth
-// });
-
 var app = builder.Build();
-
-var config = new ConfigurationBuilder()
-    .AddEnvironmentVariables()
-    .Build();
 
 if (app.Environment.IsDevelopment())
 {
@@ -99,9 +75,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowSpecificOrigin");
-// app.UseCors("AllowAll");
 
 app.UseMiddleware<ApiKeyMiddleware>();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 

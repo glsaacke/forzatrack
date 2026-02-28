@@ -1,14 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using api.core.models;
-using api.core.services.RecordService;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using api.core.controllers.models;
 using api.core.models;
-using Microsoft.Extensions.Logging;
+using api.core.models.responses;
+using api.core.services.RecordService;
 
 namespace api.core.controllers
 {
@@ -16,175 +12,100 @@ namespace api.core.controllers
     [ApiController]
     public class RecordController : ControllerBase
     {
-        private IRecordService recordService;
-        private ILogger<RecordController> logger;
-        public RecordController(IRecordService recordService, ILogger<RecordController> logger){
-            this.recordService = recordService;
-            this.logger = logger;
+        private readonly IRecordService _recordService;
+
+        public RecordController(IRecordService recordService)
+        {
+            _recordService = recordService;
         }
 
         [HttpGet("GetAllRecords")]
-        public IActionResult GetAllRecords()
+        public async Task<IActionResult> GetAllRecords()
         {
-            try{
-                var records = recordService.GetAllRecords();
+            var records = await _recordService.GetAllRecordsAsync();
 
-                if (records == null || records.Count == 0)
-                {
-                    logger.LogWarning("No records found.");
-                    return NotFound(new { Message = "No records found." });
-                } else {
-                    return Ok(records);
-                }
-            }
-            catch(Exception ex){
-                logger.LogError(ex, "An error occurred while fetching all records.");
-                throw;
-            }
+            if (records == null || records.Count == 0)
+                return NotFound(new { Message = "No records found." });
+
+            return Ok(records);
         }
 
         [HttpGet("GetRecordById/{id}")]
-        public IActionResult GetRecordById(int id)
+        public async Task<IActionResult> GetRecordById(int id)
         {
-            Record record;
-            try{
-                record = recordService.GetRecordByID(id);
+            var record = await _recordService.GetRecordByIdAsync(id);
 
-                if (record == null){
-                    logger.LogWarning("No cars found.");
-                    return NotFound(new { Message = "No cars found." });
-                } else {
-                    return Ok(record);
-                }
-            }
-            catch(Exception ex){
-                logger.LogError(ex, "An error occurred while fetching record.");
-                throw;
-            }
+            if (record == null)
+                return NotFound(new { Message = "No record found matching the id." });
+
+            return Ok(record);
         }
 
         [HttpPost("CreateRecord")]
-        public IActionResult CreateRecord([FromBody] RecordRequest request)
+        public async Task<IActionResult> CreateRecord([FromBody] RecordRequest request)
         {
-            if(request == null){
-                logger.LogError("The request was null");
-                return BadRequest("Request body cannot be null.");
+            if (request.TimeMin.ToString().Length > 2
+                || request.TimeSec.ToString().Length > 2
+                || request.TimeMs.ToString().Length > 3)
+            {
+                return Ok(new DefaultResponse { Success = false, Message = "Error: please enter a valid time" });
             }
 
-            if(request.TimeMin.ToString().Length > 2 || request.TimeSec.ToString().Length > 2 || request.TimeMs.ToString().Length > 3){
-                return Ok(new DefaultResponse{Success = false, Message = "Error: please enter a valid time"});
-            }
+            var record = new Record
+            {
+                UserId = request.UserId,
+                CarId = request.CarId,
+                Event = request.Event,
+                ClassRank = request.ClassRank,
+                TimeMin = request.TimeMin,
+                TimeSec = request.TimeSec,
+                TimeMs = request.TimeMs,
+                CpuDiff = request.CpuDiff,
+                AddDate = DateTime.Today,
+            };
 
-            else{
-                Record record;
-
-                try{
-
-                    record = new Record{
-                        UserId = request.UserId,
-                        CarId = request.CarId,
-                        Event = request.Event,
-                        ClassRank = request.ClassRank,
-                        TimeMin = request.TimeMin,
-                        TimeSec = request.TimeSec,
-                        TimeMs = request.TimeMs,
-                        CpuDiff = request.CpuDiff,
-                        AddDate = DateTime.Today,
-                        Deleted = request.Deleted
-                    };
-
-                    recordService.CreateRecord(record);
-                    logger.LogInformation("date time :  " + DateTime.Today);
-
-                    return Ok(new DefaultResponse{Success = true, Message = ""});
-                }
-                catch(Exception ex){
-                    logger.LogError(ex, "An error occurred while creating record.");
-                    throw;
-                }
-            }
+            await _recordService.CreateRecordAsync(record);
+            return Ok(new DefaultResponse { Success = true, Message = "" });
         }
 
         [HttpPut("UpdateRecord/{id}")]
-        public IActionResult UpdateRecord(int id, [FromBody] RecordRequest request)
+        public async Task<IActionResult> UpdateRecord(int id, [FromBody] RecordRequest request)
         {
-            if(request == null){
-                logger.LogError("The request was null");
-                return BadRequest("Request body cannot be null.");
-            }
-            else{
-                Record record;
+            var record = new Record
+            {
+                UserId = request.UserId,
+                CarId = request.CarId,
+                Event = request.Event,
+                ClassRank = request.ClassRank,
+                TimeMin = request.TimeMin,
+                TimeSec = request.TimeSec,
+                TimeMs = request.TimeMs,
+                CpuDiff = request.CpuDiff,
+            };
 
-                try{
-
-                    record = new Record{
-                        UserId = request.UserId,
-                        CarId = request.CarId,
-                        Event = request.Event,
-                        ClassRank = request.ClassRank,
-                        TimeMin = request.TimeMin,
-                        TimeSec = request.TimeSec,
-                        TimeMs = request.TimeMs,
-                        CpuDiff = request.CpuDiff,
-                        Deleted = request.Deleted
-                    };
-
-                    bool rowsAffected = recordService.UpdateRecord(record, id);
-                    if(rowsAffected){
-                        return Ok();
-                    } else {
-                        return NotFound("No Records found matching the id.");
-                    }
-                }
-                catch(Exception ex){
-                    logger.LogError(ex, "An error occurred while updating record.");
-                    throw;
-                }
-            }
+            var updated = await _recordService.UpdateRecordAsync(record, id);
+            return updated ? Ok() : NotFound("No record found matching the id.");
         }
 
         [HttpPut("SetRecordDeleted/{id}")]
-        public IActionResult SetRecordDeleted(int id)
+        public async Task<IActionResult> SetRecordDeleted(int id)
         {
-            try{
-                bool rowsAffected = recordService.SetRecordDeleted(id);
-                if(rowsAffected){
-                    return Ok();
-                } else {
-                    return NotFound("No Records found matching the id.");
-                }
-            }
-            catch(Exception ex){
-                logger.LogError(ex, "An error occured while setting Record Deleted");
-                throw;
-            }
+            var updated = await _recordService.SetRecordDeletedAsync(id);
+            return updated ? Ok() : NotFound("No record found matching the id.");
         }
 
         [HttpDelete("DeleteRecord/{id}")]
-        public IActionResult DeleteRecord(int id)
+        public async Task<IActionResult> DeleteRecord(int id)
         {
-             try{
-                recordService.DeleteRecord(id);
-                return Ok();
-            }
-            catch(Exception ex){
-                logger.LogError(ex, "An error occurred while deleting record.");
-                throw;
-            }
+            await _recordService.DeleteRecordAsync(id);
+            return Ok();
         }
 
         [HttpGet("GetRecordsByUserId")]
-        public IActionResult GetRecordsByUserId(int id)
+        public async Task<IActionResult> GetRecordsByUserId(int id)
         {
-            try{
-                var records = recordService.GetRecordsByUserId(id);
-
-                return Ok(records);
-            }
-            catch(Exception ex){
-                logger.LogError(ex, "An error occurred while fetching records.");
-                throw;
-            }
+            var records = await _recordService.GetRecordsByUserIdAsync(id);
+            return Ok(records);
         }
     }
 }

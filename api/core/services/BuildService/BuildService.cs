@@ -1,51 +1,44 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using api.core.models;
 
 namespace api.core.services.BuildService
 {
     public class BuildService : IBuildService
     {
-        private IBuildRepository buildRepository;
+        private readonly IBuildRepository _buildRepository;
 
-        public BuildService (IBuildRepository buildRepository){
-            this.buildRepository = buildRepository;
+        public BuildService(IBuildRepository buildRepository)
+        {
+            _buildRepository = buildRepository;
         }
 
-        public void CreateBuild(Build build)
+        public async Task CreateBuildAsync(Build build)
         {
-            buildRepository.CreateBuild(build);
+            await _buildRepository.CreateBuildAsync(build);
         }
 
-        public void DeleteBuild(int id)
+        public async Task DeleteBuildAsync(int id)
         {
-            buildRepository.DeleteBuild(id);
+            await _buildRepository.DeleteBuildAsync(id);
         }
 
-        public List<Build> GetAllBuilds()
+        public async Task<List<Build>> GetAllBuildsAsync()
         {
-            var builds = buildRepository.GetAllBuilds();
-            return builds;
+            return await _buildRepository.GetAllBuildsAsync();
         }
 
-        public Build GetBuildByID(int id)
+        public async Task<Build?> GetBuildByIdAsync(int id)
         {
-            Build build = buildRepository.GetBuildByID(id);
-            return build;
+            return await _buildRepository.GetBuildByIdAsync(id);
         }
 
-        public bool SetBuildDeleted(int id)
+        public async Task<bool> SetBuildDeletedAsync(int id)
         {
-            bool rowsAffected = buildRepository.SetBuildDeleted(id);
-            return rowsAffected;
+            return await _buildRepository.SetBuildDeletedAsync(id);
         }
 
-        public bool UpdateBuild(Build build, int id)
+        public async Task<bool> UpdateBuildAsync(Build build, int id)
         {
-            bool rowsAffected = buildRepository.UpdateBuild(build, id);
-            return rowsAffected;
+            return await _buildRepository.UpdateBuildAsync(build, id);
         }
     }
 }
