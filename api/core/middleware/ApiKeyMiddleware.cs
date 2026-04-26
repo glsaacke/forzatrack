@@ -21,7 +21,8 @@ namespace api.core.middleware
         public async Task Invoke(HttpContext context)
         {
 
-            if (context.Request.Path.StartsWithSegments("/swagger")){
+            if (context.Request.Path.StartsWithSegments("/swagger") ||
+                context.Request.Path.StartsWithSegments("/api/health")){
                 await _next(context);
                 return;
             }
