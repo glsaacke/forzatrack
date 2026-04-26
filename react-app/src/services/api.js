@@ -1,4 +1,4 @@
-const BASE_URL = "https://forzatrack.fly.dev/api";
+const BASE_URL = import.meta.env.VITE_API_URL;
 const API_KEY = import.meta.env.VITE_API_KEY;
 
 
@@ -89,6 +89,10 @@ export async function createRecord(record){
 
   return jsonResponse
 
+}
+
+export async function pingServer() {
+  await fetch(`${BASE_URL}/health`);
 }
 
 export async function setRecordDeleted(recordId) {
