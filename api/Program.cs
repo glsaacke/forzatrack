@@ -69,10 +69,14 @@ builder.Services.AddLogging();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
-        builder => builder.WithOrigins("http://localhost:5173", "https://forzatrack.vercel.app")
+        builder => builder
+                          .SetIsOriginAllowed(origin =>
+                              origin == "http://localhost:5173" ||
+                              origin == "https://forzatrack.vercel.app" ||
+                              (origin.StartsWith("https://forzatrack-") && origin.EndsWith(".vercel.app")))
                           .AllowAnyHeader()
                           .AllowAnyMethod()
-                          .AllowCredentials());                        
+                          .AllowCredentials());
 });
 
 // builder.Services.AddCors(options =>
@@ -105,5 +109,7 @@ app.UseMiddleware<ApiKeyMiddleware>();
 app.UseHttpsRedirection();
 
 app.MapControllers();
+
+app.MapGet("/api/health", () => Results.Ok());
 
 app.Run();
