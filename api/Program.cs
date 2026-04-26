@@ -107,4 +107,6 @@ app.UseHttpsRedirection();
 
 app.MapControllers();
 
+app.MapGet("/api/health", () => Results.Ok());
+
 app.Run();
