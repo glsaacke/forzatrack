@@ -11,5 +11,12 @@
 }
 
 .top-cards {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
     margin: 20px 0;
+}
+
+.top-cards > * {
+    flex: 1;
 }
