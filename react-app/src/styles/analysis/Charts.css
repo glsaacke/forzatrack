@@ -1,0 +1,53 @@
+.chart-container {
+    border: 1px #d7d7d7 solid;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #ffffff;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-title {
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #111;
+}
+
+.chart-empty {
+    font-size: 0.85rem;
+    color: #999;
+    margin: auto;
+}
+
+.chart-tooltip {
+    background: #fff;
+    border: 1px solid #d7d7d7;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.chart-tooltip p {
+    margin: 2px 0;
+}
+
+.chart-car-select {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 8px;
+    font-size: 0.8rem;
+}
+
+.chart-car-select select {
+    border: 1px solid #d7d7d7;
+    border-radius: 6px;
+    padding: 2px 6px;
+    font-size: 0.8rem;
+    background: #fff;
+    cursor: pointer;
+}
