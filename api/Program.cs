@@ -72,6 +72,7 @@ builder.Services.AddCors(options =>
         builder => builder
                           .SetIsOriginAllowed(origin =>
                               origin == "http://localhost:5173" ||
+                              origin == "http://localhost:5174" ||
                               origin == "https://forzatrack.vercel.app" ||
                               (origin.StartsWith("https://forzatrack-") && origin.EndsWith(".vercel.app")))
                           .AllowAnyHeader()
