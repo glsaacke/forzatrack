@@ -3,7 +3,9 @@ using api.core.services.CarService;
 using api.core.services.RecordService;
 using api.core.services.BuildService;
 using api.core.middleware;
+using api.core.data;
 using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore;
 using DotNetEnv;
 
 Env.Load();
@@ -41,26 +43,17 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddControllers();
 
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IUserRepository, UserRepository>(provider =>
-{
-    return new UserRepository(connectionString);
-});
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICarService, CarService>();
-builder.Services.AddScoped<ICarRepository, CarRepository>(provider =>
-{
-    return new CarRepository(connectionString);
-});
+builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<IRecordService, RecordService>();
-builder.Services.AddScoped<IRecordRepository, RecordRepository>(provider =>
-{
-    return new RecordRepository(connectionString);
-});
+builder.Services.AddScoped<IRecordRepository, RecordRepository>();
 builder.Services.AddScoped<IBuildService, BuildService>();
-builder.Services.AddScoped<IBuildRepository, BuildRepository>(provider =>
-{
-    return new BuildRepository(connectionString);
-});
+builder.Services.AddScoped<IBuildRepository, BuildRepository>();
 builder.Services.AddLogging();
 
 builder.Services.AddCors(options =>
