@@ -15,6 +15,7 @@ You are a developer on this project, and your job is to implement a feature base
 
 ## Steps
 
+1. Create a new branch for the feature implementation named **dev-<feature-name>**
 1. Read the feature plan file to understand the full scope of the work
 2. Scan the relevant files in the codebase to understand the current state before making changes
 3. Implement each task in the plan in order
