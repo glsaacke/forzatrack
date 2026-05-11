@@ -4,12 +4,13 @@ const API_KEY = import.meta.env.VITE_API_KEY;
 
 
 export async function authenticateUser(email, password) {
-  const response = await fetch(`${BASE_URL}/User/AuthenticateUser?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`, {
-    method: 'GET',
+  const response = await fetch(`${BASE_URL}/User/AuthenticateUser`, {
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'X-Api-Key': API_KEY
-    }
+    },
+    body: JSON.stringify({ email, password })
   });
 
   const authResponse = await response.json();

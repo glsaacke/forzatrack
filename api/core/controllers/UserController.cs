@@ -154,12 +154,12 @@ namespace api.core.controllers
             }
         }
 
-        [HttpGet("AuthenticateUser")]
-        public IActionResult AuthenticateUser(string email, string password)
+        [HttpPost("AuthenticateUser")]
+        public IActionResult AuthenticateUser([FromBody] LoginRequest request)
         {
             AuthResponse response;
             try{
-                response = userService.AuthenticateUser(email, password);
+                response = userService.AuthenticateUser(request.Email, request.Password);
                 return Ok(response);
             }
             catch(Exception ex){

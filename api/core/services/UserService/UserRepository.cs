@@ -24,7 +24,7 @@ namespace api.core.services.UserService
             {
                 Username = user.Username,
                 Email = user.Email,
-                Password = user.Password,
+                Password = BCrypt.Net.BCrypt.HashPassword(user.Password),
                 Deleted = user.Deleted,
             };
             _context.Users.Add(newUser);
@@ -37,7 +37,7 @@ namespace api.core.services.UserService
 
             existing.Username = user.Username;
             existing.Email = user.Email;
-            existing.Password = user.Password;
+            existing.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
             return _context.SaveChanges() > 0;
         }
 
