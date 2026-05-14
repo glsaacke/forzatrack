@@ -22,7 +22,7 @@ namespace api.core.services.UserService
                 return new AuthResponse{ Success = false, Message=$"No accounts matching '{email}'"};
             }
             else{
-                if(user.Password == password && user.Deleted == 0){
+                if(BCrypt.Net.BCrypt.Verify(password, user.Password) && user.Deleted == 0){
                     return new AuthResponse{ Success = true, Message="Login Successful", User = new UserDto{
                         UserId = user.UserId,
                         Username = user.Username,
