@@ -67,80 +67,67 @@ namespace api.core.controllers
         [HttpPost("CreateRecord")]
         public IActionResult CreateRecord([FromBody] RecordRequest request)
         {
-            if(request == null){
-                logger.LogError("The request was null");
-                return BadRequest("Request body cannot be null.");
-            }
-
             if(request.TimeMin.ToString().Length > 2 || request.TimeSec.ToString().Length > 2 || request.TimeMs.ToString().Length > 3){
                 return Ok(new DefaultResponse{Success = false, Message = "Error: please enter a valid time"});
             }
 
-            else{
-                Record record;
+            Record record;
 
-                try{
+            try{
 
-                    record = new Record{
-                        UserId = request.UserId,
-                        CarId = request.CarId,
-                        Event = request.Event,
-                        ClassRank = request.ClassRank,
-                        TimeMin = request.TimeMin,
-                        TimeSec = request.TimeSec,
-                        TimeMs = request.TimeMs,
-                        CpuDiff = request.CpuDiff,
-                        AddDate = DateTime.Today,
-                        Deleted = request.Deleted
-                    };
+                record = new Record{
+                    UserId = request.UserId,
+                    CarId = request.CarId,
+                    Event = request.Event,
+                    ClassRank = request.ClassRank,
+                    TimeMin = request.TimeMin,
+                    TimeSec = request.TimeSec,
+                    TimeMs = request.TimeMs,
+                    CpuDiff = request.CpuDiff,
+                    AddDate = DateTime.Today,
+                    Deleted = request.Deleted
+                };
 
-                    recordService.CreateRecord(record);
-                    logger.LogInformation("date time :  " + DateTime.Today);
+                recordService.CreateRecord(record);
+                logger.LogInformation("date time :  " + DateTime.Today);
 
-                    return Ok(new DefaultResponse{Success = true, Message = ""});
-                }
-                catch(Exception ex){
-                    logger.LogError(ex, "An error occurred while creating record.");
-                    throw;
-                }
+                return Ok(new DefaultResponse{Success = true, Message = ""});
+            }
+            catch(Exception ex){
+                logger.LogError(ex, "An error occurred while creating record.");
+                throw;
             }
         }
 
         [HttpPut("UpdateRecord/{id}")]
         public IActionResult UpdateRecord(int id, [FromBody] RecordRequest request)
         {
-            if(request == null){
-                logger.LogError("The request was null");
-                return BadRequest("Request body cannot be null.");
+            Record record;
+
+            try{
+
+                record = new Record{
+                    UserId = request.UserId,
+                    CarId = request.CarId,
+                    Event = request.Event,
+                    ClassRank = request.ClassRank,
+                    TimeMin = request.TimeMin,
+                    TimeSec = request.TimeSec,
+                    TimeMs = request.TimeMs,
+                    CpuDiff = request.CpuDiff,
+                    Deleted = request.Deleted
+                };
+
+                bool rowsAffected = recordService.UpdateRecord(record, id);
+                if(rowsAffected){
+                    return Ok();
+                } else {
+                    return NotFound("No Records found matching the id.");
+                }
             }
-            else{
-                Record record;
-
-                try{
-
-                    record = new Record{
-                        UserId = request.UserId,
-                        CarId = request.CarId,
-                        Event = request.Event,
-                        ClassRank = request.ClassRank,
-                        TimeMin = request.TimeMin,
-                        TimeSec = request.TimeSec,
-                        TimeMs = request.TimeMs,
-                        CpuDiff = request.CpuDiff,
-                        Deleted = request.Deleted
-                    };
-
-                    bool rowsAffected = recordService.UpdateRecord(record, id);
-                    if(rowsAffected){
-                        return Ok();
-                    } else {
-                        return NotFound("No Records found matching the id.");
-                    }
-                }
-                catch(Exception ex){
-                    logger.LogError(ex, "An error occurred while updating record.");
-                    throw;
-                }
+            catch(Exception ex){
+                logger.LogError(ex, "An error occurred while updating record.");
+                throw;
             }
         }
 

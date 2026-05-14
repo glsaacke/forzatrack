@@ -69,61 +69,49 @@ namespace api.core.controllers
         [HttpPost("CreateUser")]
         public IActionResult CreateUser([FromBody] UserRequest request)
         {
-            if(request == null){
-                logger.LogError("The request was null");
-                return BadRequest("Request body cannot be null.");
+            CreateUser user;
+            try{
+
+                user = new CreateUser{
+                    Username = request.Username,
+                    Email = request.Email,
+                    Password = request.Password,
+                    Deleted = request.Deleted,
+                };
+
+                AuthResponse response = userService.CreateUser(user);
+
+                return Ok(response);
             }
-            else{
-                CreateUser user;
-                try{
-
-                    user = new CreateUser{
-                        Username = request.Username,
-                        Email = request.Email,
-                        Password = request.Password,
-                        Deleted = request.Deleted,
-                    };
-
-                    AuthResponse response = userService.CreateUser(user);
-
-                    return Ok(response);
-                }
-                catch(Exception ex){
-                    logger.LogError(ex, "An error occurred while creating user.");
-                    throw;
-                }
+            catch(Exception ex){
+                logger.LogError(ex, "An error occurred while creating user.");
+                throw;
             }
         }
 
         [HttpPut("UpdateUser/{id}")]
         public IActionResult UpdateUser(int id, [FromBody] UserRequest request)
         {
-            if(request == null){
-                logger.LogError("The request was null");
-                return BadRequest("Request body cannot be null.");
+            User user;
+            try{
+
+                user = new User{
+                    Username = request.Username,
+                    Email = request.Email,
+                    Password = request.Password,
+                    Deleted = request.Deleted
+                };
+
+                bool rowsAffected = userService.UpdateUser(user, id);
+                if(rowsAffected){
+                    return Ok();
+                } else {
+                    return NotFound("No Users found matching the id.");
+                }
             }
-            else{
-                User user;
-                try{
-
-                    user = new User{
-                        Username = request.Username,
-                        Email = request.Email,
-                        Password = request.Password,
-                        Deleted = request.Deleted
-                    };
-
-                    bool rowsAffected = userService.UpdateUser(user, id);
-                    if(rowsAffected){
-                        return Ok();
-                    } else {
-                        return NotFound("No Users found matching the id.");
-                    }
-                }
-                catch(Exception ex){
-                    logger.LogError(ex, "An error occurred while updating user.");
-                    throw;
-                }
+            catch(Exception ex){
+                logger.LogError(ex, "An error occurred while updating user.");
+                throw;
             }
         }
 
