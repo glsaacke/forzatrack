@@ -8,7 +8,7 @@ namespace api.core.middleware
     public class ApiKeyMiddleware
     {
         private readonly RequestDelegate _next;
-        private const string API_KEY_HEADER = "X-API-Key";
+        private const string API_KEY_HEADER = "X-Api-Key";
         private readonly string _apiKey;
 
         public ApiKeyMiddleware(RequestDelegate next, IConfiguration configuration)
@@ -29,7 +29,6 @@ namespace api.core.middleware
 
             if (!context.Request.Headers.TryGetValue(API_KEY_HEADER, out var extractedApiKey) || extractedApiKey != _apiKey)
             {
-                System.Console.WriteLine(_apiKey);
                 context.Response.StatusCode = 401; // Unauthorized
                 await context.Response.WriteAsync("Unauthorized: Invalid API Key");
                 return;

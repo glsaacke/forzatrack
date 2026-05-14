@@ -6,9 +6,6 @@ using api.core.middleware;
 using Microsoft.OpenApi.Models;
 using DotNetEnv;
 
-var root = Directory.GetCurrentDirectory();
-var dotenv = Path.Combine(root, ".env");
-DotEnv.Load(dotenv);
 Env.Load();
 string connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION");
 
