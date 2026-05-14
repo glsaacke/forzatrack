@@ -4,6 +4,8 @@ using api.core.services.RecordService;
 using api.core.services.BuildService;
 using api.core.middleware;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 using DotNetEnv;
 
 var root = Directory.GetCurrentDirectory();
@@ -66,6 +68,21 @@ builder.Services.AddScoped<IBuildRepository, BuildRepository>(provider =>
 });
 builder.Services.AddLogging();
 
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddPolicy("auth", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                Window = TimeSpan.FromMinutes(1),
+                PermitLimit = 10,
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 0
+            }));
+    options.RejectionStatusCode = 429;
+});
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
@@ -103,6 +120,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowSpecificOrigin");
 // app.UseCors("AllowAll");
+
+app.UseRateLimiter();
 
 app.UseMiddleware<ApiKeyMiddleware>();
 

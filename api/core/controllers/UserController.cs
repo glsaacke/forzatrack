@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using api.core.controllers.models;
 using api.core.models;
 using api.core.models.responses;
@@ -63,6 +64,7 @@ namespace api.core.controllers
             }
         }
 
+        [EnableRateLimiting("auth")]
         [HttpPost("CreateUser")]
         public IActionResult CreateUser([FromBody] UserRequest request)
         {
@@ -154,6 +156,7 @@ namespace api.core.controllers
             }
         }
 
+        [EnableRateLimiting("auth")]
         [HttpGet("AuthenticateUser")]
         public IActionResult AuthenticateUser(string email, string password)
         {

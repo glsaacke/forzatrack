@@ -11,6 +11,10 @@ export async function authenticateUser(email, password) {
     }
   });
 
+  if (response.status === 429) {
+    return { success: false, message: "Too many attempts, please wait a moment and try again." };
+  }
+
   const authResponse = await response.json();
   return authResponse;
 }
@@ -23,7 +27,11 @@ export async function createUser(username, email, password){
     headers: { 'Content-Type': 'application/json', 'X-Api-Key': API_KEY},
     body: JSON.stringify(user)
   })
-  
+
+  if (response.status === 429) {
+    return { success: false, message: "Too many attempts, please wait a moment and try again." };
+  }
+
   const createResponse = await response.json()
   return createResponse
 }
