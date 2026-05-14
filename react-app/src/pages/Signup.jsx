@@ -20,7 +20,9 @@ const Signup = () => {
 
         if(response.success == true){
             console.log(`hooray! ${email} and ${username} are untaken`)
-            sessionStorage.setItem("userId", response.user.userId)
+            sessionStorage.setItem("token", response.token)
+            const payload = JSON.parse(atob(response.token.split('.')[1]))
+            sessionStorage.setItem("userId", payload.sub)
 
             navigate('/dashboard/records')
         }

@@ -4,14 +4,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.core.models;
 using api.core.models.responses;
+using api.core.services;
 
 namespace api.core.services.UserService
 {
     public class UserService : IUserService
     {
         private IUserRepository userRepository;
-        public UserService(IUserRepository userRepository){
+        private TokenService tokenService;
+        public UserService(IUserRepository userRepository, TokenService tokenService){
             this.userRepository = userRepository;
+            this.tokenService = tokenService;
         }
 
         public AuthResponse AuthenticateUser(string email, string password)
@@ -23,11 +26,12 @@ namespace api.core.services.UserService
             }
             else{
                 if(BCrypt.Net.BCrypt.Verify(password, user.Password) && user.Deleted == 0){
-                    return new AuthResponse{ Success = true, Message="Login Successful", User = new UserDto{
+                    var userDto = new UserDto{
                         UserId = user.UserId,
                         Username = user.Username,
                         Email = email
-                    }};
+                    };
+                    return new AuthResponse{ Success = true, Message="Login Successful", User = userDto, Token = tokenService.GenerateToken(userDto) };
                 }
                 else{
                     return new AuthResponse{ Success = false, Message="Incorrect Password"};
@@ -49,11 +53,12 @@ namespace api.core.services.UserService
             else{
                 userRepository.CreateUser(user);
                 User newUser = userRepository.GetUserByEmail(user.Email);
-                return new AuthResponse{ Success = true, Message="", User = new UserDto{
+                var newUserDto = new UserDto{
                     UserId = newUser.UserId,
                     Username = user.Username,
                     Email = newUser.Email
-                }};
+                };
+                return new AuthResponse{ Success = true, Message="", User = newUserDto, Token = tokenService.GenerateToken(newUserDto) };
             }
         }
 

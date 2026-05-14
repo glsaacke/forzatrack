@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using api.core.controllers.models;
 using api.core.models;
 using api.core.models.responses;
@@ -14,6 +15,7 @@ namespace api.core.controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private IUserService userService;
@@ -63,6 +65,7 @@ namespace api.core.controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost("CreateUser")]
         public IActionResult CreateUser([FromBody] UserRequest request)
         {
@@ -154,6 +157,7 @@ namespace api.core.controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost("AuthenticateUser")]
         public IActionResult AuthenticateUser([FromBody] LoginRequest request)
         {

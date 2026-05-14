@@ -22,7 +22,9 @@ namespace api.core.middleware
         {
 
             if (context.Request.Path.StartsWithSegments("/swagger") ||
-                context.Request.Path.StartsWithSegments("/api/health")){
+                context.Request.Path.StartsWithSegments("/api/health") ||
+                context.Request.Path.StartsWithSegments("/api/User/AuthenticateUser") ||
+                context.Request.Path.StartsWithSegments("/api/User/CreateUser")){
                 await _next(context);
                 return;
             }
