@@ -1,7 +1,15 @@
-import {Link } from 'react-router-dom'
+import {Link, useNavigate } from 'react-router-dom'
 import '../styles/NavBar.css'
 
 const NavBar = ({onDashboard}) => {
+    const navigate = useNavigate()
+
+    function handleLogout() {
+        sessionStorage.removeItem("token")
+        sessionStorage.removeItem("userId")
+        navigate('/')
+    }
+
     return ( 
         <nav className="navbar">
             <div className="navbar-links">
@@ -12,7 +20,7 @@ const NavBar = ({onDashboard}) => {
                 </> }
             </div>
             <div className="login-links">
-                {onDashboard ? <Link to='/' className='login-link'>LOG OUT</Link> : <Link to='/login' className='login-link'>LOG IN</Link>}            
+                {onDashboard ? <button onClick={handleLogout} className='login-link'>LOG OUT</button> : <Link to='/login' className='login-link'>LOG IN</Link>}            
             </div>
         </nav>
      );

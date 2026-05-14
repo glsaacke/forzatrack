@@ -4,16 +4,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.core.models;
 using api.core.services.RecordService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using api.core.controllers.models;
-using api.core.models;
 using Microsoft.Extensions.Logging;
 
 namespace api.core.controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class RecordController : ControllerBase
     {
         private IRecordService recordService;
