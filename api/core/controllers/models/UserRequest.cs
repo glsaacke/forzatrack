@@ -5,7 +5,7 @@ namespace api.core.controllers.models
     public class UserRequest
     {
         [Required]
-        [StringLength(50, MinimumLength = 3)]
+        [StringLength(50, MinimumLength = 2)]
         public string Username { get; set; }
 
         [Required]

@@ -21,7 +21,7 @@ namespace api.core.data
                 e.Property(u => u.UserId).HasColumnName("user_id");
                 e.Property(u => u.Username).HasColumnName("username");
                 e.Property(u => u.Email).HasColumnName("email");
-                e.Property(u => u.Password).HasColumnName("password");
+                e.Property(u => u.Password).HasColumnName("password").HasMaxLength(100);
                 e.Property(u => u.Deleted).HasColumnName("deleted");
                 e.HasQueryFilter(u => u.Deleted == 0);
             });

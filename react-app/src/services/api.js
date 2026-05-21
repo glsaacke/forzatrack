@@ -42,6 +42,12 @@ export async function createUser(username, email, password){
   }
 
   const createResponse = await response.json()
+
+  if (response.status === 400 && createResponse.errors) {
+    const firstError = Object.values(createResponse.errors)[0]?.[0] ?? 'Invalid input.';
+    return { success: false, message: firstError };
+  }
+
   return createResponse
 }
 
