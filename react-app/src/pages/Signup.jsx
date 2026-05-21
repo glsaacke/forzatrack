@@ -20,14 +20,15 @@ const Signup = () => {
 
         if(response.success == true){
             console.log(`hooray! ${email} and ${username} are untaken`)
-            sessionStorage.setItem("userId", response.user.userId)
+            sessionStorage.setItem("token", response.token)
+            const payload = JSON.parse(atob(response.token.split('.')[1]))
+            sessionStorage.setItem("userId", payload.sub)
 
             navigate('/dashboard/records')
         }
         else{
-            alert(response.message)
-            // setErrorMessage(user.message)
-            // setLoginError(true)
+            setErrorMessage(response.message)
+            setSignupError(true)
         }
         setIsLoading(false)
     }
@@ -45,7 +46,7 @@ const Signup = () => {
                     <input type="text" required value={email} onChange={(e) => setEmail(e.target.value)}/>
                     <label>PASSWORD</label>
                     <input type="text" required value={password} onChange={(e) => setPassword(e.target.value)}/>
-                    {signupError && <p className='login-error-message'>Error: {errorMessage}</p>}
+                    {signupError && <p className='login-error-message'>{errorMessage}</p>}
                     <button className='login-login' disabled={isLoading}>
                     {isLoading ? <div className="spinner"></div> : "GO"}
                     </button>

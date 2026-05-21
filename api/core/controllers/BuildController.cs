@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using api.core.services.BuildService;
@@ -13,6 +14,7 @@ namespace api.core.controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class BuildController : ControllerBase
     {
         private IBuildService buildService;
@@ -65,77 +67,65 @@ namespace api.core.controllers
         [HttpPost("CreateBuild")]
         public IActionResult CreateBuild([FromBody] BuildRequest request)
         {
-            if(request == null){
-                logger.LogError("The request was null");
-                return BadRequest("Request body cannot be null.");
+            Build build;
+            try{
+
+                build = new Build{
+                    UserId = request.UserId,
+                    CarId = request.CarId,
+                    Rank = request.Rank,
+                    SpeedST = request.SpeedST,
+                    HandlingST = request.HandlingST,
+                    AccelerationST = request.AccelerationST,
+                    LaunchST = request.LaunchST,
+                    BrakingST = request.BrakingST,
+                    OffroadST = request.OffroadST,
+                    TopSpeed = request.TopSpeed,
+                    ZeroToSixty = request.ZeroToSixty,
+                    Deleted = request.Deleted
+                };
+
+                buildService.CreateBuild(build);
+
+                return Ok();
             }
-            else{
-                Build build;
-                try{
-
-                    build = new Build{
-                        UserId = request.UserId,
-                        CarId = request.CarId,
-                        Rank = request.Rank,
-                        SpeedST = request.SpeedST,
-                        HandlingST = request.HandlingST,
-                        AccelerationST = request.AccelerationST,
-                        LaunchST = request.LaunchST,
-                        BrakingST = request.BrakingST,
-                        OffroadST = request.OffroadST,
-                        TopSpeed = request.TopSpeed,
-                        ZeroToSixty = request.ZeroToSixty,
-                        Deleted = request.Deleted
-                    };
-
-                    buildService.CreateBuild(build);
-
-                    return Ok();
-                }
-                catch(Exception ex){
-                    logger.LogError(ex, "An error occurred while creating build.");
-                    throw;
-                }
+            catch(Exception ex){
+                logger.LogError(ex, "An error occurred while creating build.");
+                throw;
             }
         }
 
         [HttpPut("UpdateBuild/{id}")]
         public IActionResult UpdateBuild(int id, [FromBody] BuildRequest request)
         {
-             if(request == null){
-                logger.LogError("The request was null");
-                return BadRequest("Request body cannot be null.");
+            Build build;
+            try{
+
+                build = new Build{
+                    UserId = request.UserId,
+                    CarId = request.CarId,
+                    Rank = request.Rank,
+                    SpeedST = request.SpeedST,
+                    HandlingST = request.HandlingST,
+                    AccelerationST = request.AccelerationST,
+                    LaunchST = request.LaunchST,
+                    BrakingST = request.BrakingST,
+                    OffroadST = request.OffroadST,
+                    TopSpeed = request.TopSpeed,
+                    ZeroToSixty = request.ZeroToSixty,
+                    Deleted = request.Deleted
+                };
+
+                bool rowsAffected = buildService.UpdateBuild(build, id);
+                if(rowsAffected){
+                    return Ok();
+                } else {
+                    return NotFound("No Builds found matching the id.");
+                }
             }
-            else{
-                Build build;
-                try{
-
-                    build = new Build{
-                        UserId = request.UserId,
-                        CarId = request.CarId,
-                        Rank = request.Rank,
-                        SpeedST = request.SpeedST,
-                        HandlingST = request.HandlingST,
-                        AccelerationST = request.AccelerationST,
-                        LaunchST = request.LaunchST,
-                        BrakingST = request.BrakingST,
-                        OffroadST = request.OffroadST,
-                        TopSpeed = request.TopSpeed,
-                        ZeroToSixty = request.ZeroToSixty,
-                        Deleted = request.Deleted
-                    };
-
-                    bool rowsAffected = buildService.UpdateBuild(build, id);
-                    if(rowsAffected){
-                        return Ok();
-                    } else {
-                        return NotFound("No Builds found matching the id.");
-                    }
-                }
-                catch(Exception ex){
-                    logger.LogError(ex, "An error occurred while updating build.");
-                    throw;
-                }
+            catch(Exception ex){
+                logger.LogError(ex, "An error occurred while updating build.");
+                throw;
             }
         }
 

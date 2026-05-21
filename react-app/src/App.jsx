@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { pingServer } from './services/api'
 import Home from './pages/Home'
 import About from './pages/About'
 import NavBar from './components/NavBar'
@@ -14,6 +15,10 @@ import Records from './pages/Records'
 
 function App() {
   const [onDashboard, setOnDashboard] = useState(false)
+
+  useEffect(() => {
+    pingServer().catch(() => {})
+  }, [])
 
   return (
     <>
