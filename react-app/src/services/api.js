@@ -102,7 +102,6 @@ export async function createRecord(record){
 }
 
 export async function pingServer() {
-  console.log('API URL:', import.meta.env.VITE_API_URL)
   await fetch(`${BASE_URL}/health`);
 }
 
