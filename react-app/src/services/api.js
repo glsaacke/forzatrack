@@ -1,15 +1,28 @@
-const BASE_URL = "https://forzatrack.fly.dev/api";
+const BASE_URL = import.meta.env.VITE_API_URL;
 const API_KEY = import.meta.env.VITE_API_KEY;
 
+function getAuthHeaders() {
+  const token = sessionStorage.getItem("token");
+  return {
+    'Content-Type': 'application/json',
+    'X-Api-Key': API_KEY,
+    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+  };
+}
 
 export async function authenticateUser(email, password) {
-  const response = await fetch(`${BASE_URL}/User/AuthenticateUser?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`, {
-    method: 'GET',
+  const response = await fetch(`${BASE_URL}/User/AuthenticateUser`, {
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'X-Api-Key': API_KEY
-    }
+    },
+    body: JSON.stringify({ email, password })
   });
+
+  if (response.status === 429) {
+    return { success: false, message: 'Too many attempts, please wait a moment and try again.' };
+  }
 
   const authResponse = await response.json();
   return authResponse;
@@ -23,18 +36,25 @@ export async function createUser(username, email, password){
     headers: { 'Content-Type': 'application/json', 'X-Api-Key': API_KEY},
     body: JSON.stringify(user)
   })
-  
+
+  if (response.status === 429) {
+    return { success: false, message: 'Too many attempts, please wait a moment and try again.' };
+  }
+
   const createResponse = await response.json()
+
+  if (response.status === 400 && createResponse.errors) {
+    const firstError = Object.values(createResponse.errors)[0]?.[0] ?? 'Invalid input.';
+    return { success: false, message: firstError };
+  }
+
   return createResponse
 }
 
 export async function getRecordsByUserId(id){
   const response = await fetch(`${BASE_URL}/Record/GetRecordsByUserId?id=${id}`,{
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Api-Key': API_KEY
-    }
+    headers: getAuthHeaders()
   })
   const records = await response.json()
   return records
@@ -43,10 +63,7 @@ export async function getRecordsByUserId(id){
 export async function getBuildById(id){
   const response = await fetch(`${BASE_URL}/Build/GetBuildById/${id}`,{
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Api-Key': API_KEY
-    }
+    headers: getAuthHeaders()
   })
   const build = await response.json()
   return build
@@ -55,10 +72,7 @@ export async function getBuildById(id){
 export async function getCarById(id){
   const response = await fetch(`${BASE_URL}/Car/GetCarById/${id}`,{
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Api-Key': API_KEY
-    }
+    headers: getAuthHeaders()
   })
   const car = await response.json()
   return car
@@ -67,10 +81,7 @@ export async function getCarById(id){
 export async function getAllCars(){
   const response = await fetch(`${BASE_URL}/Car/GetAllCars`,{
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Api-Key': API_KEY
-    }
+    headers: getAuthHeaders()
   })
   const cars = await response.json()
   return cars
@@ -80,7 +91,7 @@ export async function createRecord(record){
 
   let response = await fetch(`${BASE_URL}/Record/CreateRecord`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'X-Api-Key': API_KEY },
+    headers: getAuthHeaders(),
     body: JSON.stringify(record)
   })
 
@@ -90,13 +101,14 @@ export async function createRecord(record){
 
 }
 
+export async function pingServer() {
+  await fetch(`${BASE_URL}/health`);
+}
+
 export async function setRecordDeleted(recordId) {
   let response = await fetch(`${BASE_URL}/Record/SetRecordDeleted/${recordId}`, {
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Api-Key': API_KEY
-    }
+    headers: getAuthHeaders()
   })
 
   return response

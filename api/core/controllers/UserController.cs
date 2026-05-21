@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.RateLimiting;
 using api.core.controllers.models;
 using api.core.models;
 using api.core.models.responses;
@@ -14,6 +16,7 @@ namespace api.core.controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private IUserService userService;
@@ -63,64 +66,54 @@ namespace api.core.controllers
             }
         }
 
+        [AllowAnonymous]
+        [EnableRateLimiting("auth")]
         [HttpPost("CreateUser")]
         public IActionResult CreateUser([FromBody] UserRequest request)
         {
-            if(request == null){
-                logger.LogError("The request was null");
-                return BadRequest("Request body cannot be null.");
+            CreateUser user;
+            try{
+
+                user = new CreateUser{
+                    Username = request.Username,
+                    Email = request.Email,
+                    Password = request.Password,
+                    Deleted = request.Deleted,
+                };
+
+                AuthResponse response = userService.CreateUser(user);
+
+                return Ok(response);
             }
-            else{
-                CreateUser user;
-                try{
-
-                    user = new CreateUser{
-                        Username = request.Username,
-                        Email = request.Email,
-                        Password = request.Password,
-                        Deleted = request.Deleted,
-                    };
-
-                    AuthResponse response = userService.CreateUser(user);
-
-                    return Ok(response);
-                }
-                catch(Exception ex){
-                    logger.LogError(ex, "An error occurred while creating user.");
-                    throw;
-                }
+            catch(Exception ex){
+                logger.LogError(ex, "An error occurred while creating user.");
+                throw;
             }
         }
 
         [HttpPut("UpdateUser/{id}")]
         public IActionResult UpdateUser(int id, [FromBody] UserRequest request)
         {
-            if(request == null){
-                logger.LogError("The request was null");
-                return BadRequest("Request body cannot be null.");
+            User user;
+            try{
+
+                user = new User{
+                    Username = request.Username,
+                    Email = request.Email,
+                    Password = request.Password,
+                    Deleted = request.Deleted
+                };
+
+                bool rowsAffected = userService.UpdateUser(user, id);
+                if(rowsAffected){
+                    return Ok();
+                } else {
+                    return NotFound("No Users found matching the id.");
+                }
             }
-            else{
-                User user;
-                try{
-
-                    user = new User{
-                        Username = request.Username,
-                        Email = request.Email,
-                        Password = request.Password,
-                        Deleted = request.Deleted
-                    };
-
-                    bool rowsAffected = userService.UpdateUser(user, id);
-                    if(rowsAffected){
-                        return Ok();
-                    } else {
-                        return NotFound("No Users found matching the id.");
-                    }
-                }
-                catch(Exception ex){
-                    logger.LogError(ex, "An error occurred while updating user.");
-                    throw;
-                }
+            catch(Exception ex){
+                logger.LogError(ex, "An error occurred while updating user.");
+                throw;
             }
         }
 
@@ -154,12 +147,14 @@ namespace api.core.controllers
             }
         }
 
-        [HttpGet("AuthenticateUser")]
-        public IActionResult AuthenticateUser(string email, string password)
+        [AllowAnonymous]
+        [EnableRateLimiting("auth")]
+        [HttpPost("AuthenticateUser")]
+        public IActionResult AuthenticateUser([FromBody] LoginRequest request)
         {
             AuthResponse response;
             try{
-                response = userService.AuthenticateUser(email, password);
+                response = userService.AuthenticateUser(request.Email, request.Password);
                 return Ok(response);
             }
             catch(Exception ex){

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using api.core.controllers.models;
@@ -13,6 +14,7 @@ namespace api.core.controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CarController : ControllerBase
     {
         private ICarService carService;
@@ -65,61 +67,49 @@ namespace api.core.controllers
         [HttpPost("CreateCar")]
         public IActionResult CreateCar([FromBody] CarRequest request)
         {
-            if(request == null){
-                logger.LogError("The request was null");
-                return BadRequest("Request body cannot be null.");
+            Car car;
+            try{
+
+                car = new Car{
+                    Make = request.Make,
+                    Model = request.Model,
+                    Year = request.Year,
+                    Deleted = request.Deleted
+                };
+
+                carService.CreateCar(car);
+
+                return Ok();
             }
-            else{
-                Car car;
-                try{
-
-                    car = new Car{
-                        Make = request.Make,
-                        Model = request.Model,
-                        Year = request.Year,
-                        Deleted = request.Deleted
-                    };
-
-                    carService.CreateCar(car);
-
-                    return Ok();
-                }
-                catch(Exception ex){
-                    logger.LogError(ex, "An error occurred while creating car.");
-                    throw;
-                }
+            catch(Exception ex){
+                logger.LogError(ex, "An error occurred while creating car.");
+                throw;
             }
         }
 
         [HttpPut("UpdateCar/{id}")]
         public IActionResult UpdateCar(int id, [FromBody] CarRequest request)
         {
-             if(request == null){
-                logger.LogError("The request was null");
-                return BadRequest("Request body cannot be null.");
+            Car car;
+            try{
+
+                car = new Car{
+                    Make = request.Make,
+                    Model = request.Model,
+                    Year = request.Year,
+                    Deleted = request.Deleted
+                };
+
+                bool rowsAffected = carService.UpdateCar(car, id);
+                if(rowsAffected){
+                    return Ok();
+                } else {
+                    return NotFound("No Cars found matching the id.");
+                }
             }
-            else{
-                Car car;
-                try{
-
-                    car = new Car{
-                        Make = request.Make,
-                        Model = request.Model,
-                        Year = request.Year,
-                        Deleted = request.Deleted
-                    };
-
-                    bool rowsAffected = carService.UpdateCar(car, id);
-                    if(rowsAffected){
-                        return Ok();
-                    } else {
-                        return NotFound("No Cars found matching the id.");
-                    }
-                }
-                catch(Exception ex){
-                    logger.LogError(ex, "An error occurred while updating car.");
-                    throw;
-                }
+            catch(Exception ex){
+                logger.LogError(ex, "An error occurred while updating car.");
+                throw;
             }
         }
 

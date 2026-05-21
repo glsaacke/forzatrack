@@ -1,0 +1,11 @@
+.topcard-container {
+    border: 1px #d7d7d7 solid;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #ffffff;
+    padding: 20px;
+}
+
+.topcard-container h5 {
+    margin-bottom: 10px;
+}
