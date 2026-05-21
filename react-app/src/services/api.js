@@ -102,6 +102,7 @@ export async function createRecord(record){
 }
 
 export async function pingServer() {
+  console.log(import.meta.env)
   await fetch(`${BASE_URL}/health`);
 }
 
