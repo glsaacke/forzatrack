@@ -2,15 +2,21 @@ using api.core.services.UserService;
 using api.core.services.CarService;
 using api.core.services.RecordService;
 using api.core.services.BuildService;
+using api.core.services;
 using api.core.middleware;
+using api.core.data;
 using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Text;
+using System.Threading.RateLimiting;
 using DotNetEnv;
 
-var root = Directory.GetCurrentDirectory();
-var dotenv = Path.Combine(root, ".env");
-DotEnv.Load(dotenv);
 Env.Load();
 string connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION");
+string jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +32,16 @@ builder.Services.AddSwaggerGen(c =>
         Description = "API Key required to access this API"
     });
 
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Description = "Enter your JWT token"
+    });
+
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -38,33 +54,65 @@ builder.Services.AddSwaggerGen(c =>
                 }
             },
             new string[] {}
+        },
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
         }
     });
 });
 
 builder.Services.AddControllers();
 
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
+builder.Services.AddSingleton(new TokenService(jwtSecret));
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IUserRepository, UserRepository>(provider =>
-{
-    return new UserRepository(connectionString);
-});
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICarService, CarService>();
-builder.Services.AddScoped<ICarRepository, CarRepository>(provider =>
-{
-    return new CarRepository(connectionString);
-});
+builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<IRecordService, RecordService>();
-builder.Services.AddScoped<IRecordRepository, RecordRepository>(provider =>
-{
-    return new RecordRepository(connectionString);
-});
+builder.Services.AddScoped<IRecordRepository, RecordRepository>();
 builder.Services.AddScoped<IBuildService, BuildService>();
-builder.Services.AddScoped<IBuildRepository, BuildRepository>(provider =>
-{
-    return new BuildRepository(connectionString);
-});
+builder.Services.AddScoped<IBuildRepository, BuildRepository>();
 builder.Services.AddLogging();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddPolicy("auth", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromMinutes(1),
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 0
+            }));
+    options.RejectionStatusCode = 429;
+});
 
 builder.Services.AddCors(options =>
 {
@@ -104,8 +152,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowSpecificOrigin");
 // app.UseCors("AllowAll");
-
+app.UseRateLimiter();
 app.UseMiddleware<ApiKeyMiddleware>();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseHttpsRedirection();
 

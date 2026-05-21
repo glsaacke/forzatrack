@@ -23,7 +23,9 @@ const Login = () => {
 
         if(response.success){
             console.log(response)
-            sessionStorage.setItem("userId", response.user.userId)
+            sessionStorage.setItem("token", response.token)
+            const payload = JSON.parse(atob(response.token.split('.')[1]))
+            sessionStorage.setItem("userId", payload.sub)
             navigate('/dashboard/records')
         }
         else{
