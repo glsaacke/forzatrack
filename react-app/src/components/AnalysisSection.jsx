@@ -4,10 +4,10 @@ import FastestAvgCarCard from "./analysis/FastestAvgCarCard";
 import MostConsistentCarCard from "./analysis/MostConsistentCarCard";
 import MostUsedCarCard from "./analysis/MostUsedCarCard";
 
-const AnalysisSection = ({filteredRecords, cars}) => {
+const AnalysisSection = ({filteredRecords, cars, selectedGame}) => {
     return ( 
         <div className="analysis-container">
-            <h3>ANALYSIS</h3>
+            <h3>ANALYSIS {selectedGame && <span className="analysis-game-tag">({selectedGame})</span>}</h3>
             <div className="analysis-content">
                 <div className="top-cards">
                     <FastestCarCard filteredRecords={filteredRecords} cars={cars}/>

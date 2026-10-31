@@ -74,6 +74,7 @@ namespace api.core.controllers
                     Make = request.Make,
                     Model = request.Model,
                     Year = request.Year,
+                    Game = request.Game,
                     Deleted = request.Deleted
                 };
 
@@ -97,6 +98,7 @@ namespace api.core.controllers
                     Make = request.Make,
                     Model = request.Model,
                     Year = request.Year,
+                    Game = request.Game,
                     Deleted = request.Deleted
                 };
 

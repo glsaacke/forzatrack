@@ -2,6 +2,7 @@ using api.core.services.UserService;
 using api.core.services.CarService;
 using api.core.services.RecordService;
 using api.core.services.BuildService;
+using api.core.services.CourseService;
 using api.core.services;
 using api.core.middleware;
 using api.core.data;
@@ -17,6 +18,9 @@ using DotNetEnv;
 Env.Load();
 string connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION");
 string jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET");
+
+// TEMPORARY — remove after running once
+// await MigrateCourses.Run(connectionString);
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -83,6 +87,8 @@ builder.Services.AddScoped<IRecordService, RecordService>();
 builder.Services.AddScoped<IRecordRepository, RecordRepository>();
 builder.Services.AddScoped<IBuildService, BuildService>();
 builder.Services.AddScoped<IBuildRepository, BuildRepository>();
+builder.Services.AddScoped<ICourseService, CourseService>();
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddLogging();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

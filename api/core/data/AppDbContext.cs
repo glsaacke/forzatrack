@@ -11,6 +11,7 @@ namespace api.core.data
         public DbSet<Car> Cars { get; set; }
         public DbSet<Record> Records { get; set; }
         public DbSet<Build> Builds { get; set; }
+        public DbSet<Course> Courses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -34,6 +35,7 @@ namespace api.core.data
                 e.Property(c => c.Make).HasColumnName("make");
                 e.Property(c => c.Model).HasColumnName("model");
                 e.Property(c => c.Year).HasColumnName("year");
+                e.Property(c => c.Game).HasColumnName("game");
                 e.Property(c => c.Deleted).HasColumnName("deleted");
                 e.HasQueryFilter(c => c.Deleted == 0);
             });
@@ -45,7 +47,7 @@ namespace api.core.data
                 e.Property(r => r.RecordId).HasColumnName("record_id");
                 e.Property(r => r.UserId).HasColumnName("user_id");
                 e.Property(r => r.CarId).HasColumnName("car_id");
-                e.Property(r => r.Event).HasColumnName("event");
+                e.Property(r => r.CourseId).HasColumnName("course_id");
                 e.Property(r => r.ClassRank).HasColumnName("class_rank");
                 e.Property(r => r.TimeMin).HasColumnName("time_min");
                 e.Property(r => r.TimeSec).HasColumnName("time_sec");
@@ -74,6 +76,17 @@ namespace api.core.data
                 e.Property(b => b.ZeroToSixty).HasColumnName("zero_to_sixty");
                 e.Property(b => b.Deleted).HasColumnName("deleted");
                 e.HasQueryFilter(b => b.Deleted == 0);
+            });
+
+            modelBuilder.Entity<Course>(e =>
+            {
+                e.ToTable("Courses");
+                e.HasKey(c => c.CourseId);
+                e.Property(c => c.CourseId).HasColumnName("course_id");
+                e.Property(c => c.Name).HasColumnName("name");
+                e.Property(c => c.Game).HasColumnName("game");
+                e.Property(c => c.Deleted).HasColumnName("deleted");
+                e.HasQueryFilter(c => c.Deleted == 0);
             });
         }
     }

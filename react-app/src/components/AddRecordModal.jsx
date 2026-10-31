@@ -1,29 +1,58 @@
-import { getBuildById, getRecordsByUserId, createRecord, } from "../services/api";
+import { getRecordsByUserId, createRecord, getCoursesByGame } from "../services/api";
 import { useEffect, useState, useRef } from "react";
-import "../styles/AddRecordModal.css"
+import "../styles/AddRecordModal.css";
+import { CLASS_OPTIONS } from "../constants/gameClasses";
 
-const AddRecordModal = ({cars, setRecords}) => {
+const AddRecordModal = ({cars, selectedGame: initialGame, setRecords}) => {
 
     const inputTimeMin = useRef('')
     const inputTimeSec = useRef('')
     const inputTimeMs = useRef('')
-    const selectedCar = useRef('')
     const selectedClass = useRef('')
-    const selectedEvent = useRef('')
+    const selectedCourse = useRef('')
     const selectedCpuDiff = useRef('')
+    const [carInputValue, setCarInputValue] = useState('')
+    const [selectedCarId, setSelectedCarId] = useState('')
+    const [modalGame, setModalGame] = useState(initialGame ?? 'FH6')
+    const [modalCourses, setModalCourses] = useState([])
     const [createRecordError, setCreateRecordError] = useState(false)
     const [createRecordErrorMessage, setCreateRecordErrorMessage] = useState('')
     const [isLoading, setIsLoading] = useState(false)
 
+    useEffect(() => {
+        async function fetchCourses() {
+            const data = await getCoursesByGame(modalGame)
+            setModalCourses(Array.isArray(data) ? data : [])
+            if (selectedClass.current) selectedClass.current.value = ''
+            if (selectedCourse.current) selectedCourse.current.value = ''
+        }
+        fetchCourses()
+    }, [modalGame])
+
+    function handleCarInput(e) {
+        const inputText = e.target.value;
+        setCarInputValue(inputText);
+        const match = cars.find(
+            car => `${car.make} ${car.model} ${car.year}` === inputText
+        );
+        setSelectedCarId(match ? match.carId : '');
+    }
 
     async function handleCreateSubmit(e){
         e.preventDefault()
         setIsLoading(true)
 
+        if (!selectedCarId) {
+            setCreateRecordErrorMessage('Please select a valid car from the list.');
+            setCreateRecordError(true);
+            setIsLoading(false);
+            return;
+        }
+
         let newRecord = {
             userId: sessionStorage.getItem("userId"),
-            carId: selectedCar.current.value,
-            event: selectedEvent.current.value,
+            carId: selectedCarId,
+            courseId: selectedCourse.current.value,
             classRank: selectedClass.current.value,
             timeMin: inputTimeMin.current.value,
             timeSec: inputTimeSec.current.value,
@@ -31,7 +60,6 @@ const AddRecordModal = ({cars, setRecords}) => {
             cpuDiff: selectedCpuDiff.current.value,
             deleted: 0
         }
-        // console.log(`New record created: ${newRecord}`)
         let response = await createRecord(newRecord)
         console.log(response.message)
 
@@ -42,9 +70,10 @@ const AddRecordModal = ({cars, setRecords}) => {
             inputTimeMin.current.value = '';
             inputTimeSec.current.value = '';
             inputTimeMs.current.value = '';
-            selectedCar.current.value = '';
+            setCarInputValue('');
+            setSelectedCarId('');
             selectedClass.current.value = '';
-            selectedEvent.current.value = '';
+            selectedCourse.current.value = '';
             selectedCpuDiff.current.value = '';
 
             setCreateRecordError(false)
@@ -61,7 +90,7 @@ const AddRecordModal = ({cars, setRecords}) => {
 
     function hideCreateScreen(){
         let overlay = document.querySelector(".create-overlay")
-        let content = document.querySelector(".create-content")
+        let content = document.querySelector(".add-record-content")
 
         overlay.style.display = "none";
         content.style.display = "none";
@@ -69,7 +98,7 @@ const AddRecordModal = ({cars, setRecords}) => {
 
 
     return ( 
-        <div className="create-content">
+        <div className="create-content add-record-content">
             <h2>ADD RECORD</h2>
             <form onSubmit={handleCreateSubmit}>
                 <div className="create-time-div">
@@ -81,38 +110,45 @@ const AddRecordModal = ({cars, setRecords}) => {
                     <input type="text" required ref={inputTimeMs} />
                 </div>
                 
-                <select className="create-car-select" required ref={selectedCar}>
-                    <option value='' selected>SELECT CAR</option>
-                    {cars.map((car) => (
-                        <option value={car.carId}>{car.make} {car.model} {car.year}</option>
+                <input
+                    type="text"
+                    list="car-options"
+                    value={carInputValue}
+                    onChange={handleCarInput}
+                    placeholder="Search for a car..."
+                    required
+                    className="create-car-input"
+                />
+                <datalist id="car-options">
+                    {cars.map(car => (
+                        <option key={car.carId} value={`${car.make} ${car.model} ${car.year}`} />
                     ))}
-                </select>
+                </datalist>
 
                 <div className="create-select-div">
-                    <select required ref={selectedClass}>
-                        <option selected value=''>SELECT CLASS</option>
-                        <option value="X">X</option>
-                        <option value="S2">S2</option>
-                        <option value="S1">S1</option>
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                        <option value="C">C</option>
-                        <option value="D">D</option>
-                        <option value="E">E</option>
+                    <select value={modalGame} onChange={(e) => setModalGame(e.target.value)}>
+                        <option value="FH6">FH6</option>
+                        <option value="FH5">FH5</option>
                     </select>
 
-                    <select required ref={selectedEvent}>
-                        <option selected value=''>SELECT EVENT</option>
-                        <option value="Goliath">Goliath</option>
-                        <option value="Colossus">Colossus</option>
-                        <option value="Gauntlet">Gauntlet</option>
-                        <option value="Titan">Titan</option>
-                        <option value="Marathon">Marathon</option>
-                        <option value="Vulcan Sprint">Vulcan Sprint</option>
+                    <select required ref={selectedCourse}>
+                        <option value=''>SELECT COURSE</option>
+                        {modalCourses.map((course) => (
+                            <option key={course.courseId} value={course.courseId}>
+                                {course.name}
+                            </option>
+                        ))}
+                    </select>
+
+                    <select required ref={selectedClass}>
+                        <option value=''>SELECT CLASS</option>
+                        {CLASS_OPTIONS[modalGame]?.map(cls => (
+                            <option key={cls} value={cls}>{cls}</option>
+                        ))}
                     </select>
 
                     <select required ref={selectedCpuDiff}>
-                        <option selected value=''>SELECT CPU LEVEL</option>
+                        <option value=''>SELECT CPU LEVEL</option>
                         <option value="Unbeatable">Unbeatable</option>
                         <option value="Pro">Pro</option>
                         <option value="Expert">Expert</option>

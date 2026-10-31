@@ -13,8 +13,8 @@ namespace api.core.controllers.models
         public int CarId { get; set; }
 
         [Required]
-        [StringLength(100)]
-        public string Event { get; set; }
+        [Range(1, int.MaxValue)]
+        public int CourseId { get; set; }
 
         [Required]
         [StringLength(10)]

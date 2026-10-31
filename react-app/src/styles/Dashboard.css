@@ -98,6 +98,11 @@
     margin: 0;
 }
 
+.record-buttons {
+    display: flex;
+    gap: 10px;
+}
+
 .create-record {
     margin: 0;
     background: linear-gradient(to right, #F4914D, #F0AC2D);
@@ -137,6 +142,7 @@
 .record-selects select {
     font-family: "Poppins";
     border-radius: 8px;
+    padding: 4px 8px;
 }
 
 .record-selects-select h5 {
