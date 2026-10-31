@@ -11,6 +11,7 @@ namespace api.core.models
         public string Make { get; set; }
         public string Model { get; set; }
         public int Year { get; set; }
+        public string Game { get; set; }
         public int Deleted { get; set; }
     }
 }

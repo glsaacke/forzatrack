@@ -27,14 +27,12 @@
     gap: 40px;
 }
 
-.create-car-select {
-    width: auto;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.create-car-input {
+    width: 100%;
     border-radius: 8px;
     border: 2px black solid;
     font-family: "Poppins";
-    padding: 3px 0;
+    padding: 0.4rem 0.6rem;
 }
 
 .create-time-div {

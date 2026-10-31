@@ -30,6 +30,7 @@ namespace api.core.services.CarService
             existing.Make = car.Make;
             existing.Model = car.Model;
             existing.Year = car.Year;
+            existing.Game = car.Game;
             return _context.SaveChanges() > 0;
         }
 

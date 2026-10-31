@@ -30,7 +30,7 @@ namespace api.core.services.RecordService
 
             existing.UserId = record.UserId;
             existing.CarId = record.CarId;
-            existing.Event = record.Event;
+            existing.CourseId = record.CourseId;
             existing.ClassRank = record.ClassRank;
             existing.TimeMin = record.TimeMin;
             existing.TimeSec = record.TimeSec;
