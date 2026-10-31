@@ -1,14 +1,20 @@
 import AddRecordModal from "../components/AddRecordModal";
+import AddCarModal from "../components/AddCarModal";
+import AddCourseModal from "../components/AddCourseModal";
 import AnalysisSection from "../components/AnalysisSection";
-import { getBuildById, getRecordsByUserId, getCarById, getAllCars, createRecord, setRecordDeleted } from "../services/api";
+import { getBuildById, getRecordsByUserId, getCarById, getAllCars, createRecord, setRecordDeleted, getCoursesByGame } from "../services/api";
 import { useEffect, useState, useRef } from "react";
+import "../styles/Dashboard.css";
+import { CLASS_OPTIONS } from "../constants/gameClasses";
 
 const Records = ({setOnDashboard}) => {
     const [records, setRecords] = useState([])
     const [cars, setCars] = useState([])
+    const [courses, setCourses] = useState([])
     const [filteredRecords, setFilteredRecords] = useState([])
     const [classFilter, setClassFilter] = useState('')
-    const [eventFilter, setEventFilter] = useState('Goliath')
+    const [courseFilter, setCourseFilter] = useState(null)
+    const [selectedGame, setSelectedGame] = useState('FH6')
     const [deleteRecordId, setDeleteRecordId] = useState(null)
     const [selectedRecordId, setSelectedRecordId] = useState(null)
     const [recordsLoading, setRecordsLoading] = useState(false)
@@ -34,7 +40,17 @@ const Records = ({setOnDashboard}) => {
 
     useEffect(() => {
         handleFilterRecords()
-    }, [classFilter, records, eventFilter])
+    }, [classFilter, records, courseFilter, selectedGame, courses])
+
+    useEffect(() => {
+        async function fetchCourses() {
+            const data = await getCoursesByGame(selectedGame)
+            setCourses(Array.isArray(data) ? data : [])
+            setCourseFilter(null)
+            setClassFilter('')
+        }
+        fetchCourses()
+    }, [selectedGame])
 
 
     useEffect(() => {
@@ -66,25 +82,60 @@ const Records = ({setOnDashboard}) => {
         return `${currentCar.make} ${currentCar.model} ${currentCar.year}`
     }
 
+    function displayCourse(courseId) {
+        return courses.find(c => c.courseId === courseId)?.name ?? 'Unknown'
+    }
+
     function showCreateScreen (){
         let overlay = document.querySelector(".create-overlay")
-        let content = document.querySelector(".create-content")
+        let content = document.querySelector(".add-record-content")
         let isVisible = overlay.style.display === "block";
 
         overlay.style.display = isVisible ? "none" : "block"
         content.style.display = isVisible ? "none" : "flex"
     }
 
+    function showAddCarScreen (){
+        let overlay = document.querySelector(".create-overlay")
+        let content = document.querySelector(".add-car-content")
+
+        overlay.style.display = "block"
+        content.style.display = "flex"
+    }
+
+    function showAddCourseScreen (){
+        let overlay = document.querySelector(".create-overlay")
+        let content = document.querySelector(".add-course-content")
+
+        overlay.style.display = "block"
+        content.style.display = "flex"
+    }
+
+    async function refreshCars(){
+        setCars(await getAllCars())
+    }
+
+    async function refreshCourses(){
+        const data = await getCoursesByGame(selectedGame)
+        setCourses(Array.isArray(data) ? data : [])
+    }
+
     function handleFilterRecords() {
-        let recordsPlaceholder = records
-    
+        const gameCourseIds = new Set(
+            courses.filter(c => c.game === selectedGame).map(c => c.courseId)
+        )
+
+        let filtered = records.filter(r => gameCourseIds.has(r.courseId))
+
         if (classFilter !== '') {
-            recordsPlaceholder = recordsPlaceholder.filter(record => record.classRank === classFilter)
+            filtered = filtered.filter(r => r.classRank === classFilter)
         }
-        
-        recordsPlaceholder = recordsPlaceholder.filter(record => record.event === eventFilter)
-    
-        setFilteredRecords(recordsPlaceholder)
+
+        if (courseFilter !== null) {
+            filtered = filtered.filter(r => r.courseId === courseFilter)
+        }
+
+        setFilteredRecords(filtered)
     }
 
     function showConfirmDeleteScreen(){
@@ -116,44 +167,46 @@ const Records = ({setOnDashboard}) => {
                     <h3>CONFIGURE VIEW</h3>
                     <div className="record-selects">
                         <div className="record-selects-select">
-                            <h5>Class</h5>
-                            <select className="form-select" onChange={(e) => {
-                                setClassFilter(e.target.value)
-                                handleFilterRecords()
-                            }}>
-                                <option value="" selected>All Classes</option>
-                                <option value="X">X</option>
-                                <option value="S2">S2</option>
-                                <option value="S1">S1</option>
-                                <option value="A">A</option>
-                                <option value="B">B</option>
-                                <option value="C">C</option>
-                                <option value="D">D</option>
-                                <option value="E">E</option>
+                            <h5>Game</h5>
+                            <select className="form-select" value={selectedGame} onChange={(e) => setSelectedGame(e.target.value)}>
+                                <option value="FH6">FH6</option>
+                                <option value="FH5">FH5</option>
                             </select>
                         </div>
                         <div className="record-selects-select">
-                            <h5>Event</h5>
-                            <select className="form-select" onChange={(e) => {
-                                setEventFilter(e.target.value)
-                                handleFilterRecords()
+                            <h5>Course</h5>
+                            <select className="form-select" value={courseFilter ?? ''} onChange={(e) => {
+                                const val = e.target.value
+                                setCourseFilter(val === '' ? null : parseInt(val, 10))
                             }}>
-                                <option value="Goliath" selected>Goliath</option>
-                                <option value="Colossus">Colossus</option>
-                                <option value="Gauntlet">Gauntlet</option>
-                                <option value="Titan">Titan</option>
-                                <option value="Marathon">Marathon</option>
-                                <option value="Vulcan Sprint">Vulcan Sprint</option>
-                                
+                                <option value="">All Courses</option>
+                                {courses.map((course) => (
+                                    <option key={course.courseId} value={course.courseId}>{course.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="record-selects-select">
+                            <h5>Class</h5>
+                            <select className="form-select" value={classFilter} onChange={(e) => setClassFilter(e.target.value)}>
+                                <option value="">All Classes</option>
+                                {CLASS_OPTIONS[selectedGame].map(cls => (
+                                    <option key={cls} value={cls}>{cls}</option>
+                                ))}
                             </select>
                         </div>
                     </div>
-                    <button className="create-record" onClick={showCreateScreen}>ADD RECORD</button>
+                    <div className="record-buttons">
+                        <button className="create-record" onClick={showAddCarScreen}>ADD CAR</button>
+                        <button className="create-record" onClick={showAddCourseScreen}>ADD COURSE</button>
+                        <button className="create-record" onClick={showCreateScreen}>ADD RECORD</button>
+                    </div>
                 </div>
-                <AnalysisSection filteredRecords={filteredRecords} cars={cars}/>
+                <AnalysisSection filteredRecords={filteredRecords} cars={cars} selectedGame={selectedGame}/>
                 <div className="create-overlay"></div>
 
-                <AddRecordModal cars={cars} setRecords={setRecords}/>
+                <AddRecordModal cars={cars} selectedGame={selectedGame} setRecords={setRecords}/>
+                <AddCarModal selectedGame={selectedGame} onCreated={refreshCars}/>
+                <AddCourseModal selectedGame={selectedGame} onCreated={refreshCourses}/>
 
                 <div className="confirm-delete-content">
                     <p>Are you sure you want to delete this record?</p>
@@ -175,7 +228,7 @@ const Records = ({setOnDashboard}) => {
                             <th scope="col">Time</th>
                             <th scope="col">Class</th>
                             <th scope="col">Car</th>
-                            <th scope="col">Event</th>
+                            <th scope="col">Course</th>
                             <th scope="col">Date</th>
                             <th scope="col">Delete</th>
                         </tr>
@@ -187,7 +240,7 @@ const Records = ({setOnDashboard}) => {
                             <td>{record.timeMin}:{record.timeSec}:{record.timeMs}</td>
                             <td>{record.classRank}</td>
                             <td>{displayCar(record.carId)}</td>
-                            <td>{record.event}</td>
+                            <td>{displayCourse(record.courseId)}</td>
                             <td>{formatDate(record.addDate)}</td>
                             <td>
                                 <button className='record-delete btn btn-danger' onClick={() => {

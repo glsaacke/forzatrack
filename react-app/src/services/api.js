@@ -87,6 +87,42 @@ export async function getAllCars(){
   return cars
 }
 
+export async function getCoursesByGame(game) {
+  const response = await fetch(`${BASE_URL}/Course/GetCoursesByGame?game=${encodeURIComponent(game)}`, {
+    method: 'GET',
+    headers: getAuthHeaders()
+  })
+  const courses = await response.json()
+  return courses
+}
+
+async function parseCreateResponse(response) {
+  if (response.status === 400) {
+    const body = await response.json();
+    const firstError = Object.values(body.errors ?? {})[0]?.[0] ?? 'Invalid input.';
+    return { success: false, message: firstError };
+  }
+  return { success: response.ok, message: response.ok ? '' : 'Something went wrong.' };
+}
+
+export async function createCar(car) {
+  const response = await fetch(`${BASE_URL}/Car/CreateCar`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(car)
+  })
+  return parseCreateResponse(response)
+}
+
+export async function createCourse(course) {
+  const response = await fetch(`${BASE_URL}/Course/CreateCourse`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(course)
+  })
+  return parseCreateResponse(response)
+}
+
 export async function createRecord(record){
 
   let response = await fetch(`${BASE_URL}/Record/CreateRecord`, {

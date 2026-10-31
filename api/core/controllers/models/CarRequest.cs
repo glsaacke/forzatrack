@@ -15,6 +15,10 @@ namespace api.core.controllers.models
         [Range(1886, 2100)]
         public int Year { get; set; }
 
+        [Required]
+        [StringLength(20)]
+        public string Game { get; set; }
+
         public int Deleted { get; set; } = 0;
     }
 }

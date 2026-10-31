@@ -10,6 +10,12 @@
     background: #ffffff;
 }
 
+.analysis-game-tag {
+    font-size: 0.75em;
+    font-weight: normal;
+    color: #9e9e9e;
+}
+
 .top-cards {
     display: flex;
     flex-direction: row;
